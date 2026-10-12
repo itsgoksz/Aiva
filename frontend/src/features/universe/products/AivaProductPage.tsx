@@ -1,111 +1,109 @@
 /**
- * AivaProductPage — Enhanced Aiva Product Landing Page
+ * AivaProductPage — Next-Gen Aiva Product Landing Page
  * 
- * Wraps the existing Aiva landing sections with a Namma Universe
- * back-navigation and Aiva-specific branding header.
- * All original sections are preserved and enhanced.
+ * Matte Black design language.
+ * Completely custom sections reflecting real Aiva conversation intelligence,
+ * scheduling engine, and executive CRM console.
  */
 
-import { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
-import { motion } from 'framer-motion';
-import HeroSection from '../../landing/components/HeroSection';
-import ProblemSection from '../../landing/components/ProblemSection';
-import SolutionSection from '../../landing/components/SolutionSection';
-import IndustriesSection from '../../landing/components/IndustriesSection';
-import DayWithAivaSection from '../../landing/components/DayWithAivaSection';
-import FeatureShowcase from '../../landing/components/FeatureShowcase';
-import TestimonialsSection from '../../landing/components/TestimonialsSection';
-import AivaPricingSection from '../../landing/components/AivaPricingSection';
-import FinalCTASection from '../../landing/components/FinalCTASection';
-import Footer from '../../landing/components/Footer';
-import DemoModal from '../../landing/components/DemoModal';
-import ParticleField from '../components/ParticleField';
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ArrowLeft, Sparkles, LogIn } from "lucide-react";
+import AivaHeroSection from "./aiva/components/AivaHeroSection";
+import AivaProblemSection from "./aiva/components/AivaProblemSection";
+import AivaDashboardPreviewSection from "./aiva/components/AivaDashboardPreviewSection";
+import AivaAutonomousLoopSection from "./aiva/components/AivaAutonomousLoopSection";
+import AivaRoiCalculatorSection from "./aiva/components/AivaRoiCalculatorSection";
+import AivaEnterpriseSecuritySection from "./aiva/components/AivaEnterpriseSecuritySection";
+import AivaFinalCTASection from "./aiva/components/AivaFinalCTASection";
+import AivaDemoModal from "./aiva/components/AivaDemoModal";
+import AivaFooter from "./aiva/components/AivaFooter";
 
 export default function AivaProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
-  const progressRef = useRef(1); // Set to 1 to show the fully formed Constellation/Solar System
-  const activeProductIndexRef = useRef<number | null>(0); // Aiva is index 0
 
-  // Scroll to top on mount
+  // Scroll to top on mount & enforce Aiva color tokens
   useEffect(() => {
     window.scrollTo(0, 0);
-    // Check if the URL has #demo hash to auto-open the modal
-    if (window.location.hash === '#demo') {
+
+    // Enforce Aiva palette tokens (Velvet Plum & Matte Black OS)
+    document.documentElement.style.setProperty("--color-accent", "#A66B8E");
+    document.documentElement.style.setProperty("--color-accent-subtle", "rgba(166, 107, 142, 0.15)");
+    document.documentElement.style.setProperty("--color-bg-primary", "#0A0508");
+    document.documentElement.style.setProperty("--color-bg-secondary", "#0E070C");
+    document.documentElement.style.setProperty("--color-bg-tertiary", "#140C11");
+
+    if (window.location.hash === "#demo") {
       setIsDemoModalOpen(true);
-      // Clean up the hash so it doesn't reopen if they refresh
-      window.history.replaceState(null, '', window.location.pathname);
+      window.history.replaceState(null, "", window.location.pathname);
     }
+
+    return () => {
+      // Revert on unmount
+      document.documentElement.style.setProperty("--color-accent", "#A66B8E");
+      document.documentElement.style.setProperty("--color-accent-subtle", "rgba(166, 107, 142, 0.15)");
+      document.documentElement.style.setProperty("--color-bg-primary", "#120B0F");
+      document.documentElement.style.setProperty("--color-bg-secondary", "#120B0F");
+      document.documentElement.style.setProperty("--color-bg-tertiary", "#140C11");
+    };
   }, []);
 
   return (
-    <div
-      style={{
-        minHeight: '100dvh',
-        width: '100%',
-        overflowX: 'hidden',
-        position: 'relative',
-        background: 'transparent',
-        // Make Aiva's core background slightly translucent so the Universe shines through,
-        // but preserve ALL of Aiva's original solid identity and color palette.
-        '--color-bg-primary': 'rgba(18, 11, 15, 0.85)',
-      } as React.CSSProperties}
+    <div 
+      className="relative min-h-screen selection:bg-[#A66B8E] selection:text-white"
+      style={{ backgroundColor: "#0A0508", color: "#FFFFFF" }}
     >
-      {/* Seamless Transition Overlay */}
+      {/* Seamless Transition Radial Overlay */}
       <motion.div
-        initial={{ clipPath: 'circle(150% at 50% 50%)' }}
-        animate={{ clipPath: 'circle(0% at 50% 50%)' }}
+        initial={{ clipPath: "circle(150% at 50% 50%)" }}
+        animate={{ clipPath: "circle(0% at 50% 50%)" }}
         transition={{ duration: 0.8, ease: [0.7, 0, 0.3, 1] }}
         style={{
-          position: 'fixed',
+          position: "fixed",
           top: 0, left: 0, right: 0, bottom: 0,
           zIndex: 9999,
-          backgroundColor: '#A66B8E',
-          pointerEvents: 'none'
+          backgroundColor: "#A66B8E",
+          pointerEvents: "none"
         }}
       />
 
-      {/* Cinematic WebGL Background */}
-      <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
-        <ParticleField progressRef={progressRef} activeProductIndexRef={activeProductIndexRef} />
-      </div>
-
       {/* Foreground Content */}
-      <div style={{ position: 'relative', zIndex: 10 }}>
-        {/* Product navigation */}
+      <div style={{ position: "relative", zIndex: 10 }}>
+        {/* Navigation Bar */}
         <nav
           style={{
-            position: 'fixed',
+            position: "fixed",
             top: 0,
             left: 0,
             right: 0,
             zIndex: 50,
-            padding: '1rem max(1rem, 4vw)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            background: 'rgba(18, 11, 15, 0.8)',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
+            padding: "1rem max(1rem, 4vw)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            backdropFilter: "blur(18px)",
+            WebkitBackdropFilter: "blur(18px)",
+            background: "rgba(10, 5, 8, 0.75)",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
           }}
         >
+          {/* Back to Universe */}
           <Link
             to="/#products"
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.75rem',
-              textDecoration: 'none',
-              color: 'rgba(255, 255, 255, 0.5)',
+              display: "flex",
+              alignItems: "center",
+              gap: "0.75rem",
+              textDecoration: "none",
+              color: "rgba(255, 255, 255, 0.6)",
               fontFamily: "'Inter', sans-serif",
-              fontSize: '0.85rem',
+              fontSize: "0.85rem",
               fontWeight: 400,
-              transition: 'color 0.2s',
+              transition: "color 0.2s",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255, 255, 255, 0.5)')}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255, 255, 255, 0.6)")}
           >
             <ArrowLeft size={16} />
             <span
@@ -113,29 +111,31 @@ export default function AivaProductPage() {
               style={{
                 fontFamily: "'Space Grotesk', 'Inter', sans-serif",
                 fontWeight: 600,
-                letterSpacing: '0.05em',
-                textTransform: 'uppercase',
-                fontSize: '0.75rem',
-                color: 'rgba(255, 255, 255, 0.3)',
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                fontSize: "0.75rem",
+                color: "rgba(255, 255, 255, 0.4)",
               }}
             >
-              PRODUCTS
+              NAMMA UNIVERSE
             </span>
           </Link>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          {/* Product Wordmark */}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
             <div
               style={{
-                width: '24px',
-                height: '24px',
-                borderRadius: '6px',
-                background: 'var(--color-accent)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 700,
-                fontSize: '0.75rem',
-                color: '#fff',
+                width: "26px",
+                height: "26px",
+                borderRadius: "8px",
+                background: "#A66B8E",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: 800,
+                fontSize: "0.75rem",
+                color: "#FFFFFF",
+                fontFamily: "'Space Grotesk', sans-serif",
               }}
             >
               A
@@ -143,70 +143,55 @@ export default function AivaProductPage() {
             <span
               style={{
                 fontFamily: "'Space Grotesk', 'Inter', sans-serif",
-                fontWeight: 600,
-                fontSize: '1rem',
-                color: '#FFFFFF',
+                fontWeight: 700,
+                fontSize: "1.05rem",
+                color: "#FFFFFF",
+                letterSpacing: "-0.01em",
               }}
             >
               Aiva
             </span>
+            <span 
+              className="hidden md:inline text-[10px] font-mono px-2 py-0.5 rounded uppercase font-bold text-[#EC89B5] bg-[#A66B8E]/15 border border-[#A66B8E]/25"
+            >
+              Voice AI Teammate
+            </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          {/* Actions */}
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
             <Link
               to="/login"
-              className="hidden sm:inline"
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.85rem',
-                fontWeight: 400,
-                color: 'rgba(255, 255, 255, 0.5)',
-                textDecoration: 'none',
-                transition: 'color 0.2s',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255, 255, 255, 0.5)')}
+              className="hidden sm:flex items-center gap-1.5 text-xs font-mono text-white/60 hover:text-white transition-colors"
             >
-              Sign in
+              <LogIn size={14} />
+              <span>Sign in</span>
             </Link>
+
             <button
               onClick={() => setIsDemoModalOpen(true)}
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.85rem',
-                fontWeight: 500,
-                color: '#fff',
-                background: 'var(--color-accent)',
-                border: 'none',
-                padding: '0.5rem 1.25rem',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                transition: 'transform 0.2s',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+              className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-white transition-all cursor-pointer flex items-center gap-1.5 shadow-md shadow-[#A66B8E]/25 hover:scale-[1.03] active:scale-[0.98]"
+              style={{ backgroundColor: "#A66B8E" }}
             >
-              Book a Demo
+              <Sparkles size={14} />
+              <span>Book a Demo</span>
             </button>
           </div>
         </nav>
 
-        {/* Aiva Product Content — all existing sections */}
+        {/* Master Product Sections */}
         <main>
-          <HeroSection onOpenDemo={() => setIsDemoModalOpen(true)} />
-          <ProblemSection />
-          <SolutionSection />
-          <IndustriesSection />
-          <DayWithAivaSection />
-          <FeatureShowcase />
-          <TestimonialsSection />
-          <AivaPricingSection />
-          <FinalCTASection onOpenDemo={() => setIsDemoModalOpen(true)} />
+          <AivaHeroSection onOpenDemo={() => setIsDemoModalOpen(true)} />
+          <AivaProblemSection />
+          <AivaDashboardPreviewSection />
+          <AivaAutonomousLoopSection />
+          <AivaRoiCalculatorSection />
+          <AivaEnterpriseSecuritySection />
+          <AivaFinalCTASection onOpenDemo={() => setIsDemoModalOpen(true)} />
         </main>
 
-        <Footer />
-
-        <DemoModal isOpen={isDemoModalOpen} onClose={() => setIsDemoModalOpen(false)} />
+        <AivaFooter />
+        <AivaDemoModal isOpen={isDemoModalOpen} onClose={() => setIsDemoModalOpen(false)} />
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 /**
  * UniverseFooter — Minimal Dark Footer
  * 
@@ -48,18 +49,30 @@ export default function UniverseFooter() {
             justifyContent: 'center',
           }}
         >
-          {['Aiva', 'Wellora', 'Echo', 'Homie', 'EV Copilot'].map((name) => (
-            <span
-              key={name}
+          {[
+            { name: 'Aiva', route: '/products/aiva' },
+            { name: 'Wellora', route: '/products/wellora' },
+            { name: 'CasaMoto', route: '/products/casamoto' },
+            { name: 'Airport Digital Twin', route: '/products/airport-digital-twin' },
+            { name: 'EV Copilot', route: '/products/ev-copilot' },
+            { name: 'Namma Hood', route: '/products/namma-hood' },
+          ].map((item) => (
+            <Link
+              key={item.name}
+              to={item.route}
               style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: '0.8rem',
                 fontWeight: 400,
-                color: 'rgba(255, 255, 255, 0.2)',
+                color: 'rgba(255, 255, 255, 0.35)',
+                textDecoration: 'none',
+                transition: 'color 0.2s',
               }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = '#FF6B00')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255, 255, 255, 0.35)')}
             >
-              {name}
-            </span>
+              {item.name}
+            </Link>
           ))}
         </div>
 

@@ -1,76 +1,94 @@
 import { motion } from 'framer-motion';
-import { Network, Server, Code2, Layers } from 'lucide-react';
+import { Cpu, Zap, Coffee, Network } from 'lucide-react';
 
-const techStack = [
+const ARCHITECTURE_MODULES = [
   {
-    icon: <Server className="w-6 h-6" />,
-    title: "FastAPI Backend",
-    description: "High-performance, asynchronous Python backend handling complex routing logic and external API integrations."
+    icon: Cpu,
+    module: 'vehicle_brain_agent.py',
+    title: 'In-Cockpit Voice & Rerouting Agent',
+    description: 'Powered by a local lightweight model (Gemma) running right inside the vehicle environment. Evaluates vehicle telemetry, answers natural voice questions, and triggers instant rerouting when headwinds or detours occur.',
+    badge: 'Offline local engine • Sub-second response'
   },
   {
-    icon: <Network className="w-6 h-6" />,
-    title: "LangGraph Agent Bus",
-    description: "An asynchronous event-driven architecture enabling multiple AI agents to communicate and negotiate in parallel."
+    icon: Zap,
+    module: 'charging_agent.py',
+    title: 'Polyline Corridor Waypoint Optimizer',
+    description: 'Queries OpenChargeMap along the actual decoded Google Maps route polyline downsampled at 40km waypoint intervals. Filters for 150kW+ CCS2 fast chargers, verified plug uptime, and dual-gun redundancy.',
+    badge: '150kW+ DC Fast • Live bay status'
   },
   {
-    icon: <Layers className="w-6 h-6" />,
-    title: "LLM Integration",
-    description: "Utilizes powerful models like Gemma, Llama, or Google AI for natural language reasoning and curation."
+    icon: Coffee,
+    module: 'curation_agent.py',
+    title: 'Lifestyle & Artisan Stop Matcher',
+    description: 'Ensures you never waste 20 minutes sitting in an empty gravel lot. Automatically coordinates charging stops with specialty espresso roasters, bakeries, or clean dining spots within a 2-minute walk.',
+    badge: 'Walkable dining • Clean amenities'
   },
   {
-    icon: <Code2 className="w-6 h-6" />,
-    title: "React Frontend",
-    description: "A highly responsive, aesthetically premium Vite/React dashboard with real-time streaming updates."
+    icon: Network,
+    module: 'agent_bus.py',
+    title: 'Asynchronous Multi-Agent Bus',
+    description: 'An event-driven async bus coordinating battery telemetry, live traffic congestion from Google Maps, OpenWeather wind vectors, and driver preferences into a unified journey plan.',
+    badge: 'Event-driven • Non-blocking async bus'
   }
 ];
 
 export default function EvCopilotArchitecture() {
   return (
-    <section className="py-32 relative overflow-hidden" style={{ backgroundColor: 'var(--color-bg-secondary)' }}>
-      <div className="container px-4 sm:px-6 lg:px-8 mx-auto">
-        <div className="max-w-3xl mx-auto text-center mb-20">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-bold mb-6"
-          >
-            Technical <span style={{ color: 'var(--color-accent)' }}>Edge</span>
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-xl"
-            style={{ color: 'var(--color-text-secondary)' }}
-          >
-            Car Co-Pilot is built on a scalable, modern technology stack designed for the future of autonomous and electric mobility.
-          </motion.p>
+    <section id="architecture" className="py-24 relative overflow-hidden bg-[#070913] border-t border-white/[0.04]">
+      <div className="container relative z-10 px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-violet-500/20 bg-violet-950/20 mb-4 text-[11px] font-mono uppercase tracking-wider text-violet-300">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF]" />
+            <span>SYSTEM ARCHITECTURE</span>
+          </div>
+
+          <h2 className="font-display text-3xl sm:text-4xl font-medium tracking-tight text-white mb-4">
+            Built on an asynchronous multi-agent coordination bus.
+          </h2>
+
+          <p className="text-neutral-400 text-sm sm:text-base leading-relaxed">
+            Every component in EV Copilot has a single focused responsibility, communicating seamlessly over an in-memory event bus.
+          </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {techStack.map((tech, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="flex gap-6 p-8 rounded-3xl glass border border-[var(--color-border)] hover:border-[var(--color-accent)] transition-all duration-300"
-              style={{ backgroundColor: 'var(--color-bg-tertiary)' }}
-            >
-              <div className="shrink-0 p-4 rounded-2xl h-fit" style={{ backgroundColor: 'var(--color-accent-subtle)', color: 'var(--color-accent)' }}>
-                {tech.icon}
-              </div>
-              <div>
-                <h3 className="text-xl font-bold mb-2">{tech.title}</h3>
-                <p className="leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
-                  {tech.description}
-                </p>
-              </div>
-            </motion.div>
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+          {ARCHITECTURE_MODULES.map((mod, index) => {
+            const Icon = mod.icon;
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="p-7 rounded-2xl bg-[#0B0F22]/80 border border-white/[0.06] hover:border-violet-500/30 transition-all flex flex-col justify-between group"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-11 h-11 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-[#00E5FF] group-hover:scale-105 transition-transform">
+                      <Icon size={20} />
+                    </div>
+                    <span className="font-mono text-[11px] text-violet-300/90 px-2.5 py-1 rounded-full bg-violet-950/40 border border-violet-500/20">
+                      {mod.module}
+                    </span>
+                  </div>
+
+                  <h3 className="text-lg font-semibold text-white mb-2">
+                    {mod.title}
+                  </h3>
+
+                  <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed font-normal mb-6">
+                    {mod.description}
+                  </p>
+                </div>
+
+                <div className="pt-3 border-t border-white/[0.05] flex items-center justify-between text-[11px] font-mono text-neutral-500">
+                  <span>Capability</span>
+                  <span className="text-[#00E5FF] font-medium">{mod.badge}</span>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

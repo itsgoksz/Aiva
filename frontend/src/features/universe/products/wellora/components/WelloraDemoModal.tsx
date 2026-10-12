@@ -1,313 +1,261 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, CheckCircle, Loader2, Calendar as CalendarIcon, Clock } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { 
+  X, 
+  Mic, 
+  CheckCircle2, 
+  Volume2
+} from 'lucide-react';
 
-interface WelloraDemoModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+interface PreloadedMeal {
+  id: string;
+  name: string;
+  text: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  fiber: number;
+  feedback: string;
 }
 
-export default function WelloraDemoModal({ isOpen, onClose }: WelloraDemoModalProps) {
-  const [step, setStep] = useState<'details' | 'calendar' | 'success'>('details');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+const PRELOADED_MEALS: PreloadedMeal[] = [
+  {
+    id: 'idli_vada',
+    name: 'Idli, Vada & Sambar',
+    text: 'Two steamed idlis, one crispy medu vada with hot sambar and coconut chutney.',
+    calories: 320,
+    protein: 9,
+    carbs: 48,
+    fat: 11,
+    fiber: 5,
+    feedback: 'Fermented batter promotes gut microbiome. Lentil sambar provides essential amino acids.'
+  },
+  {
+    id: 'palak_paneer',
+    name: 'Palak Paneer & Roti',
+    text: 'Medium bowl of fresh palak paneer with two whole wheat rotis and sliced cucumber.',
+    calories: 480,
+    protein: 22,
+    carbs: 46,
+    fat: 21,
+    fiber: 9,
+    feedback: 'High biological value protein from paneer. Spinach delivers rich dietary non-heme iron.'
+  },
+  {
+    id: 'curd_rice',
+    name: 'Curd Rice & Tadka',
+    text: 'One cup of home-set curd rice tempered with mustard seeds, curry leaves, and pomegranate.',
+    calories: 285,
+    protein: 8,
+    carbs: 42,
+    fat: 9,
+    fiber: 3,
+    feedback: 'Probiotic cooling meal ideal for hot afternoons. Helps stabilize digestive gut flora.'
+  },
+  {
+    id: 'khichdi',
+    name: 'Moong Dal Khichdi',
+    text: 'One bowl of yellow moong dal khichdi with one teaspoon of desi cow ghee.',
+    calories: 360,
+    protein: 15,
+    carbs: 52,
+    fat: 10,
+    fiber: 8,
+    feedback: 'Easy to digest slow-carb comfort fuel. High soluble fiber and balanced glycemic release.'
+  }
+];
 
-  // Generate next 5 weekdays for the calendar
-  const availableDates = useState(() => {
-    const days = [];
-    let current = new Date();
-    while (days.length < 5) {
-      current.setDate(current.getDate() + 1);
-      if (current.getDay() !== 0 && current.getDay() !== 6) {
-        days.push({
-          full: current.toISOString(),
-          day: current.toLocaleDateString('en-US', { weekday: 'short' }),
-          date: current.getDate().toString()
-        });
-      }
-    }
-    return days;
-  })[0];
+export default function WelloraDemoModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const [selectedMeal, setSelectedMeal] = useState<PreloadedMeal>(PRELOADED_MEALS[0]);
+  const [customText, setCustomText] = useState(PRELOADED_MEALS[0].text);
+  const [isParsing, setIsParsing] = useState(false);
 
-  const times = ['09:30 AM', '11:00 AM', '01:30 PM', '03:00 PM', '04:30 PM'];
-
-  const handleClose = () => {
-    onClose();
+  const handleSelectMeal = (meal: PreloadedMeal) => {
+    setSelectedMeal(meal);
+    setCustomText(meal.text);
+    setIsParsing(true);
     setTimeout(() => {
-      setStep('details');
-      setFormData({ name: '', email: '', phone: '' });
-      setSelectedDate(null);
-      setSelectedTime(null);
-    }, 300);
+      setIsParsing(false);
+    }, 450);
   };
 
-  const handleSubmit = async () => {
-    if (!selectedDate || !selectedTime) return;
-    setIsSubmitting(true);
-
-    try {
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          access_key: "fd261ad2-ead6-4ebd-a330-5538a35906d5",
-          subject: "New Demo Booking: Wellora",
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          date_selected: selectedDate,
-          time_selected: selectedTime,
-        }),
-      });
-
-      const result = await response.json();
-      if (result.success) {
-        setStep('success');
-      } else {
-        console.error(result);
-        alert("Failed to send demo request. Please try again.");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("Something went wrong. Please check your internet connection.");
-    } finally {
-      setIsSubmitting(false);
-    }
+  const handleCustomParse = () => {
+    setIsParsing(true);
+    setTimeout(() => {
+      setIsParsing(false);
+    }, 500);
   };
+
+  const handleReset = () => {
+    onClose();
+  };
+
+  if (!isOpen) return null;
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={handleClose}
-          />
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={handleReset}
+        className="absolute inset-0 bg-black/85 backdrop-blur-md"
+      />
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-md rounded-2xl p-8 shadow-2xl glass border border-[var(--color-border)] overflow-hidden"
-            style={{ backgroundColor: 'var(--color-bg-tertiary)' }}
-          >
-            <button
-              onClick={handleClose}
-              className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition-colors z-10"
-            >
-              <X className="w-5 h-5" style={{ color: 'var(--color-text-secondary)' }} />
-            </button>
+      {/* Modal Dialog */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 15 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 15 }}
+        className="relative w-full max-w-2xl rounded-3xl bg-[#09130D] border border-emerald-500/30 p-6 sm:p-7 shadow-2xl z-10 text-white"
+      >
+        <button
+          onClick={handleReset}
+          className="absolute top-5 right-5 w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-neutral-400 hover:text-white transition-colors"
+        >
+          <X size={16} />
+        </button>
 
-            <AnimatePresence mode="wait">
-              {step === 'details' && (
-                <motion.div
-                  key="details"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                >
-                  <h3 className="text-2xl font-bold mb-2">Book a Demo</h3>
-                  <p className="mb-6" style={{ color: 'var(--color-text-secondary)' }}>
-                    See how Wellora can redefine your wellness journey. Let's start with your details.
-                  </p>
-
-                  <form 
-                    className="space-y-4"
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      setStep('calendar');
-                    }}
-                  >
-                    <div>
-                      <label className="block text-sm mb-1" style={{ color: 'var(--color-text-secondary)' }}>Name</label>
-                      <input
-                        type="text"
-                        required
-                        pattern="[A-Za-z\s]{4,}"
-                        title="Please enter a valid name (letters only, minimum 4 characters)"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        placeholder="John Doe"
-                        className="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
-                        style={{ backgroundColor: 'var(--color-bg-secondary)', borderColor: 'var(--color-border)', color: 'var(--color-text-primary)' }}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm mb-1" style={{ color: 'var(--color-text-secondary)' }}>Email</label>
-                      <input
-                        type="email"
-                        required
-                        pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
-                        title="Please enter a valid email address"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        placeholder="john@example.com"
-                        className="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
-                        style={{ backgroundColor: 'var(--color-bg-secondary)', borderColor: 'var(--color-border)', color: 'var(--color-text-primary)' }}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm mb-1" style={{ color: 'var(--color-text-secondary)' }}>Phone Number</label>
-                      <div className="flex">
-                        <span 
-                          className="inline-flex items-center px-4 py-3 rounded-l-xl border border-r-0 font-medium" 
-                          style={{ backgroundColor: 'var(--color-bg-tertiary)', borderColor: 'var(--color-border)', color: 'var(--color-text-secondary)' }}
-                        >
-                          +91
-                        </span>
-                        <input
-                          type="tel"
-                          required
-                          pattern="[0-9]{10}"
-                          maxLength={10}
-                          title="Please enter exactly 10 numeric digits"
-                          value={formData.phone}
-                          onChange={(e) => {
-                            const val = e.target.value.replace(/\D/g, '');
-                            if (val.length <= 10) setFormData({ ...formData, phone: val });
-                          }}
-                          placeholder="0000000000"
-                          className="w-full px-4 py-3 rounded-r-xl border focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
-                          style={{ backgroundColor: 'var(--color-bg-secondary)', borderColor: 'var(--color-border)', color: 'var(--color-text-primary)' }}
-                        />
-                      </div>
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={!formData.name || !formData.email || !formData.phone}
-                      className="w-full py-3 mt-4 rounded-xl font-semibold text-[#120B0F] transition-all hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100"
-                      style={{ backgroundColor: 'var(--color-accent)' }}
-                    >
-                      Next: Choose a Time
-                    </button>
-                  </form>
-                </motion.div>
-              )}
-
-              {step === 'calendar' && (
-                <motion.div
-                  key="calendar"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                >
-                  <h3 className="text-2xl font-bold mb-2">Select a Time</h3>
-                  <p className="mb-6" style={{ color: 'var(--color-text-secondary)' }}>
-                    When works best for you, {formData.name.split(' ')[0]}?
-                  </p>
-
-                  <div className="space-y-6">
-                    <div>
-                      <div className="flex items-center gap-2 mb-3" style={{ color: 'var(--color-text-secondary)' }}>
-                        <CalendarIcon size={16} />
-                        <span className="text-sm font-medium">Select Date</span>
-                      </div>
-                      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-                        {availableDates.map((d) => (
-                          <button
-                            key={d.full}
-                            onClick={() => setSelectedDate(d.full)}
-                            className={`flex flex-col items-center justify-center min-w-[4rem] py-3 rounded-xl border transition-all ${selectedDate === d.full ? 'border-[var(--color-accent)]' : 'border-[var(--color-border)] hover:border-white/20'}`}
-                            style={{
-                              backgroundColor: selectedDate === d.full ? 'var(--color-accent-subtle)' : 'var(--color-bg-secondary)',
-                            }}
-                          >
-                            <span className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>{d.day}</span>
-                            <span className="text-lg font-bold" style={{ color: selectedDate === d.full ? 'var(--color-accent)' : 'var(--color-text-primary)' }}>{d.date}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <AnimatePresence>
-                      {selectedDate && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                        >
-                          <div className="flex items-center gap-2 mb-3 mt-4" style={{ color: 'var(--color-text-secondary)' }}>
-                            <Clock size={16} />
-                            <span className="text-sm font-medium">Select Time</span>
-                          </div>
-                          <div className="grid grid-cols-2 gap-2">
-                            {times.map((t) => (
-                              <button
-                                key={t}
-                                onClick={() => setSelectedTime(t)}
-                                className={`py-2 px-4 rounded-lg border text-sm font-medium transition-all ${selectedTime === t ? 'border-[var(--color-accent)] text-[var(--color-accent)]' : 'border-[var(--color-border)] hover:border-white/20'}`}
-                                style={{
-                                  backgroundColor: selectedTime === t ? 'var(--color-accent-subtle)' : 'var(--color-bg-secondary)',
-                                  color: selectedTime === t ? 'var(--color-accent)' : 'var(--color-text-primary)'
-                                }}
-                              >
-                                {t}
-                              </button>
-                            ))}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    <div className="pt-4 flex gap-3">
-                      <button
-                        className="px-6 py-3 rounded-xl font-semibold transition-all hover:bg-white/5 border border-[var(--color-border)]"
-                        onClick={() => setStep('details')}
-                      >
-                        Back
-                      </button>
-                      <button
-                        disabled={!selectedDate || !selectedTime || isSubmitting}
-                        className="flex-1 py-3 rounded-xl font-semibold text-[#120B0F] transition-all hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-2"
-                        style={{ backgroundColor: 'var(--color-accent)' }}
-                        onClick={handleSubmit}
-                      >
-                        {isSubmitting ? (
-                          <><Loader2 size={18} className="animate-spin" /> Confirming...</>
-                        ) : (
-                          'Confirm Booking'
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-
-              {step === 'success' && (
-                <motion.div
-                  key="success"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="flex flex-col items-center justify-center py-8 text-center"
-                >
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6" style={{ backgroundColor: 'var(--color-success-light)' }}>
-                    <CheckCircle className="w-8 h-8" style={{ color: 'var(--color-success)' }} />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-2">Booking Confirmed!</h3>
-                  <p className="mb-8" style={{ color: 'var(--color-text-secondary)' }}>
-                    Thanks, {formData.name.split(' ')[0]}. We've sent a calendar invite to {formData.email}. We look forward to showing you Wellora!
-                  </p>
-                  <button
-                    className="w-full py-3 rounded-xl font-semibold text-[#120B0F] transition-all hover:scale-[1.02] border border-[var(--color-border)]"
-                    style={{ backgroundColor: 'var(--color-accent)' }}
-                    onClick={handleClose}
-                  >
-                    Close
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-[#2ECC71]">
+            <Mic size={20} />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold font-display text-white">
+              Wellora Voice-to-Macro Natural Nutrition Simulator
+            </h3>
+            <p className="text-xs text-neutral-400">
+              Test natural speech meal extraction trained on 10,000+ Indian home-cooked foods
+            </p>
+          </div>
         </div>
-      )}
-    </AnimatePresence>
+
+        {/* Quick Indian Meals Selectors */}
+        <div className="mb-4">
+          <label className="text-[11px] font-mono uppercase text-neutral-400 block mb-1.5">
+            Choose a Sample Indian Meal
+          </label>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {PRELOADED_MEALS.map((meal) => {
+              const isSelected = selectedMeal.id === meal.id;
+              return (
+                <button
+                  key={meal.id}
+                  onClick={() => handleSelectMeal(meal)}
+                  className={`p-2.5 rounded-xl text-left text-xs transition-all border cursor-pointer ${
+                    isSelected
+                      ? 'bg-emerald-500/20 border-emerald-400/60 text-white font-semibold'
+                      : 'bg-white/[0.02] border-white/[0.06] text-neutral-400 hover:text-neutral-200'
+                  }`}
+                >
+                  <div className="truncate font-semibold">{meal.name}</div>
+                  <div className="text-[10px] font-mono text-emerald-400 mt-0.5">{meal.calories} kcal</div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Custom Text / Speech Transcript Input Box */}
+        <div className="p-3.5 rounded-2xl bg-black/50 border border-white/[0.08] mb-5">
+          <div className="flex items-center justify-between text-[11px] font-mono text-neutral-400 mb-1.5">
+            <span className="flex items-center gap-1.5 text-emerald-400">
+              <Volume2 size={13} />
+              <span>SPOKEN OR TYPED FOOD INPUT</span>
+            </span>
+            <span>Natural language extractor</span>
+          </div>
+
+          <div className="relative">
+            <textarea
+              rows={2}
+              value={customText}
+              onChange={(e) => setCustomText(e.target.value)}
+              className="w-full bg-white/[0.02] border border-white/10 rounded-xl p-3 text-xs text-neutral-200 outline-none focus:border-emerald-500/50 resize-none font-normal"
+              placeholder="e.g. Two rotis with dal tadka, half cup rice and cucumber salad"
+            />
+            <button
+              onClick={handleCustomParse}
+              className="absolute right-2 bottom-3 px-3 py-1 rounded-lg bg-emerald-500 text-black text-[11px] font-semibold flex items-center gap-1 cursor-pointer hover:bg-emerald-400"
+            >
+              <span>{isParsing ? 'Extracting...' : 'Parse'}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Real-time Extracted Nutrition Display Card */}
+        <div className="p-4 sm:p-5 rounded-2xl bg-black/60 border border-emerald-500/20 mb-5">
+          <div className="flex items-baseline justify-between mb-4">
+            <div>
+              <span className="text-[10px] font-mono uppercase text-neutral-400">Calculated Energy</span>
+              <div className="text-3xl font-display font-black text-white mt-0.5 flex items-baseline gap-1">
+                {selectedMeal.calories}
+                <span className="text-sm font-normal text-emerald-400 font-mono">kcal</span>
+              </div>
+            </div>
+
+            <div className="text-right">
+              <span className="text-[10px] font-mono uppercase text-neutral-400">Dietary Fiber</span>
+              <div className="text-base font-mono font-bold text-neutral-200 mt-0.5">
+                {selectedMeal.fiber}g
+              </div>
+            </div>
+          </div>
+
+          {/* Macro Meters */}
+          <div className="grid grid-cols-3 gap-2.5 mb-3.5">
+            <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+              <div className="flex justify-between text-[11px] font-mono mb-1">
+                <span className="text-orange-400">Protein</span>
+                <span className="text-white font-bold">{selectedMeal.protein}g</span>
+              </div>
+              <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                <div style={{ width: `${Math.min(100, (selectedMeal.protein / 30) * 100)}%` }} className="bg-orange-400 h-full rounded-full" />
+              </div>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+              <div className="flex justify-between text-[11px] font-mono mb-1">
+                <span className="text-emerald-400">Carbs</span>
+                <span className="text-white font-bold">{selectedMeal.carbs}g</span>
+              </div>
+              <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                <div style={{ width: `${Math.min(100, (selectedMeal.carbs / 70) * 100)}%` }} className="bg-emerald-400 h-full rounded-full" />
+              </div>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+              <div className="flex justify-between text-[11px] font-mono mb-1">
+                <span className="text-blue-400">Fats</span>
+                <span className="text-white font-bold">{selectedMeal.fat}g</span>
+              </div>
+              <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                <div style={{ width: `${Math.min(100, (selectedMeal.fat / 25) * 100)}%` }} className="bg-blue-400 h-full rounded-full" />
+              </div>
+            </div>
+          </div>
+
+          {/* Thoughtful Coach Note */}
+          <div className="p-3 rounded-xl bg-emerald-950/20 border border-emerald-500/20 text-xs text-neutral-300 flex items-start gap-2">
+            <CheckCircle2 size={14} className="text-emerald-400 mt-0.5 shrink-0" />
+            <span className="leading-relaxed">{selectedMeal.feedback}</span>
+          </div>
+        </div>
+
+        {/* Modal Footer */}
+        <div className="flex items-center justify-between text-xs text-neutral-400">
+          <span>Logged into daily encrypted diary</span>
+          <button
+            onClick={handleReset}
+            className="px-5 py-2 rounded-xl text-xs font-semibold text-black bg-[#2ECC71] hover:bg-emerald-400 transition-all cursor-pointer"
+          >
+            Done
+          </button>
+        </div>
+      </motion.div>
+    </div>
   );
 }

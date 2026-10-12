@@ -5,8 +5,8 @@
  * product gets a unique visual energy:
  *   Aiva      → Purple energy
  *   Wellora   → Organic green calm
- *   Echo      → Cyan audio resonance
- *   Homie     → Warm amber city intelligence
+ *   CasaMoto  → High-octane blaze orange telemetry
+ *   Airport Digital Twin → Cyan 3D aerodrome spatial twin
  *   EV Copilot → Electric blue motion
  */
 
@@ -66,27 +66,27 @@ const worlds: ProductWorld[] = [
     available: true,
   },
   {
-    id: 'echo',
-    name: 'Echo',
-    emoji: '🌾',
-    tagline: 'The dependable farmhand that keeps a watchful eye on your fields and weather.',
-    description: 'Echo is always out in the field, monitoring the weather and managing your irrigation automatically. It takes care of the daily reports so you can spend less time looking at screens and more time growing your business.',
-    color: '#2DD4FF',
-    gradientFrom: 'rgba(45, 212, 255, 0.12)',
-    gradientTo: 'rgba(45, 212, 255, 0.02)',
-    route: '/products/echo',
+    id: 'casamoto',
+    name: 'CasaMoto',
+    emoji: '🏍️',
+    tagline: "Your bike's ultimate workshop, digital garage, and ride coordinator.",
+    description: "CasaMoto brings telemetry precision to every ride. Track component health bars, log mods, monitor live wear, and orchestrate group rides with real-time tactical radar.",
+    color: '#FF6B00',
+    gradientFrom: 'rgba(255, 107, 0, 0.15)',
+    gradientTo: 'rgba(255, 107, 0, 0.02)',
+    route: '/products/casamoto',
     available: true,
   },
   {
-    id: 'homie',
-    name: 'Homie',
-    emoji: '🏠',
-    tagline: 'The Ultimate Relocation Copilot for your next big move.',
-    description: 'Homie is your personal relocation advisor, real estate expert, and city onboarding assistant. We help you find the perfect neighborhood, calculate exact commutes, and set up your new life without the stress of brokers or endless searching.',
-    color: '#F5A623',
-    gradientFrom: 'rgba(245, 166, 35, 0.12)',
-    gradientTo: 'rgba(245, 166, 35, 0.02)',
-    route: '/products/homie',
+    id: 'airport-digital-twin',
+    name: 'Airport Digital Twin',
+    emoji: '🛫',
+    tagline: 'Real-time 3D spatial aerodrome twin for Kempegowda Airport.',
+    description: 'An interactive 3D digital twin of Bengaluru\'s Kempegowda International Airport (BLR / VOBL). Powered by Google 3D Photorealistic Tiles, sub-second ADS-B transponder streaming, ICAO Annex 14 lighting shaders, and dynamic touchdown physics.',
+    color: '#00E5FF',
+    gradientFrom: 'rgba(0, 229, 255, 0.15)',
+    gradientTo: 'rgba(0, 229, 255, 0.02)',
+    route: '/products/airport-digital-twin',
     available: true,
   },
   {

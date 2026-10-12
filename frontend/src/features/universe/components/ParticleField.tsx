@@ -24,10 +24,10 @@ const PRODUCT_NODES = [
   { radius: 1.9, startAngle: Math.random() * Math.PI * 2, speed: 0.05, color: [0.9, 0.2, 0.3], size: 2.5 },  // 1: Venus (Aiva - Pink)
   { radius: 2.7, startAngle: Math.random() * Math.PI * 2, speed: 0.04, color: [0.05, 0.9, 0.1], size: 2.0 },  // 2: Earth (Wellora - Green)
   { radius: 3.6, startAngle: Math.random() * Math.PI * 2, speed: 0.03, color: [0.06, 0.72, 0.50], size: 1.5 }, // 3: Namma Hood (Emerald Green)
-  { radius: 5.2, startAngle: Math.random() * Math.PI * 2, speed: 0.015, color: [0.9, 0.5, 0.05], size: 4.0 },  // 4: Jupiter (Homie - Amber)
+  { radius: 5.2, startAngle: Math.random() * Math.PI * 2, speed: 0.015, color: [0.0, 0.9, 1.0], size: 4.0 },  // 4: Jupiter (Airport Digital Twin - Cyan)
   { radius: 7.0, startAngle: Math.random() * Math.PI * 2, speed: 0.01, color: [0.93, 0.86, 0.51], size: 4.0 }, // 5: Saturn
   { radius: 8.8, startAngle: Math.random() * Math.PI * 2, speed: 0.008, color: [0.1, 0.0, 1.0], size: 3.0 },  // 6: Uranus (EV Copilot - Purple)
-  { radius: 10.5, startAngle: Math.random() * Math.PI * 2, speed: 0.005, color: [0.05, 0.3, 0.9], size: 2.2 }, // 7: Neptune (Echo - Blue)
+  { radius: 10.5, startAngle: Math.random() * Math.PI * 2, speed: 0.005, color: [1.0, 0.42, 0.0], size: 2.6 }, // 7: Neptune (CasaMoto - Blaze Orange)
 ];
 
 // Map Product Index (0-4) to Planet Index in PRODUCT_NODES

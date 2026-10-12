@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Heart, TrendingUp, ShieldCheck, Database } from 'lucide-react';
+import { Heart, TrendingUp, Database } from 'lucide-react';
 
 const propositions = [
   {

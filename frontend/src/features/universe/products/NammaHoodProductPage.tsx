@@ -1,140 +1,185 @@
-import { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import NammaHoodHeroSection from './namma-hood/components/NammaHoodHeroSection';
-import NammaHoodProblemSection from './namma-hood/components/NammaHoodProblemSection';
-import NammaHoodFeaturesSection from './namma-hood/components/NammaHoodFeaturesSection';
-import NammaHoodFinalCTA from './namma-hood/components/NammaHoodFinalCTA';
-import NammaHoodFooter from './namma-hood/components/NammaHoodFooter';
-import ParticleField from '../components/ParticleField';
+/**
+ * NammaHoodProductPage — Next-Gen Namma Hood Product Landing Page
+ * 
+ * Urban Night Asphalt design language (#060807) with Civic Emerald & Streetlamp Amber.
+ * Real-time 5-second geotag reporting, community megaphone upvotes,
+ * ward territory leaderboards, and daily civic missions.
+ */
+
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ArrowLeft, Sparkles } from "lucide-react";
+import NammaHoodHeroSection from "./namma-hood/components/NammaHoodHeroSection";
+import NammaHoodProblemSection from "./namma-hood/components/NammaHoodProblemSection";
+import NammaHoodTerritorySection from "./namma-hood/components/NammaHoodTerritorySection";
+import NammaHoodMissionsSection from "./namma-hood/components/NammaHoodMissionsSection";
+import NammaHoodFinalCTA from "./namma-hood/components/NammaHoodFinalCTA";
+import NammaHoodDemoModal from "./namma-hood/components/NammaHoodDemoModal";
+import NammaHoodFooter from "./namma-hood/components/NammaHoodFooter";
 
 export default function NammaHoodProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
-  const progressRef = useRef(1); // Set to 1 to show the fully formed Constellation/Solar System
-  const activeProductIndexRef = useRef<number | null>(5); // Namma Hood is index 5
 
-  // Scroll to top on mount
+  // Scroll to top on mount & enforce Namma Hood color tokens
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    // Override global colors for Namma Hood (Emerald Green / Rose Red Accent)
-    document.documentElement.style.setProperty('--color-accent', '#10b981'); // Emerald Green
-    document.documentElement.style.setProperty('--color-accent-subtle', 'rgba(16, 185, 129, 0.15)');
-    document.documentElement.style.setProperty('--color-bg-primary', 'rgba(10, 15, 14, 0.85)');
-    document.documentElement.style.setProperty('--color-bg-secondary', 'rgba(10, 15, 14, 0.85)');
-    document.documentElement.style.setProperty('--color-bg-tertiary', 'rgba(12, 18, 16, 0.85)');
+    // Enforce Namma Hood palette tokens (Urban Night Asphalt + Civic Emerald)
+    document.documentElement.style.setProperty("--color-accent", "#10B981");
+    document.documentElement.style.setProperty("--color-accent-subtle", "rgba(16, 185, 129, 0.15)");
+    document.documentElement.style.setProperty("--color-bg-primary", "#060807");
+    document.documentElement.style.setProperty("--color-bg-secondary", "#0A110D");
+    document.documentElement.style.setProperty("--color-bg-tertiary", "#0F1A14");
+
+    if (window.location.hash === "#demo") {
+      setIsDemoModalOpen(true);
+      window.history.replaceState(null, "", window.location.pathname);
+    }
 
     return () => {
-      // Revert to default/Aiva on unmount
-      document.documentElement.style.setProperty('--color-accent', '#A66B8E');
-      document.documentElement.style.setProperty('--color-accent-subtle', 'rgba(166, 107, 142, 0.15)');
-      document.documentElement.style.setProperty('--color-bg-primary', '#120B0F');
-      document.documentElement.style.setProperty('--color-bg-secondary', '#120B0F');
-      document.documentElement.style.setProperty('--color-bg-tertiary', '#140C11');
+      // Revert on unmount
+      document.documentElement.style.setProperty("--color-accent", "#A66B8E");
+      document.documentElement.style.setProperty("--color-accent-subtle", "rgba(166, 107, 142, 0.15)");
+      document.documentElement.style.setProperty("--color-bg-primary", "#120B0F");
+      document.documentElement.style.setProperty("--color-bg-secondary", "#120B0F");
+      document.documentElement.style.setProperty("--color-bg-tertiary", "#140C11");
     };
   }, []);
 
-  const { scrollYProgress } = useScroll();
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
-
   return (
-    <div className="relative min-h-screen selection:bg-[var(--color-accent)] selection:text-white" style={{ backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-primary)' }}>
-      {/* Seamless Transition Overlay */}
+    <div 
+      className="relative min-h-screen selection:bg-[#10B981] selection:text-black"
+      style={{ backgroundColor: "#060807", color: "#FFFFFF" }}
+    >
+      {/* Seamless Transition Radial Overlay */}
       <motion.div
-        initial={{ clipPath: 'circle(150% at 50% 50%)' }}
-        animate={{ clipPath: 'circle(0% at 50% 50%)' }}
+        initial={{ clipPath: "circle(150% at 50% 50%)" }}
+        animate={{ clipPath: "circle(0% at 50% 50%)" }}
         transition={{ duration: 0.8, ease: [0.7, 0, 0.3, 1] }}
         style={{
-          position: 'fixed',
+          position: "fixed",
           top: 0, left: 0, right: 0, bottom: 0,
           zIndex: 9999,
-          backgroundColor: '#10b981',
-          pointerEvents: 'none'
+          backgroundColor: "#10B981",
+          pointerEvents: "none"
         }}
       />
 
-      {/* Background WebGL / Particle Effect */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-40">
-        <ParticleField progressRef={progressRef} activeProductIndexRef={activeProductIndexRef} />
-      </div>
+      {/* Foreground Content */}
+      <div style={{ position: "relative", zIndex: 10 }}>
+        {/* Navigation Bar */}
+        <nav
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 50,
+            padding: "1rem max(1rem, 4vw)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            backdropFilter: "blur(18px)",
+            WebkitBackdropFilter: "blur(18px)",
+            background: "rgba(6, 8, 7, 0.8)",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
+          }}
+        >
+          {/* Back to Universe */}
+          <Link
+            to="/#products"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.75rem",
+              textDecoration: "none",
+              color: "rgba(255, 255, 255, 0.6)",
+              fontFamily: "'Inter', sans-serif",
+              fontSize: "0.85rem",
+              fontWeight: 400,
+              transition: "color 0.2s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255, 255, 255, 0.6)")}
+          >
+            <ArrowLeft size={16} />
+            <span
+              className="hidden sm:inline"
+              style={{
+                fontFamily: "'Space Grotesk', 'Inter', sans-serif",
+                fontWeight: 600,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                fontSize: "0.75rem",
+                color: "rgba(255, 255, 255, 0.4)",
+              }}
+            >
+              NAMMA UNIVERSE
+            </span>
+          </Link>
 
-      <motion.div 
-        className="fixed inset-0 z-0 pointer-events-none"
-        style={{ y: backgroundY }}
-      >
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--color-bg-secondary)_0%,_transparent_50%)] opacity-40" />
-        <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_bottom_left,_var(--color-bg-secondary)_0%,_transparent_50%)] opacity-40" />
-      </motion.div>
-
-      {/* Main Content Overlay */}
-      <div className="relative z-10 flex flex-col min-h-screen">
-        
-        {/* Transparent Navbar specific to Universe Products */}
-        <nav className="fixed top-0 left-0 right-0 z-50 border-b border-[var(--color-border)] glass" style={{ backgroundColor: 'rgba(10, 15, 14, 0.5)', backdropFilter: 'blur(12px)' }}>
-          <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <Link
-                to="/#products"
-                className="flex items-center gap-2 transition-opacity hover:opacity-80"
-                style={{ color: 'var(--color-text-secondary)', fontSize: '0.875rem', letterSpacing: '0.05em' }}
-              >
-                <span>←</span>
-                <span className="hidden sm:inline">PRODUCTS</span>
-              </Link>
-              <div className="h-4 w-px bg-[var(--color-border)]" />
-              <div className="flex items-center gap-2">
-                <span className="w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold text-[#120B0F]" style={{ backgroundColor: 'var(--color-accent)' }}>
-                  NH
-                </span>
-                <span className="font-semibold text-[var(--color-text-primary)]">Namma Hood</span>
-              </div>
+          {/* Product Wordmark */}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+            <div
+              style={{
+                width: "26px",
+                height: "26px",
+                borderRadius: "8px",
+                background: "#10B981",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: 800,
+                fontSize: "0.75rem",
+                color: "#060807",
+                fontFamily: "'Space Grotesk', sans-serif",
+              }}
+            >
+              NH
             </div>
+            <span
+              style={{
+                fontFamily: "'Space Grotesk', 'Inter', sans-serif",
+                fontWeight: 700,
+                fontSize: "1.05rem",
+                color: "#FFFFFF",
+                letterSpacing: "-0.01em",
+              }}
+            >
+              Namma Hood
+            </span>
+            <span 
+              className="hidden md:inline text-[10px] font-mono px-2 py-0.5 rounded uppercase font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30"
+            >
+              Civic Action
+            </span>
+          </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <button
-                onClick={() => setIsDemoModalOpen(true)}
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                  color: '#120B0F',
-                  background: 'var(--color-accent)',
-                  border: 'none',
-                  padding: '0.5rem 1.25rem',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  transition: 'transform 0.2s',
-                  boxShadow: '0 4px 12px rgba(16, 185, 129, 0.2)'
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-              >
-                Get App
-              </button>
-            </div>
+          {/* Actions */}
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <button
+              onClick={() => setIsDemoModalOpen(true)}
+              className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-black transition-all cursor-pointer flex items-center gap-1.5 shadow-md shadow-emerald-500/25 hover:scale-[1.03] active:scale-[0.98]"
+              style={{ backgroundColor: "#10B981" }}
+            >
+              <Sparkles size={14} />
+              <span>Simulate Report</span>
+            </button>
           </div>
         </nav>
 
-        {/* Namma Hood Product Content */}
+        {/* Master Product Sections */}
         <main>
           <NammaHoodHeroSection onOpenDemo={() => setIsDemoModalOpen(true)} />
           <NammaHoodProblemSection />
-          <NammaHoodFeaturesSection />
+          <NammaHoodTerritorySection />
+          <NammaHoodMissionsSection />
           <NammaHoodFinalCTA onOpenDemo={() => setIsDemoModalOpen(true)} />
         </main>
 
         <NammaHoodFooter />
-        
-        {/* Placeholder for Demo Modal if it were implemented */}
-        {isDemoModalOpen && (
-          <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/80 backdrop-blur-sm" onClick={() => setIsDemoModalOpen(false)}>
-            <div className="p-8 bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-2xl max-w-sm w-full text-center" onClick={(e) => e.stopPropagation()}>
-              <h3 className="text-xl font-bold mb-4">Coming Soon</h3>
-              <p className="text-[var(--color-text-secondary)] mb-6">The Namma Hood mobile app is currently in beta. Sign up to get early access.</p>
-              <button onClick={() => setIsDemoModalOpen(false)} className="w-full py-3 rounded-xl font-bold bg-[var(--color-accent)] text-[#120B0F]">Close</button>
-            </div>
-          </div>
-        )}
+        <NammaHoodDemoModal isOpen={isDemoModalOpen} onClose={() => setIsDemoModalOpen(false)} />
       </div>
     </div>
   );

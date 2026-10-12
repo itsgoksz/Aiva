@@ -19,10 +19,12 @@ import AnalyticsPage from './features/analytics/AnalyticsPage';
 import SettingsPage from './features/settings/SettingsPage';
 import NammaUniversePage from './features/universe/NammaUniversePage';
 import AivaProductPage from './features/universe/products/AivaProductPage';
+import CasaMotoProductPage from './features/universe/products/CasaMotoProductPage';
 import EchoProductPage from './features/universe/products/EchoProductPage';
 import EvCopilotProductPage from './features/universe/products/EvCopilotProductPage';
 import WelloraProductPage from './features/universe/products/WelloraProductPage';
 import HomieProductPage from './features/universe/products/HomieProductPage';
+import AirportDigitalTwinProductPage from './features/universe/products/AirportDigitalTwinProductPage';
 import NammaHoodProductPage from './features/universe/products/NammaHoodProductPage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -61,10 +63,13 @@ function AppRoutes() {
       {/* Public routes */}
       <Route path="/" element={<PublicRoute><NammaUniversePage /></PublicRoute>} />
       <Route path="/products/aiva" element={<AivaProductPage />} />
-      <Route path="/products/echo" element={<EchoProductPage />} />
+      <Route path="/products/casamoto" element={<CasaMotoProductPage />} />
+      <Route path="/products/echo" element={<Navigate to="/products/casamoto" replace />} />
       <Route path="/products/ev-copilot" element={<EvCopilotProductPage />} />
       <Route path="/products/wellora" element={<WelloraProductPage />} />
-      <Route path="/products/homie" element={<HomieProductPage />} />
+      <Route path="/products/airport-digital-twin" element={<AirportDigitalTwinProductPage />} />
+        <Route path="/products/homie" element={<Navigate to="/products/airport-digital-twin" replace />} />
+        <Route path="/products/airport-3d-simulator" element={<Navigate to="/products/airport-digital-twin" replace />} />
       <Route path="/products/namma-hood" element={<NammaHoodProductPage />} />
       <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
       <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
