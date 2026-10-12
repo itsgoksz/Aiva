@@ -1,39 +1,39 @@
 import { motion } from 'framer-motion';
-import { AlertTriangle, EyeOff, Users, MapPinOff } from 'lucide-react';
+import { Ghost, Gamepad2, Users, Flame } from 'lucide-react';
 
 const problems = [
   {
-    title: "No Central Platform",
-    description: "Citizens lack a unified, accessible place to report neighborhood problems to the relevant authorities.",
-    icon: <MapPinOff className="w-8 h-8 text-teal-400" />
+    title: "Boring & Bureaucratic",
+    description: "Traditional reporting tools feel like filing taxes. Nobody wants to fill out long, tedious forms just to report a pothole.",
+    icon: <Ghost className="w-8 h-8 text-[#ff4d6d]" />
   },
   {
-    title: "Lack of Transparency",
-    description: "Reports often go into a black box. There is no public way to track if a problem is being addressed.",
-    icon: <EyeOff className="w-8 h-8 text-cyan-400" />
+    title: "No Real Incentives",
+    description: "Citizens get nothing in return for being proactive. Without rewards or recognition, civic engagement quickly fades away.",
+    icon: <Gamepad2 className="w-8 h-8 text-[#10b981]" />
   },
   {
-    title: "Scattered Voices",
-    description: "Individual complaints lack impact. Without community support, local issues easily get deprioritized.",
+    title: "Lack of Collaboration",
+    description: "Individual complaints lack impact. People report the same issues independently without any way to team up or combine their voices.",
     icon: <Users className="w-8 h-8 text-blue-400" />
   },
   {
-    title: "Unresolved Hazards",
-    description: "Critical infrastructure failures like broken streetlights, potholes, or illegal dumping remain unresolved and dangerous.",
-    icon: <AlertTriangle className="w-8 h-8 text-emerald-400" />
+    title: "Invisible Progress",
+    description: "Reports often go into a black box. There is no public, live map to track if a problem is actually being addressed or cleaned up.",
+    icon: <Flame className="w-8 h-8 text-orange-400" />
   }
 ];
 
-export default function NammaVoiceProblemSection() {
+export default function NammaHoodProblemSection() {
   return (
     <section className="py-32 relative" style={{ backgroundColor: 'var(--color-bg-secondary)' }}>
       <div className="container mx-auto px-6 max-w-5xl">
         <div className="text-center mb-20">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Local Issues Go <span style={{ color: 'var(--color-accent)' }}>Unnoticed.</span>
+            Civic Duty is <span style={{ color: 'var(--color-accent)' }}>Broken.</span>
           </h2>
           <p className="text-xl max-w-2xl mx-auto" style={{ color: 'var(--color-text-secondary)' }}>
-            Often, community issues go unresolved simply because there isn't an accessible, transparent, and centralized way for citizens to report them.
+            Traditional reporting platforms fail because they lack engagement, transparency, and a sense of community. We needed a radically different approach.
           </p>
         </div>
 

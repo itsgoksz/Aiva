@@ -2,7 +2,7 @@
  * Aiva — Staff Page
  * Matte Black OS aesthetic.
  * Premium team profile cards with weekly availability schedule.
- * Tailored for Snip & Streak Hair & Beauty Studio.
+ * Tailored for Hair & Care Hair & Beauty Studio.
  */
 
 import { useEffect, useState } from 'react';
@@ -20,67 +20,11 @@ export default function StaffPage() {
   useEffect(() => {
     staffAPI
       .list()
-      .then(setStaffList)
-      .catch(() => {
-        setStaffList([
-          {
-            id: 1,
-            business_id: 1,
-            name: 'Emily Rose',
-            role: 'Senior Stylist',
-            phone: '+1 (555) 111-2222',
-            email: 'emily.r@glowsalon.com',
-            availability: {
-              monday: { start: '09:00', end: '17:00', available: true },
-              tuesday: { start: '09:00', end: '17:00', available: true },
-              wednesday: { start: '09:00', end: '17:00', available: true },
-              thursday: { start: '09:00', end: '17:00', available: true },
-              friday: { start: '09:00', end: '17:00', available: true },
-              saturday: { start: '10:00', end: '16:00', available: true },
-              sunday: { start: '', end: '', available: false }
-            },
-            is_active: true,
-            created_at: ''
-          },
-          {
-            id: 2,
-            business_id: 1,
-            name: 'Alex Kim',
-            role: 'Senior Colorist',
-            phone: '+1 (555) 333-4444',
-            email: 'alex.k@glowsalon.com',
-            availability: {
-              monday: { start: '10:00', end: '18:00', available: true },
-              tuesday: { start: '10:00', end: '18:00', available: true },
-              wednesday: { start: '', end: '', available: false },
-              thursday: { start: '10:00', end: '18:00', available: true },
-              friday: { start: '10:00', end: '18:00', available: true },
-              saturday: { start: '10:00', end: '15:00', available: true },
-              sunday: { start: '', end: '', available: false }
-            },
-            is_active: true,
-            created_at: ''
-          },
-          {
-            id: 3,
-            business_id: 1,
-            name: 'Jordan Lee',
-            role: 'Nail Specialist',
-            phone: '+1 (555) 555-6666',
-            email: 'jordan.l@glowsalon.com',
-            availability: {
-              monday: { start: '09:00', end: '17:00', available: true },
-              tuesday: { start: '09:00', end: '17:00', available: true },
-              wednesday: { start: '09:00', end: '17:00', available: true },
-              thursday: { start: '', end: '', available: false },
-              friday: { start: '09:00', end: '17:00', available: true },
-              saturday: { start: '09:00', end: '14:00', available: true },
-              sunday: { start: '', end: '', available: false }
-            },
-            is_active: true,
-            created_at: ''
-          },
-        ]);
+      .then((data) => {
+        setStaffList(data);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch staff data:', error);
       })
       .finally(() => setLoading(false));
   }, []);

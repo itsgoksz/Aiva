@@ -45,7 +45,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }: SidebarProps) {
   const location = useLocation();
 
   useEffect(() => {
-    analyticsAPI.overview().then(setStats).catch(() => {});
+    analyticsAPI.overview().then(setStats).catch(() => { });
   }, []);
 
   const sidebarContent = (
@@ -53,7 +53,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }: SidebarProps) {
       {/* Brand Header */}
       <div className="px-5 pt-8 pb-6 flex flex-col relative z-10">
         <h1 className="text-[16px] font-black tracking-[0.2em] text-white uppercase leading-none pl-1.5">
-          Snip & Streak
+          Hair & Care
         </h1>
         <p className="text-[10px] font-medium text-white/30 mt-1.5 tracking-widest uppercase">Powered by Aiva</p>
       </div>
@@ -92,10 +92,9 @@ export default function Sidebar({ mobileOpen, setMobileOpen }: SidebarProps) {
               <div className={`relative z-10 transition-colors duration-200 ${isActive ? 'text-[#A66B8E]' : 'text-white/35 group-hover:text-white/70'}`}>
                 {item.icon && <item.icon size={16} strokeWidth={isActive ? 2.5 : 1.8} />}
               </div>
-              
-              <span className={`text-[13px] z-10 transition-colors duration-200 ${
-                isActive ? 'text-white font-semibold' : 'text-white/50 font-medium group-hover:text-white/70'
-              }`}>
+
+              <span className={`text-[13px] z-10 transition-colors duration-200 ${isActive ? 'text-white font-semibold' : 'text-white/50 font-medium group-hover:text-white/70'
+                }`}>
                 {item.label}
               </span>
             </NavLink>
@@ -158,9 +157,8 @@ export default function Sidebar({ mobileOpen, setMobileOpen }: SidebarProps) {
       </AnimatePresence>
 
       <div
-        className={`fixed inset-y-0 left-0 z-50 transform transition-transform duration-350 lg:hidden py-3 pl-3 ${
-          mobileOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 transform transition-transform duration-350 lg:hidden py-3 pl-3 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
       >
         <button
           onClick={() => setMobileOpen(false)}

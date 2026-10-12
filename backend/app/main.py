@@ -67,9 +67,11 @@ def create_app() -> FastAPI:
     # Mount webhook routes (no auth prefix)
     from app.api.webhooks.vapi import router as vapi_webhook_router
     from app.api.webhooks.retell import router as retell_webhook_router
+    from app.api.webhooks.elevenlabs import router as elevenlabs_webhook_router
 
     app.include_router(vapi_webhook_router, prefix="/api")
     app.include_router(retell_webhook_router, prefix="/api")
+    app.include_router(elevenlabs_webhook_router, prefix="/api")
 
     @app.get("/health")
     async def health_check():

@@ -87,7 +87,7 @@ export default function SettingsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
                 <div>
                   <label className={labelStyle}>Business Name</label>
-                  <input type="text" defaultValue="Snip & Streak" className={inputStyle} />
+                  <input type="text" defaultValue="Hair & Care" className={inputStyle} />
                 </div>
                 <div>
                   <label className={labelStyle}>Phone Number</label>
@@ -159,7 +159,7 @@ export default function SettingsPage() {
                   <label className={labelStyle}>Greeting Message</label>
                   <textarea
                     rows={3}
-                    defaultValue="Hello! Thank you for calling Snip & Streak. I am Aiva, how can I help you today?"
+                    defaultValue="Hello! Thank you for calling Hair & Care. I am Aiva, how can I help you today?"
                     className="w-full px-4 py-4 bg-[#120B0F] border border-white/10 rounded-2xl text-[14px] font-medium focus:outline-none focus:ring-1 focus:ring-[#A66B8E]/50 focus:border-[#A66B8E]/50 text-white transition-all placeholder:text-white/30 resize-none leading-relaxed shadow-inner"
                   />
                   <p className="text-[11px] text-white/40 font-semibold mt-2 flex items-center gap-1.5">

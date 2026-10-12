@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion';
-import { Megaphone, Map, Activity } from 'lucide-react';
+import { Target, Map, Trophy } from 'lucide-react';
 
-interface NammaVoiceHeroSectionProps {
+interface NammaHoodHeroSectionProps {
   onOpenDemo?: () => void;
 }
 
-export default function NammaVoiceHeroSection({ onOpenDemo }: NammaVoiceHeroSectionProps) {
+export default function NammaHoodHeroSection({ onOpenDemo }: NammaHoodHeroSectionProps) {
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden" style={{ backgroundColor: 'var(--color-bg-primary)' }}>
       {/* Background gradients */}
@@ -25,7 +25,7 @@ export default function NammaVoiceHeroSection({ onOpenDemo }: NammaVoiceHeroSect
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[var(--color-border)] mb-6 glass"
           >
             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-accent)' }}></span>
-            <span className="text-sm font-medium tracking-wide" style={{ color: 'var(--color-text-secondary)' }}>MEET NAMMA VOICE</span>
+            <span className="text-sm font-medium tracking-wide" style={{ color: 'var(--color-text-secondary)' }}>MEET NAMMA HOOD</span>
           </motion.div>
           
           <motion.h1
@@ -34,8 +34,8 @@ export default function NammaVoiceHeroSection({ onOpenDemo }: NammaVoiceHeroSect
             transition={{ duration: 0.8, delay: 0.1 }}
             className="text-5xl lg:text-7xl font-bold mb-6 tracking-tight leading-tight"
           >
-            Your Community's <br />
-            <span style={{ color: 'var(--color-accent)' }}>Real-Time Pulse</span>
+            Gamified <br />
+            <span style={{ color: 'var(--color-accent)' }}>Civic Action</span>
           </motion.h1>
           
           <motion.p
@@ -45,7 +45,7 @@ export default function NammaVoiceHeroSection({ onOpenDemo }: NammaVoiceHeroSect
             className="text-lg lg:text-xl max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed"
             style={{ color: 'var(--color-text-secondary)' }}
           >
-            Namma Voice is a community-driven issue reporting platform. It empowers citizens to actively identify, report, and track local civic problems in their neighborhoods, wrapped in a premium, highly immersive UI.
+            Namma Hood transforms local civic reporting into an engaging, gamified experience. Track local hotspots on the radar, navigate directly to cleanup sites, and earn XP to climb your neighborhood leaderboard.
           </motion.p>
           
           <motion.div
@@ -83,11 +83,11 @@ export default function NammaVoiceHeroSection({ onOpenDemo }: NammaVoiceHeroSect
               className="flex items-start gap-4 p-4 rounded-2xl border border-[var(--color-border)] bg-black/20"
             >
               <div className="p-3 rounded-full shrink-0" style={{ backgroundColor: 'var(--color-accent-subtle)' }}>
-                <Megaphone className="w-6 h-6" style={{ color: 'var(--color-accent)' }} />
+                <Map className="w-6 h-6" style={{ color: 'var(--color-accent)' }} />
               </div>
               <div>
-                <h4 className="font-semibold text-white mb-1">Frictionless Reporting</h4>
-                <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Instantly submit a neighborhood issue with a photo, exact location, and description.</p>
+                <h4 className="font-semibold text-white mb-1">Live Hotspot Radar</h4>
+                <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Instantly discover reported issues around you using the dark-themed, immersive neighborhood map.</p>
               </div>
             </motion.div>
 
@@ -99,11 +99,11 @@ export default function NammaVoiceHeroSection({ onOpenDemo }: NammaVoiceHeroSect
               className="flex items-start gap-4 p-4 rounded-2xl border border-[var(--color-border)] bg-black/20"
             >
               <div className="p-3 rounded-full shrink-0" style={{ backgroundColor: 'var(--color-accent-subtle)' }}>
-                <Map className="w-6 h-6" style={{ color: 'var(--color-accent)' }} />
+                <Target className="w-6 h-6" style={{ color: 'var(--color-accent)' }} />
               </div>
               <div>
-                <h4 className="font-semibold text-white mb-1">Community Wall</h4>
-                <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Scroll through a live feed of proximity-based problems reported by your neighbors.</p>
+                <h4 className="font-semibold text-white mb-1">Turn-by-Turn Navigation</h4>
+                <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Use built-in Walk or Drive modes to navigate directly to hotspots and resolve them together.</p>
               </div>
             </motion.div>
 
@@ -115,11 +115,11 @@ export default function NammaVoiceHeroSection({ onOpenDemo }: NammaVoiceHeroSect
               className="flex items-start gap-4 p-4 rounded-2xl border border-[var(--color-border)] bg-black/20"
             >
               <div className="p-3 rounded-full shrink-0" style={{ backgroundColor: 'var(--color-accent-subtle)' }}>
-                <Activity className="w-6 h-6" style={{ color: 'var(--color-accent)' }} />
+                <Trophy className="w-6 h-6" style={{ color: 'var(--color-accent)' }} />
               </div>
               <div>
-                <h4 className="font-semibold text-white mb-1">Lifecycle Tracking</h4>
-                <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Track issue states from "Unresolved" to "Resolved", celebrating community victories.</p>
+                <h4 className="font-semibold text-white mb-1">XP & Leaderboards</h4>
+                <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Earn XP, climb the neighborhood ranks, and become the ultimate Eco-Guardian.</p>
               </div>
             </motion.div>
 

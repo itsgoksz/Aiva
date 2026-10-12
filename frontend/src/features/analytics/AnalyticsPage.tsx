@@ -1,7 +1,7 @@
 /**
  * Aiva — Executive Analytics
  * Matte Black OS aesthetic.
- * Tailored for Snip & Streak Hair & Beauty Studio.
+ * Tailored for Hair & Care Hair & Beauty Studio.
  */
 
 import { useEffect, useState } from 'react';
@@ -111,7 +111,7 @@ export default function AnalyticsPage() {
       {/* Title */}
       <div>
         <h1 className="text-[24px] font-black tracking-tight text-white">Insights</h1>
-        <p className="text-[13px] text-white/40 mt-1 font-medium">Executive operational insight report for Snip & Streak</p>
+        <p className="text-[13px] text-white/40 mt-1 font-medium">Executive operational insight report for Hair & Care</p>
       </div>
 
       {/* Top Level Summary Cards */}

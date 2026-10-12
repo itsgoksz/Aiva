@@ -25,15 +25,26 @@ class Call(Base):
         DateTime(timezone=True), nullable=True
     )
     duration_seconds: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    outcome: Mapped[str] = mapped_column(
-        String(30), nullable=False, default="unknown"
-    )  # booked, rescheduled, cancelled, faq, transferred, missed, unknown
+    
+    # Event-driven fields
+    phone_number: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    customer_name: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    service_requested: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    staff_assigned: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    appointment_datetime: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    price: Mapped[float | None] = mapped_column(Integer, nullable=True) # or Float
+    
+    call_outcome: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    confidence: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    timeline_events: Mapped[str | None] = mapped_column(Text, nullable=True) # Store JSON string of events
+    
+    # Deprecated fields (kept for backward compatibility)
+    outcome: Mapped[str] = mapped_column(String(30), nullable=False, default="unknown")
     transcript: Mapped[str | None] = mapped_column(Text, nullable=True)
     recording_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     transfer_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
-    voice_provider: Mapped[str] = mapped_column(
-        String(20), nullable=False, default="vapi"
-    )  # vapi, retell
+    voice_provider: Mapped[str] = mapped_column(String(20), nullable=False, default="elevenlabs")
     provider_call_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

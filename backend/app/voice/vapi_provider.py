@@ -63,6 +63,38 @@ class VapiProvider(VoiceProvider):
                 "call_id": payload.get("call", {}).get("id"),
             }
 
+        elif message_type == "assistant-request":
+            call_obj = message.get("call", {})
+            customer_obj = call_obj.get("customer", {})
+            phone = customer_obj.get("number", "")
+            return {
+                "type": "assistant-request",
+                "customer_phone": phone
+            }
+
+        elif message_type == "tool-calls":
+            tool_calls = message.get("toolWithToolCallList", message.get("toolCalls", []))
+            if not tool_calls:
+                return {"type": "unknown", "raw": payload}
+                
+            tool_call_obj = tool_calls[0].get("toolCall", {})
+            function_call = tool_call_obj.get("function", {})
+            
+            import json
+            args = function_call.get("arguments", "{}")
+            if isinstance(args, str):
+                try:
+                    args = json.loads(args)
+                except Exception:
+                    args = {}
+                    
+            return {
+                "type": "function_call",
+                "function_name": function_call.get("name", ""),
+                "parameters": args,
+                "tool_call_id": tool_call_obj.get("id", "")
+            }
+
         elif message_type == "end-of-call-report":
             return {
                 "type": "call_ended",
@@ -78,21 +110,22 @@ class VapiProvider(VoiceProvider):
     async def create_assistant(self, business_config: dict) -> str:
         """Create a Vapi assistant with business-specific configuration."""
         assistant_config = {
-            "name": f"Aiva - {business_config.get('business_name', 'Assistant')}",
+            "name": f"Aiva - {business_config.get('business_name', 'Assistant')} (V11)",
             "model": {
-                "provider": "openai",
-                "model": "gpt-4o",
+                "provider": "groq",
+                "model": "llama3-8b-8192",
                 "systemPrompt": self._build_system_prompt(business_config),
             },
             "voice": {
                 "provider": "11labs",
-                "voiceId": "21m00Tcm4TlvDq8ikWAM",
+                "voiceId": "P7vsEyTOpZ6YUTulin8m",
             },
             "firstMessage": business_config.get(
                 "ai_greeting",
-                "Hello! Thank you for calling. How can I help you today?",
+                f"Hello! Thank you for calling {business_config.get('business_name', 'our business')}. Are you looking to book an appointment today, or do you have a question about our services?",
             ),
             "serverUrl": business_config.get("webhook_url", ""),
+            "serverMessages": ["function-call", "tool-calls", "status-update", "end-of-call-report"],
             "functions": self.get_tool_definitions(),
         }
 
@@ -104,6 +137,41 @@ class VapiProvider(VoiceProvider):
             )
             response.raise_for_status()
             return response.json().get("id", "")
+
+    async def allocate_phone_number(self, assistant_id: str) -> dict:
+        """
+        Find an available phone number in the Vapi account and link it to the assistant.
+        In a full production environment with KYC, this would call POST /phone-number/buy.
+        For now, we fetch the available numbers and link the first one.
+        """
+        async with httpx.AsyncClient() as client:
+            headers = {"Authorization": f"Bearer {self.api_key}"}
+            
+            # 1. Fetch all phone numbers
+            resp = await client.get(f"{self.BASE_URL}/phone-number", headers=headers)
+            resp.raise_for_status()
+            numbers = resp.json()
+            
+            if not numbers:
+                raise Exception("No phone numbers available in Vapi account. Please purchase one.")
+                
+            # Prefer an unassigned number, else just grab the first one
+            selected_number = next((n for n in numbers if not n.get("assistantId")), numbers[0])
+            phone_id = selected_number["id"]
+            phone_number = selected_number.get("number", "")
+            
+            # 2. Link it to the newly created assistant
+            patch_resp = await client.patch(
+                f"{self.BASE_URL}/phone-number/{phone_id}",
+                json={"assistantId": assistant_id},
+                headers=headers
+            )
+            patch_resp.raise_for_status()
+            
+            return {
+                "phone_id": phone_id,
+                "phone_number": phone_number
+            }
 
     def get_tool_definitions(self) -> list[dict]:
         """Vapi function/tool definitions for the AI assistant."""
@@ -197,6 +265,11 @@ class VapiProvider(VoiceProvider):
 
     def _build_system_prompt(self, config: dict) -> str:
         """Build the AI system prompt from business configuration."""
+        from datetime import datetime
+        now = datetime.now()
+        current_date_str = now.strftime('%Y-%m-%d')
+        current_day = now.strftime('%A')
+        
         hours = config.get("opening_hours", {})
         services = config.get("services", [])
         policies = config.get("policies", {})
@@ -209,7 +282,7 @@ class VapiProvider(VoiceProvider):
         ) if hours else "Standard business hours"
 
         services_text = "\n".join(
-            f"  - {s['name']}: {s.get('duration_minutes', 30)} min, ${s.get('price', 0)}"
+            f"  - {s['name']}: {s.get('duration_minutes', 30)} min, ₹{s.get('price', 0)}"
             for s in services
         ) if services else "Please check with staff"
 
@@ -221,6 +294,9 @@ class VapiProvider(VoiceProvider):
         return f"""You are an AI receptionist for {config.get('business_name', 'our business')}.
 You are friendly, professional, and efficient. Your goal is to help customers
 book appointments, answer questions, and provide excellent service.
+
+CURRENT DATE AND TIME:
+Today is {current_day}, {current_date_str}. Use this to determine relative dates like "tomorrow".
 
 BUSINESS HOURS:
 {hours_text}
@@ -240,4 +316,7 @@ RULES:
 4. If the customer wants to speak to a human, transfer immediately
 5. Never make up information — use the tools provided
 6. Keep responses concise and natural-sounding
+7. CRITICAL: Before checking availability or initiating a booking, you MUST ask for and verify the user's full name and phone number. Do not proceed with the booking flow until you have collected this information. NEVER make up a customer's name or phone number.
+8. CRITICAL: You MUST actually call the `book_appointment` tool/function to schedule the appointment. Do NOT hallucinate or say the appointment is booked until you have successfully executed the function and received a success response!
+9. ERROR HANDLING: If the `book_appointment` or `check_availability` function returns an error, times out, or fails to connect, apologize to the user and say: 'I'm having trouble connecting to our booking system right now, but let me take your details and a human will confirm your appointment shortly.' Do NOT hang up immediately.
 """

@@ -53,7 +53,7 @@ export default function DashboardPage() {
       
       Promise.all([
         analyticsAPI.overview(),
-        appointmentsAPI.list({ date_from: todayStr, date_to: todayStr }).catch(() => ({ items: [], total: 0 })),
+        appointmentsAPI.list({ date_from: todayStr }).catch(() => ({ items: [], total: 0 })),
         callsAPI.list({ page_size: 10 }).catch(() => ({ items: [], total: 0 }))
       ])
         .then(([statsData, apptsData, callsData]) => {
@@ -146,7 +146,11 @@ export default function DashboardPage() {
   // Derive dynamic stats from fetched timeline (strictly pending so they decrement when completed)
   const pendingAppointments = timeline.filter(e => e.type === 'appointment' && e.status !== 'completed');
   const todaysAppointmentsCount = pendingAppointments.length;
-  const todaysOccupancy = Math.round((todaysAppointmentsCount / Math.max(1, todaysAppointmentsCount + 4)) * 100);
+  
+  const todayOnlyAppointments = pendingAppointments.filter(e => {
+    return new Date(e.timestamp).toDateString() === new Date().toDateString();
+  });
+  const todaysOccupancy = Math.round((todayOnlyAppointments.length / Math.max(1, todayOnlyAppointments.length + 4)) * 100);
   
   // Pending AI bookings today
   const pendingAiBookingsCount = pendingAppointments.filter(e => e.raw?.source === 'ai' || e.title === 'Booking via AI' || e.title === 'Client Booking').length;
@@ -155,8 +159,8 @@ export default function DashboardPage() {
   const completedAppointments = timeline.filter(e => e.type === 'appointment' && e.status === 'completed');
   const completedAppointmentsCount = completedAppointments.length;
   
-  // Estimated Revenue dynamically derived from backend API using actual database service prices
-  const pendingEstimatedRevenue = stats?.estimated_revenue ?? 0;
+  // Estimated Revenue derived from ALL pending bookings
+  const pendingEstimatedRevenue = pendingAppointments.reduce((sum, e) => sum + Number(e.raw?.service?.price || 0), 0);
 
   // Helper to get open slots for a staff member (out of 9 total slots today)
   const getOpenSlots = (staffId: number) => {
@@ -234,20 +238,20 @@ export default function DashboardPage() {
       {/* ─── ROW 1: 4 METRICS CARDS ─── */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
         
-        {/* Card 1: Appointments Today */}
+        {/* Card 1: Upcoming Appointments */}
         <div className="bg-white/[0.03] backdrop-blur-2xl rounded-[20px] shadow-2xl border border-white/[0.08] p-6 relative overflow-hidden flex flex-col justify-between h-[150px]">
           <div className="flex items-start justify-between">
             <div className="w-12 h-12 rounded-[14px] bg-[#A66B8E]/10 flex items-center justify-center text-[#A66B8E]">
               <Calendar size={22} />
             </div>
             <div className="text-right">
-              <span className="text-white/40 font-bold text-[10px] uppercase tracking-widest">Appointments Today</span>
+              <span className="text-white/40 font-bold text-[10px] uppercase tracking-widest">Upcoming Appointments</span>
               <div className="text-[32px] font-black text-white leading-none mt-2">{todaysAppointmentsCount}</div>
             </div>
           </div>
           <div className="mt-auto">
             <span className="text-white/40 text-[12px] font-medium">
-              {earliestUpcoming ? `Next at ${earliestUpcoming.time}` : 'No more today'}
+              {earliestUpcoming ? `Next at ${format(earliestUpcoming.timestamp, 'MMM d, h:mm a')}` : 'No upcoming bookings'}
             </span>
           </div>
         </div>
@@ -277,7 +281,7 @@ export default function DashboardPage() {
               <Wallet size={22} />
             </div>
             <div className="text-right">
-              <span className="text-white/40 font-bold text-[10px] uppercase tracking-widest">Est. Revenue Today</span>
+              <span className="text-white/40 font-bold text-[10px] uppercase tracking-widest">Estimated Revenue</span>
               <div className="text-[32px] font-black text-white leading-none mt-2">
                 ₹{pendingEstimatedRevenue}
               </div>
@@ -303,7 +307,7 @@ export default function DashboardPage() {
           </div>
           <div className="mt-auto">
             <span className="text-white/40 text-[12px] font-medium">
-              {earliestUpcoming ? `At ${earliestUpcoming.time}` : 'No upcoming bookings'}
+              {earliestUpcoming ? `At ${format(earliestUpcoming.timestamp, 'MMM d, h:mm a')}` : 'No upcoming bookings'}
             </span>
           </div>
         </div>
@@ -377,12 +381,12 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Live Today */}
+        {/* Live Queue */}
         <div className="bg-white/[0.03] backdrop-blur-2xl rounded-[20px] shadow-2xl border border-white/[0.08] p-6 flex flex-col">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-[15px] font-bold text-white tracking-tight flex items-center gap-2">
-                Live Today
+                Live Queue
               </h3>
               <div className="flex items-center gap-1.5 mt-1">
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></div>
@@ -410,10 +414,10 @@ export default function DashboardPage() {
                     <CheckCircle2 size={20} />
                   </div>
                   <h4 className="text-[13px] font-bold text-white/70 mb-1">All clear</h4>
-                  <p className="text-[12px] text-white/40">No pending appointments today.</p>
+                  <p className="text-[12px] text-white/40">No pending appointments.</p>
                 </div>
               ) : (
-                timeline.filter(e => e.status !== 'completed').map((event) => (
+                timeline.filter(e => e.status !== 'completed').slice(0, 5).map((event) => (
                   <div key={event.id} className="grid grid-cols-12 items-center py-3 hover:bg-white/[0.02] rounded-xl transition-colors px-2 border border-transparent hover:border-white/[0.08]">
                     <div className="col-span-3 flex items-center gap-3">
                       <div className="w-8 h-8 rounded-[10px] bg-[#110B10] border border-white/10 text-white flex items-center justify-center font-bold text-[12px] shadow-sm">
@@ -428,7 +432,7 @@ export default function DashboardPage() {
                       {event.raw?.staff_member?.name || 'Aiva (AI)'}
                     </div>
                     <div className="col-span-2 text-[12px] font-medium text-white/50">
-                      {event.time}
+                      {format(event.timestamp, 'MMM d, h:mm a')}
                     </div>
                     <div className="col-span-1 flex justify-center">
                       <div className="group relative">

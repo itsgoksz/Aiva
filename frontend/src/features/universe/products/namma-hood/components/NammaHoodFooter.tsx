@@ -1,4 +1,4 @@
-export default function NammaVoiceFooter() {
+export default function NammaHoodFooter() {
   return (
     <footer className="py-12 border-t border-[var(--color-border)]" style={{ backgroundColor: 'var(--color-bg-secondary)' }}>
       <div className="container mx-auto px-6 max-w-7xl">
@@ -7,7 +7,7 @@ export default function NammaVoiceFooter() {
             <div className="w-6 h-6 rounded flex items-center justify-center font-bold text-xs" style={{ background: 'var(--color-text-secondary)', color: 'var(--color-bg-primary)' }}>
               NV
             </div>
-            <span className="font-bold tracking-tight text-lg" style={{ color: 'var(--color-text-secondary)' }}>Namma Voice</span>
+            <span className="font-bold tracking-tight text-lg" style={{ color: 'var(--color-text-secondary)' }}>Namma Hood</span>
           </div>
           
           <div className="flex gap-8 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
@@ -17,7 +17,7 @@ export default function NammaVoiceFooter() {
           </div>
           
           <div className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
-            &copy; {new Date().getFullYear()} Namma Voice Inc. All rights reserved.
+            &copy; {new Date().getFullYear()} Namma Hood Inc. All rights reserved.
           </div>
         </div>
       </div>

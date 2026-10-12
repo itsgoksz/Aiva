@@ -17,7 +17,14 @@ import {
   Play,
   Pause,
   AlertTriangle,
-  Sparkles
+  Sparkles,
+  User,
+  Scissors,
+  CalendarDays,
+  IndianRupee,
+  CheckCircle2,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { callsAPI } from '../../lib/api';
 import type { Call } from '../../types';
@@ -26,13 +33,33 @@ const outcomeConfig: Record<
   string,
   { label: string; icon: React.ElementType; bg: string; text: string; border: string }
 > = {
-  booked: { label: 'Booked', icon: Phone, bg: 'bg-[#A66B8E]/10', text: 'text-[#A66B8E]', border: 'border-[#A66B8E]/20' },
-  rescheduled: { label: 'Rescheduled', icon: PhoneIncoming, bg: 'bg-blue-500/10', text: 'text-blue-400', border: 'border-blue-500/20' },
-  cancelled: { label: 'Cancelled', icon: Phone, bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/20' },
-  faq: { label: 'FAQ', icon: Bot, bg: 'bg-purple-500/10', text: 'text-purple-400', border: 'border-purple-500/20' },
-  transferred: { label: 'Transferred', icon: PhoneForwarded, bg: 'bg-indigo-500/10', text: 'text-indigo-400', border: 'border-indigo-500/20' },
-  missed: { label: 'Missed', icon: PhoneMissed, bg: 'bg-rose-500/10', text: 'text-rose-400', border: 'border-rose-500/20' },
-  unknown: { label: 'Unknown', icon: Phone, bg: 'bg-white/5', text: 'text-white/40', border: 'border-white/10' },
+  BOOKED: { label: 'Booked', icon: Phone, bg: 'bg-[#A66B8E]/10', text: 'text-[#A66B8E]', border: 'border-[#A66B8E]/20' },
+  RESCHEDULED: { label: 'Rescheduled', icon: PhoneIncoming, bg: 'bg-blue-500/10', text: 'text-blue-400', border: 'border-blue-500/20' },
+  CANCELLED: { label: 'Cancelled', icon: Phone, bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/20' },
+  PRICE_INQUIRY: { label: 'Price Inquiry', icon: IndianRupee, bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/20' },
+  SERVICE_INQUIRY: { label: 'Service Inquiry', icon: Scissors, bg: 'bg-purple-500/10', text: 'text-purple-400', border: 'border-purple-500/20' },
+  TRANSFERRED: { label: 'Transferred', icon: PhoneForwarded, bg: 'bg-indigo-500/10', text: 'text-indigo-400', border: 'border-indigo-500/20' },
+  VOICEMAIL: { label: 'Voicemail', icon: Bot, bg: 'bg-gray-500/10', text: 'text-gray-400', border: 'border-gray-500/20' },
+  NO_ACTION: { label: 'No Action', icon: AlertTriangle, bg: 'bg-gray-500/10', text: 'text-gray-400', border: 'border-gray-500/20' },
+  FOLLOW_UP_REQUIRED: { label: 'Follow Up', icon: PhoneIncoming, bg: 'bg-rose-500/10', text: 'text-rose-400', border: 'border-rose-500/20' },
+  UNKNOWN: { label: 'Unknown', icon: Phone, bg: 'bg-white/5', text: 'text-white/40', border: 'border-white/10' },
+};
+
+// Fallback for legacy outcomes
+const legacyOutcomeMap: Record<string, string> = {
+  booked: 'BOOKED',
+  rescheduled: 'RESCHEDULED',
+  cancelled: 'CANCELLED',
+  faq: 'SERVICE_INQUIRY',
+  transferred: 'TRANSFERRED',
+  missed: 'VOICEMAIL',
+  unknown: 'UNKNOWN'
+};
+
+const confidenceColors = {
+  HIGH: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20',
+  MEDIUM: 'text-amber-400 bg-amber-400/10 border-amber-400/20',
+  LOW: 'text-rose-400 bg-rose-400/10 border-rose-400/20'
 };
 
 export default function CallsPage() {
@@ -41,6 +68,7 @@ export default function CallsPage() {
   const [selectedCall, setSelectedCall] = useState<Call | null>(null);
   const [filter, setFilter] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showTranscript, setShowTranscript] = useState(false);
 
   useEffect(() => {
     loadCalls();
@@ -55,41 +83,33 @@ export default function CallsPage() {
         setSelectedCall(data.items[0]);
       }
     } catch {
+      // Provide mock data if API fails
       const mockCalls: Call[] = [
         {
           id: 1, business_id: 1, customer_id: 1,
-          call_start: '2026-06-02T09:15:00Z', call_end: '2026-06-02T09:18:30Z',
+          call_start: new Date().toISOString(), call_end: new Date().toISOString(),
           duration_seconds: 210, outcome: 'booked',
-          transcript: 'Customer: Hi, I\'d like to book a haircut and styling for tomorrow afternoon if possible.\n\nAI: I\'d be happy to assist with your booking! Let me check availability at Snip & Streak for tomorrow. We have slots at 2:00 PM and 4:30 PM with Emily Carter. Which time works best for you?\n\nCustomer: 2 PM works perfectly. Can you assign it to Emily?\n\nAI: Excellent! I\'ve booked your haircut and styling tomorrow at 2:00 PM with Emily Carter. A confirmation SMS is on its way to your number. Is there anything else you need?\n\nCustomer: That is all. Thank you!\n\nAI: You\'re welcome, Sarah! We look forward to seeing you tomorrow. Have a beautiful day!',
-          recording_url: 'dummy_url', transfer_reason: null, voice_provider: 'vapi', provider_call_id: 'vapi_123',
-          customer_name: 'Sarah Johnson', created_at: '2026-06-02T09:15:00Z'
-        },
-        {
-          id: 2, business_id: 1, customer_id: 2,
-          call_start: '2026-06-02T10:30:00Z', call_end: '2026-06-02T10:31:00Z',
-          duration_seconds: 60, outcome: 'faq',
-          transcript: 'Customer: Hi, are you guys located near the Metro station in JP Nagar?\n\nAI: Yes, we are! Snip & Streak is located on the 2nd Phase of JP Nagar, just a 5-minute walk from the JP Nagar Metro Station, right opposite the central park.\n\nCustomer: Great, thank you so much.\n\nAI: You\'re welcome! Feel free to call back if you need help scheduling an appointment. Goodbye!',
-          recording_url: 'dummy_url', transfer_reason: null, voice_provider: 'vapi', provider_call_id: 'vapi_124',
-          customer_name: 'Mike Chen', created_at: '2026-06-02T10:30:00Z'
-        },
-        {
-          id: 3, business_id: 1, customer_id: 3,
-          call_start: '2026-06-02T14:00:00Z', call_end: '2026-06-02T14:02:30Z',
-          duration_seconds: 150, outcome: 'transferred',
-          transcript: 'Customer: Hi, I need to reschedule my bridal package trial because of an urgent travel schedule. Can I talk to Priya?\n\nAI: I understand completely. Rescheduling bridal packages requires staff validation. Let me transfer you directly to Priya Sharma to adjust your slot right away. Please hold.',
-          recording_url: 'dummy_url', transfer_reason: 'Client requested bridal package adjustment and transfer to Priya.',
-          voice_provider: 'vapi', provider_call_id: 'vapi_126', customer_name: 'Emma Parker', created_at: '2026-06-02T14:00:00Z'
-        },
-        {
-          id: 4, business_id: 1, customer_id: null,
-          call_start: '2026-06-02T11:45:00Z', call_end: '2026-06-02T11:45:15Z',
-          duration_seconds: 15, outcome: 'missed', transcript: null, recording_url: null,
-          transfer_reason: null, voice_provider: 'vapi', provider_call_id: 'vapi_125',
-          customer_name: null, created_at: '2026-06-02T11:45:00Z'
+          call_outcome: 'BOOKED', confidence: 'HIGH',
+          customer_name: 'Rahul Sharma', phone_number: '+919876543210',
+          service_requested: 'Haircut & Styling', staff_assigned: 'Priya',
+          appointment_datetime: new Date(Date.now() + 86400000).toISOString(),
+          price: 1500,
+          summary: 'Rahul booked a Haircut & Styling appointment with Priya for tomorrow.',
+          timeline_events: JSON.stringify([
+            { timestamp: new Date(Date.now() - 210000).toISOString(), event: 'incoming_call', data: {} },
+            { timestamp: new Date(Date.now() - 190000).toISOString(), event: 'tool_call_check_availability', data: { service: 'Haircut', date: 'tomorrow' } },
+            { timestamp: new Date(Date.now() - 180000).toISOString(), event: 'tool_result_check_availability', data: { success: true, slots: ['2:00 PM', '4:30 PM'] } },
+            { timestamp: new Date(Date.now() - 60000).toISOString(), event: 'tool_call_book_appointment', data: { service: 'Haircut', date: 'tomorrow', time: '2:00 PM' } },
+            { timestamp: new Date(Date.now() - 50000).toISOString(), event: 'tool_result_book_appointment', data: { success: true, appointment_id: 101 } },
+            { timestamp: new Date(Date.now() - 10000).toISOString(), event: 'sms_sent', data: { status: 'delivered' } },
+          ]),
+          transcript: 'Customer: Hi I\'d like a haircut tomorrow.\n\nAI: Checking availability... I have 2 PM and 4:30 PM with Priya.\n\nCustomer: 2 PM works.',
+          recording_url: 'dummy_url', transfer_reason: null, voice_provider: 'elevenlabs', provider_call_id: '123',
+          created_at: new Date().toISOString()
         }
       ];
-      setCalls(mockCalls);
-      setSelectedCall(mockCalls[0]);
+      setCalls(mockCalls as any);
+      setSelectedCall(mockCalls[0] as any);
     } finally {
       setLoading(false);
     }
@@ -102,35 +122,73 @@ export default function CallsPage() {
     return `${min}:${sec.toString().padStart(2, '0')}`;
   };
 
-  const getCallMetadata = (call: Call) => {
-    if (call.outcome === 'booked') {
-      return { intent: 'Appointment Booking', sentiment: 'Friendly / Satisfied', action: 'Aiva scheduled haircut & styling for tomorrow at 2:00 PM. Sent confirmation via WhatsApp.' };
+  const getNormalizedOutcome = (call: Call) => {
+    const raw = call.call_outcome || legacyOutcomeMap[call.outcome] || 'UNKNOWN';
+    return outcomeConfig[raw] || outcomeConfig.UNKNOWN;
+  };
+
+  const renderTimelineEvent = (event: any, index: number) => {
+    const isToolCall = event.event.startsWith('tool_call_');
+    const isToolResult = event.event.startsWith('tool_result_');
+    
+    let icon = <CheckCircle2 size={12} />;
+    let label = event.event;
+    let color = 'text-white/40';
+    
+    if (event.event === 'incoming_call') {
+      icon = <PhoneIncoming size={12} />;
+      label = 'Incoming Call';
+      color = 'text-blue-400';
+    } else if (event.event === 'tool_result_book_appointment') {
+      icon = <CheckCircle2 size={12} />;
+      label = 'Appointment Booked';
+      color = 'text-[#A66B8E]';
+    } else if (event.event === 'tool_call_check_availability') {
+      icon = <CalendarDays size={12} />;
+      label = 'Availability Checked';
+      color = 'text-emerald-400';
+    } else if (event.event === 'sms_sent') {
+      icon = <Bot size={12} />;
+      label = 'SMS Confirmation Sent';
+      color = 'text-purple-400';
+    } else if (isToolCall) {
+      icon = <Bot size={12} />;
+      label = `AI Action: ${event.event.replace('tool_call_', '').replace(/_/g, ' ')}`;
+    } else if (isToolResult) {
+      icon = <CheckCircle2 size={12} />;
+      label = `Action Completed: ${event.event.replace('tool_result_', '').replace(/_/g, ' ')}`;
     }
-    if (call.outcome === 'faq') {
-      return { intent: 'Location Inquiry', sentiment: 'Inquiring / Neutral', action: 'Aiva answered Metro proximity directions and parking details automatically.' };
-    }
-    if (call.outcome === 'transferred') {
-      return { intent: 'Bridal Package Rescheduling', sentiment: 'Anxious / Urgent', action: 'Transferred directly to Priya Sharma for custom package scheduling.' };
-    }
-    return { intent: 'Inquiry Abandoned', sentiment: 'Unknown', action: 'Call ended before transaction commenced.' };
+
+    return (
+      <div key={index} className="flex gap-4 relative">
+        <div className="flex flex-col items-center">
+          <div className={`w-6 h-6 rounded-full bg-white/[0.05] border border-white/[0.1] flex items-center justify-center z-10 ${color}`}>
+            {icon}
+          </div>
+          {/* Vertical line connector */}
+          <div className="w-[1px] h-full bg-white/[0.05] absolute top-6 bottom-[-16px]" />
+        </div>
+        <div className="pb-6 pt-1">
+          <p className="text-[11px] font-bold text-white tracking-wide capitalize">{label}</p>
+          <span className="text-[9px] text-white/30 font-medium">{new Date(event.timestamp).toLocaleTimeString()}</span>
+        </div>
+      </div>
+    );
   };
 
   return (
     <div className="flex flex-col gap-5 pb-12 min-h-[calc(100vh-8rem)]">
-      {/* Title */}
       <div>
         <h1 className="text-[24px] font-black text-white tracking-tight">AI Calls</h1>
-        <p className="text-[13px] mt-1 text-white/40 font-medium">Review Aiva receptionist call recordings, transcripts, and customer sentiment</p>
+        <p className="text-[13px] mt-1 text-white/40 font-medium">Review deterministic business outcomes, summaries, and event timelines</p>
       </div>
 
-      {/* Split-pane grid */}
       <div className="grid grid-cols-1 lg:grid-cols-10 gap-5 items-stretch">
         
         {/* Left Side: Calls List */}
         <div className="lg:col-span-4 space-y-3">
-          {/* Outcome Filter */}
           <div className="flex flex-wrap gap-1.5 bg-white/[0.03] backdrop-blur-2xl p-2 border border-white/[0.08] rounded-xl">
-            {['', 'booked', 'faq', 'transferred', 'missed'].map((f) => (
+            {['', 'BOOKED', 'SERVICE_INQUIRY', 'PRICE_INQUIRY', 'VOICEMAIL'].map((f) => (
               <button
                 key={f}
                 onClick={() => setFilter(f)}
@@ -145,11 +203,10 @@ export default function CallsPage() {
             ))}
           </div>
 
-          {/* Scrollable list */}
-          <div className="space-y-2 max-h-[560px] overflow-y-auto pr-1">
+          <div className="space-y-2 max-h-[560px] overflow-y-auto pr-1 custom-scrollbar">
             {loading ? (
               Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="h-16 bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] rounded-lg animate-shimmer" />
+                <div key={i} className="h-20 bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] rounded-lg animate-pulse" />
               ))
             ) : calls.length === 0 ? (
               <div className="text-center py-12 bg-white/[0.03] backdrop-blur-2xl rounded-xl border border-white/[0.08]">
@@ -157,7 +214,7 @@ export default function CallsPage() {
               </div>
             ) : (
               calls.map((call) => {
-                const config = outcomeConfig[call.outcome] || outcomeConfig.unknown;
+                const config = getNormalizedOutcome(call);
                 const isSelected = selectedCall?.id === call.id;
 
                 return (
@@ -166,26 +223,32 @@ export default function CallsPage() {
                     onClick={() => setSelectedCall(call)}
                     className={`p-3.5 border rounded-xl cursor-pointer transition-all flex items-center gap-3 ${
                       isSelected
-                        ? 'bg-white/[0.03] backdrop-blur-2xl border-[#A66B8E]/30'
-                        : 'bg-white/[0.03] backdrop-blur-2xl border-white/[0.08] hover:border-white/10'
+                        ? 'bg-white/[0.05] backdrop-blur-2xl border-[#A66B8E]/30'
+                        : 'bg-white/[0.02] backdrop-blur-2xl border-white/[0.08] hover:border-white/15'
                     }`}
                   >
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center border ${config.bg} ${config.text} ${config.border} flex-shrink-0`}>
-                      <config.icon size={14} />
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${config.bg} ${config.text} ${config.border} flex-shrink-0`}>
+                      <config.icon size={16} />
                     </div>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-bold text-[13px] text-white truncate">
-                          {call.customer_name || 'Unknown Caller'}
+                        <h4 className="font-bold text-[14px] text-white truncate">
+                          {call.customer_name || call.phone_number || 'Unknown Caller'}
                         </h4>
-                        <span className="text-[9px] text-white/30 font-semibold">
+                        <span className="text-[10px] text-white/40 font-semibold">
                           {new Date(call.call_start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between mt-1 text-[9px] text-white/30 font-bold uppercase tracking-widest">
-                        <span>{config.label}</span>
-                        <span>{new Date(call.call_start).toLocaleDateString([], { month: 'short', day: 'numeric' })}</span>
+                      <div className="flex items-center justify-between mt-1.5">
+                        <span className={`text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-md border ${config.bg} ${config.text} ${config.border}`}>
+                          {config.label}
+                        </span>
+                        {call.confidence && (
+                          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md border ${confidenceColors[call.confidence as keyof typeof confidenceColors]}`}>
+                            {call.confidence} CONFIDENCE
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -195,145 +258,145 @@ export default function CallsPage() {
           </div>
         </div>
 
-        {/* Right Side: Transcript & Intel Panel */}
+        {/* Right Side: Business Summary & Timeline */}
         <div className="lg:col-span-6">
           <AnimatePresence mode="wait">
             {selectedCall ? (
               <motion.div
                 key={selectedCall.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
-                className="bg-white/[0.03] backdrop-blur-2xl rounded-2xl border border-white/[0.08] shadow-2xl overflow-hidden flex flex-col h-full min-h-[520px] justify-between"
+                className="bg-[#0A0A0A] rounded-2xl border border-white/[0.08] shadow-2xl overflow-hidden flex flex-col h-full min-h-[520px]"
               >
-                
                 {/* Header */}
-                <div className="p-5 border-b border-white/[0.08] flex items-center justify-between gap-4">
+                <div className="p-5 border-b border-white/[0.08] flex items-center justify-between bg-white/[0.02]">
                   <div>
-                    <h3 className="font-bold text-[14px] text-white">{selectedCall.customer_name || 'Unknown Caller'}</h3>
-                    <p className="text-[9px] font-bold text-white/25 uppercase tracking-widest mt-0.5 flex items-center gap-2">
+                    <h3 className="font-bold text-[18px] text-white flex items-center gap-2">
+                      {selectedCall.customer_name || 'Unknown Caller'}
+                      {selectedCall.phone_number && <span className="text-white/30 text-sm font-medium">({selectedCall.phone_number})</span>}
+                    </h3>
+                    <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest mt-1 flex items-center gap-2">
                       <span>Call #{selectedCall.id}</span>
                       <span>·</span>
-                      <span className="flex items-center gap-0.5">
+                      <span className="flex items-center gap-1">
                         <Clock size={10} /> {formatDuration(selectedCall.duration_seconds)}
                       </span>
+                      <span>·</span>
+                      <span>{new Date(selectedCall.call_start).toLocaleDateString()}</span>
                     </p>
                   </div>
-                  <span className={`px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase tracking-widest border ${
-                    outcomeConfig[selectedCall.outcome]?.bg
-                  } ${outcomeConfig[selectedCall.outcome]?.text} ${outcomeConfig[selectedCall.outcome]?.border}`}>
-                    {selectedCall.outcome}
+                  <span className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border ${
+                    getNormalizedOutcome(selectedCall).bg
+                  } ${getNormalizedOutcome(selectedCall).text} ${getNormalizedOutcome(selectedCall).border}`}>
+                    {getNormalizedOutcome(selectedCall).label}
                   </span>
                 </div>
 
-                {/* Sub Split: Chat + Intel */}
-                <div className="flex-1 grid grid-cols-1 md:grid-cols-10 divide-y md:divide-y-0 md:divide-x divide-white/5 items-stretch overflow-hidden">
+                <div className="flex-1 overflow-y-auto p-6 space-y-8">
                   
-                  {/* Chat */}
-                  <div className="md:col-span-6 p-5 overflow-y-auto max-h-[340px] space-y-3">
-                    {selectedCall.transcript ? (
-                      selectedCall.transcript.split('\n\n').map((block, idx) => {
-                        const isAiva = block.startsWith('AI:');
-                        return (
-                          <div key={idx} className={`flex ${isAiva ? 'justify-end' : 'justify-start'}`}>
-                            <div className="max-w-[85%] flex flex-col gap-1">
-                              <span className={`text-[8px] font-bold uppercase tracking-widest px-1 ${
-                                isAiva ? 'text-[#A66B8E] text-right' : 'text-white/30'
-                              }`}>
-                                {isAiva ? 'Aiva AI' : 'Customer'}
-                              </span>
-                              <div
-                                className={`px-3 py-2 rounded-2xl text-[12px] leading-relaxed border ${
-                                  isAiva
-                                    ? 'bg-[#A66B8E]/10 text-white border-[#A66B8E]/10 rounded-tr-none'
-                                    : 'bg-[#120B0F] text-white/70 border-white/[0.08] rounded-tl-none'
-                                }`}
-                              >
-                                {block.replace(/^(AI|Customer):\s*/, '')}
-                              </div>
-                            </div>
+                  {/* Business Summary Card */}
+                  <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-5 space-y-4">
+                    <div className="flex items-start justify-between">
+                      <h4 className="text-[10px] font-black text-white/50 uppercase tracking-widest flex items-center gap-2">
+                        <Sparkles size={12} className="text-[#A66B8E]" /> Deterministic Outcome Summary
+                      </h4>
+                      {selectedCall.confidence && (
+                        <span className={`text-[9px] font-bold px-2 py-0.5 rounded border ${confidenceColors[selectedCall.confidence as keyof typeof confidenceColors]}`}>
+                          {selectedCall.confidence} CONFIDENCE
+                        </span>
+                      )}
+                    </div>
+                    
+                    <p className="text-[15px] font-medium text-white leading-relaxed">
+                      {selectedCall.summary || 'Call ended before any structured outcome was determined.'}
+                    </p>
+
+                    {/* Structured Data Grid */}
+                    {(selectedCall.service_requested || selectedCall.appointment_datetime) && (
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-4 border-t border-white/[0.08]">
+                        {selectedCall.service_requested && (
+                          <div>
+                            <span className="text-[9px] text-white/30 font-bold uppercase tracking-widest flex items-center gap-1"><Scissors size={10}/> Service</span>
+                            <span className="text-xs text-white font-semibold mt-1 block">{selectedCall.service_requested}</span>
                           </div>
-                        );
-                      })
-                    ) : (
-                      <div className="h-full flex items-center justify-center text-center">
-                        <div className="space-y-2">
-                          <AlertTriangle size={20} className="text-rose-400 mx-auto" />
-                          <p className="text-xs text-white/40 font-semibold">No audio transcript recorded for this call.</p>
-                        </div>
+                        )}
+                        {selectedCall.staff_assigned && (
+                          <div>
+                            <span className="text-[9px] text-white/30 font-bold uppercase tracking-widest flex items-center gap-1"><User size={10}/> Staff</span>
+                            <span className="text-xs text-white font-semibold mt-1 block">{selectedCall.staff_assigned}</span>
+                          </div>
+                        )}
+                        {selectedCall.appointment_datetime && (
+                          <div>
+                            <span className="text-[9px] text-white/30 font-bold uppercase tracking-widest flex items-center gap-1"><CalendarDays size={10}/> Time</span>
+                            <span className="text-xs text-white font-semibold mt-1 block">{new Date(selectedCall.appointment_datetime).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</span>
+                          </div>
+                        )}
+                        {selectedCall.price && (
+                          <div>
+                            <span className="text-[9px] text-white/30 font-bold uppercase tracking-widest flex items-center gap-1"><IndianRupee size={10}/> Price</span>
+                            <span className="text-xs text-emerald-400 font-semibold mt-1 block">₹{selectedCall.price}</span>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
 
-                  {/* Intel Panel */}
-                  <div className="md:col-span-4 p-5 bg-[#120B0F] space-y-5 overflow-y-auto">
-                    <div>
-                      <span className="block text-[8px] text-white/25 font-bold uppercase tracking-widest">Customer Intent</span>
-                      <span className="text-[12px] font-bold text-white mt-1 block">
-                        {getCallMetadata(selectedCall).intent}
-                      </span>
+                  {/* Event Timeline */}
+                  <div>
+                    <h4 className="text-[10px] font-black text-white/50 uppercase tracking-widest mb-6 px-1">
+                      Call Event Timeline
+                    </h4>
+                    <div className="px-3">
+                      {selectedCall.timeline_events ? (
+                        (() => {
+                          try {
+                            const events = JSON.parse(selectedCall.timeline_events);
+                            return events.map((event: any, i: number) => renderTimelineEvent(event, i));
+                          } catch {
+                            return <p className="text-xs text-white/30">Failed to parse timeline events.</p>;
+                          }
+                        })()
+                      ) : (
+                        <p className="text-xs text-white/30 italic">No timeline events recorded.</p>
+                      )}
                     </div>
-
-                    <div>
-                      <span className="block text-[8px] text-white/25 font-bold uppercase tracking-widest">Sentiment Analysis</span>
-                      <span className="text-[12px] font-bold text-[#A66B8E] mt-1 block flex items-center gap-1">
-                        <Sparkles size={11} /> {getCallMetadata(selectedCall).sentiment}
-                      </span>
-                    </div>
-
-                    <div>
-                      <span className="block text-[8px] text-white/25 font-bold uppercase tracking-widest">Operational Action</span>
-                      <p className="text-[11px] text-white/40 mt-1.5 font-medium leading-relaxed">
-                        {getCallMetadata(selectedCall).action}
-                      </p>
-                    </div>
-
-                    {selectedCall.transfer_reason && (
-                      <div className="pt-3 border-t border-white/[0.08]">
-                        <span className="block text-[8px] text-rose-400 font-bold uppercase tracking-widest">Escalation Reason</span>
-                        <p className="text-[11px] text-white/40 mt-1 font-bold italic leading-relaxed">
-                          "{selectedCall.transfer_reason}"
-                        </p>
-                      </div>
-                    )}
                   </div>
+
+                  {/* Transcript Toggle */}
+                  {selectedCall.transcript && (
+                    <div className="border border-white/[0.08] rounded-xl overflow-hidden bg-white/[0.02]">
+                      <button 
+                        onClick={() => setShowTranscript(!showTranscript)}
+                        className="w-full p-4 flex items-center justify-between text-[11px] font-bold text-white/50 uppercase tracking-widest hover:bg-white/[0.02] transition-colors"
+                      >
+                        <span className="flex items-center gap-2"><Bot size={12}/> Raw Audit Transcript</span>
+                        {showTranscript ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      </button>
+                      
+                      <AnimatePresence>
+                        {showTranscript && (
+                          <motion.div 
+                            initial={{ height: 0 }}
+                            animate={{ height: 'auto' }}
+                            exit={{ height: 0 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="p-5 pt-0 text-[12px] text-white/60 leading-relaxed font-mono border-t border-white/[0.05] max-h-[300px] overflow-y-auto whitespace-pre-wrap">
+                              {selectedCall.transcript}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  )}
+
                 </div>
-
-                {/* Footer audio player */}
-                {selectedCall.recording_url && (
-                  <div className="p-4 border-t border-white/[0.08] flex items-center justify-between gap-4">
-                    <button
-                      onClick={() => setIsPlaying(!isPlaying)}
-                      className="w-8 h-8 rounded-full bg-[#A66B8E] hover:bg-[#B882A2] text-gray-900 flex items-center justify-center transition-all cursor-pointer"
-                    >
-                      {isPlaying ? <Pause size={13} /> : <Play size={13} className="ml-0.5" />}
-                    </button>
-                    <div className="flex-1 flex items-center gap-2">
-                      <Volume2 size={12} className="text-white/30" />
-                      <div className="h-4 flex-1 flex items-center gap-[3px]">
-                        {Array.from({ length: 48 }).map((_, i) => (
-                          <div
-                            key={i}
-                            className={`w-[2px] rounded-full transition-all ${
-                              isPlaying ? 'bg-[#A66B8E]' : 'bg-white/10'
-                            }`}
-                            style={{
-                              height: `${Math.max(10, Math.sin(i * 0.5) * 100 * (isPlaying ? Math.random() : 0.2))}%`,
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-bold text-white/25">
-                      {isPlaying ? '0:24' : '0:00'} / {formatDuration(selectedCall.duration_seconds)}
-                    </span>
-                  </div>
-                )}
-
               </motion.div>
             ) : (
               <div className="bg-white/[0.03] backdrop-blur-2xl rounded-2xl border border-white/[0.08] p-8 h-full flex items-center justify-center text-center text-white/30 text-xs font-semibold">
-                Select a call from the list to view dialogue insights.
+                Select a call to view deterministic outcomes and timeline.
               </div>
             )}
           </AnimatePresence>

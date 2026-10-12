@@ -46,6 +46,15 @@ class Business(Base):
     policies: Mapped[dict | None] = mapped_column(
         JSON, nullable=True, default=dict
     )
+    vapi_assistant_id: Mapped[str | None] = mapped_column(
+        String(255), nullable=True, comment="Vapi Assistant ID for this business"
+    )
+    vapi_phone_id: Mapped[str | None] = mapped_column(
+        String(255), nullable=True, comment="Vapi Phone Number ID assigned to this business"
+    )
+    vapi_phone_number: Mapped[str | None] = mapped_column(
+        String(50), nullable=True, comment="Actual Vapi phone number (e.g. +91...) assigned"
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),

@@ -1,25 +1,25 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import NammaVoiceHeroSection from './namma-voice/components/NammaVoiceHeroSection';
-import NammaVoiceProblemSection from './namma-voice/components/NammaVoiceProblemSection';
-import NammaVoiceFeaturesSection from './namma-voice/components/NammaVoiceFeaturesSection';
-import NammaVoiceFinalCTA from './namma-voice/components/NammaVoiceFinalCTA';
-import NammaVoiceFooter from './namma-voice/components/NammaVoiceFooter';
+import NammaHoodHeroSection from './namma-hood/components/NammaHoodHeroSection';
+import NammaHoodProblemSection from './namma-hood/components/NammaHoodProblemSection';
+import NammaHoodFeaturesSection from './namma-hood/components/NammaHoodFeaturesSection';
+import NammaHoodFinalCTA from './namma-hood/components/NammaHoodFinalCTA';
+import NammaHoodFooter from './namma-hood/components/NammaHoodFooter';
 import ParticleField from '../components/ParticleField';
 
-export default function NammaVoiceProductPage() {
+export default function NammaHoodProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const progressRef = useRef(1); // Set to 1 to show the fully formed Constellation/Solar System
-  const activeProductIndexRef = useRef<number | null>(5); // Namma Voice is index 5
+  const activeProductIndexRef = useRef<number | null>(5); // Namma Hood is index 5
 
   // Scroll to top on mount
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    // Override global colors for Namma Voice (Teal)
-    document.documentElement.style.setProperty('--color-accent', '#00D4B2');
-    document.documentElement.style.setProperty('--color-accent-subtle', 'rgba(0, 212, 178, 0.15)');
+    // Override global colors for Namma Hood (Emerald Green / Rose Red Accent)
+    document.documentElement.style.setProperty('--color-accent', '#10b981'); // Emerald Green
+    document.documentElement.style.setProperty('--color-accent-subtle', 'rgba(16, 185, 129, 0.15)');
     document.documentElement.style.setProperty('--color-bg-primary', 'rgba(10, 15, 14, 0.85)');
     document.documentElement.style.setProperty('--color-bg-secondary', 'rgba(10, 15, 14, 0.85)');
     document.documentElement.style.setProperty('--color-bg-tertiary', 'rgba(12, 18, 16, 0.85)');
@@ -48,7 +48,7 @@ export default function NammaVoiceProductPage() {
           position: 'fixed',
           top: 0, left: 0, right: 0, bottom: 0,
           zIndex: 9999,
-          backgroundColor: '#00D4B2',
+          backgroundColor: '#10b981',
           pointerEvents: 'none'
         }}
       />
@@ -84,9 +84,9 @@ export default function NammaVoiceProductPage() {
               <div className="h-4 w-px bg-[var(--color-border)]" />
               <div className="flex items-center gap-2">
                 <span className="w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold text-[#120B0F]" style={{ backgroundColor: 'var(--color-accent)' }}>
-                  NV
+                  NH
                 </span>
-                <span className="font-semibold text-[var(--color-text-primary)]">Namma Voice</span>
+                <span className="font-semibold text-[var(--color-text-primary)]">Namma Hood</span>
               </div>
             </div>
 
@@ -104,7 +104,7 @@ export default function NammaVoiceProductPage() {
                   borderRadius: '8px',
                   cursor: 'pointer',
                   transition: 'transform 0.2s',
-                  boxShadow: '0 4px 12px rgba(0, 212, 178, 0.2)'
+                  boxShadow: '0 4px 12px rgba(16, 185, 129, 0.2)'
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
                 onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
@@ -115,22 +115,22 @@ export default function NammaVoiceProductPage() {
           </div>
         </nav>
 
-        {/* Namma Voice Product Content */}
+        {/* Namma Hood Product Content */}
         <main>
-          <NammaVoiceHeroSection onOpenDemo={() => setIsDemoModalOpen(true)} />
-          <NammaVoiceProblemSection />
-          <NammaVoiceFeaturesSection />
-          <NammaVoiceFinalCTA onOpenDemo={() => setIsDemoModalOpen(true)} />
+          <NammaHoodHeroSection onOpenDemo={() => setIsDemoModalOpen(true)} />
+          <NammaHoodProblemSection />
+          <NammaHoodFeaturesSection />
+          <NammaHoodFinalCTA onOpenDemo={() => setIsDemoModalOpen(true)} />
         </main>
 
-        <NammaVoiceFooter />
+        <NammaHoodFooter />
         
         {/* Placeholder for Demo Modal if it were implemented */}
         {isDemoModalOpen && (
           <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/80 backdrop-blur-sm" onClick={() => setIsDemoModalOpen(false)}>
             <div className="p-8 bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-2xl max-w-sm w-full text-center" onClick={(e) => e.stopPropagation()}>
               <h3 className="text-xl font-bold mb-4">Coming Soon</h3>
-              <p className="text-[var(--color-text-secondary)] mb-6">The Namma Voice mobile app is currently in beta. Sign up to get early access.</p>
+              <p className="text-[var(--color-text-secondary)] mb-6">The Namma Hood mobile app is currently in beta. Sign up to get early access.</p>
               <button onClick={() => setIsDemoModalOpen(false)} className="w-full py-3 rounded-xl font-bold bg-[var(--color-accent)] text-[#120B0F]">Close</button>
             </div>
           </div>

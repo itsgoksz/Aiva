@@ -67,13 +67,13 @@ const products: Product[] = [
     route: '/products/homie',
   },
   {
-    id: 'namma-voice',
-    name: 'Namma Voice',
+    id: 'namma-hood',
+    name: 'Namma Hood',
     emoji: '📢',
     tagline: 'A real-time, community-driven issue reporting platform for your neighborhood.',
-    color: '#00D4B2',
-    glowColor: 'rgba(0, 212, 178, 0.25)',
-    route: '/products/namma-voice',
+    color: '#10b981',
+    glowColor: 'rgba(16, 185, 129, 0.25)',
+    route: '/products/namma-hood',
   },
 ];
 

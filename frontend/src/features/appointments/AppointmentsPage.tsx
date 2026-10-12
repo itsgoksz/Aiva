@@ -27,8 +27,8 @@ import {
   addMonths,
   subMonths
 } from 'date-fns';
-import { appointmentsAPI } from '../../lib/api';
-import type { Appointment } from '../../types';
+import { appointmentsAPI, staffAPI } from '../../lib/api';
+import type { Appointment, Staff } from '../../types';
 
 type ViewMode = 'day' | 'week' | 'month';
 
@@ -40,12 +40,6 @@ const statusColors: Record<string, { bg: string; text: string; border: string }>
   no_show: { bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/30' },
 };
 
-const stylists = [
-  { id: 1, name: 'Emily Carter', role: 'Senior Stylist' },
-  { id: 2, name: 'Priya Sharma', role: 'Colour Specialist' },
-  { id: 3, name: 'Chloe Woods', role: 'Nail Technician' },
-  { id: 4, name: 'Arjun', role: 'Hair Designer' }
-];
 
 const operatingHours = [
   { label: '09:00', time24: '09:00:00' },
@@ -60,10 +54,15 @@ const operatingHours = [
 ];
 
 export default function AppointmentsPage() {
+  const [stylists, setStylists] = useState<Staff[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<ViewMode>('day');
   const [selectedApt, setSelectedApt] = useState<Appointment | null>(null);
+
+  useEffect(() => {
+    staffAPI.list().then(setStylists).catch(console.error);
+  }, []);
 
   useEffect(() => {
     loadAppointments();
@@ -76,82 +75,9 @@ export default function AppointmentsPage() {
         date_to: format(addDays(currentDate, viewMode === 'day' ? 1 : viewMode === 'week' ? 7 : 31), 'yyyy-MM-dd'),
       });
       setAppointments(data.items || []);
-    } catch {
-      // Mock Data
-      setAppointments([
-        {
-          id: 1,
-          business_id: 1,
-          customer_id: 1,
-          service_id: 1,
-          staff_id: 1,
-          date: format(currentDate, 'yyyy-MM-dd'),
-          start_time: '09:00:00',
-          end_time: '09:45:00',
-          status: 'confirmed',
-          source: 'ai',
-          notes: 'Prefers organic shampoos.',
-          customer: { id: 1, name: 'Sarah Johnson', phone: '+91 98450 12345' },
-          service: { id: 1, name: 'Haircut + Styling', duration_minutes: 45 },
-          staff_member: { id: 1, name: 'Emily Carter' },
-          created_at: '',
-          updated_at: ''
-        },
-        {
-          id: 2,
-          business_id: 1,
-          customer_id: 2,
-          service_id: 2,
-          staff_id: 1,
-          date: format(currentDate, 'yyyy-MM-dd'),
-          start_time: '10:00:00',
-          end_time: '11:00:00',
-          status: 'scheduled',
-          source: 'manual',
-          notes: 'Consult on highlights.',
-          customer: { id: 2, name: 'Mike Chen', phone: '+91 99000 98765' },
-          service: { id: 2, name: 'Colour Consultation', duration_minutes: 60 },
-          staff_member: { id: 1, name: 'Emily Carter' },
-          created_at: '',
-          updated_at: ''
-        },
-        {
-          id: 3,
-          business_id: 1,
-          customer_id: 3,
-          service_id: 3,
-          staff_id: 2,
-          date: format(currentDate, 'yyyy-MM-dd'),
-          start_time: '11:30:00',
-          end_time: '12:30:00',
-          status: 'scheduled',
-          source: 'ai',
-          notes: 'Bridal pack trial.',
-          customer: { id: 3, name: 'Emma Parker', phone: '+91 98860 45678' },
-          service: { id: 3, name: 'Bridal Trial Pack', duration_minutes: 60 },
-          staff_member: { id: 2, name: 'Priya Sharma' },
-          created_at: '',
-          updated_at: ''
-        },
-        {
-          id: 4,
-          business_id: 1,
-          customer_id: 4,
-          service_id: 4,
-          staff_id: 3,
-          date: format(currentDate, 'yyyy-MM-dd'),
-          start_time: '14:00:00',
-          end_time: '15:00:00',
-          status: 'confirmed',
-          source: 'online',
-          notes: 'Prefers Chloe Woods.',
-          customer: { id: 4, name: 'Neha Reddy', phone: '+91 98440 22334' },
-          service: { id: 4, name: 'Classic Blowout', duration_minutes: 60 },
-          staff_member: { id: 3, name: 'Chloe Woods' },
-          created_at: '',
-          updated_at: ''
-        }
-      ]);
+    } catch (error) {
+      console.error('Failed to load appointments', error);
+      setAppointments([]);
     }
   };
 
@@ -169,8 +95,12 @@ export default function AppointmentsPage() {
 
   const getDayAppointments = (time24: string, staffId: number) => {
     const timePrefix = time24.slice(0, 2);
+    const targetDateStr = format(currentDate, 'yyyy-MM-dd');
     return appointments.filter(
-      (apt) => (apt.staff_id === staffId || (!apt.staff_id && staffId === 1)) && apt.start_time?.startsWith(timePrefix)
+      (apt) => 
+        (apt.staff_id === staffId || (!apt.staff_id && staffId === 1)) && 
+        apt.start_time?.startsWith(timePrefix) &&
+        apt.date === targetDateStr
     );
   };
 
@@ -239,7 +169,7 @@ export default function AppointmentsPage() {
             </div>
 
             {/* Stylist Headers */}
-            <div className="grid grid-cols-4 divide-x divide-white/5 border-b border-white/[0.08] bg-[#120B0F]">
+            <div className="grid divide-x divide-white/5 border-b border-white/[0.08] bg-[#120B0F]" style={{ gridTemplateColumns: `repeat(${Math.max(1, stylists.length)}, minmax(0, 1fr))` }}>
               {stylists.map(stylist => (
                 <div key={stylist.id} className="p-4 text-center">
                   <div className="font-bold text-[14px] text-white tracking-tight">{stylist.name}</div>
@@ -257,7 +187,7 @@ export default function AppointmentsPage() {
                 </div>
 
                 {/* Stylist Lanes */}
-                <div className="grid grid-cols-4 divide-x divide-white/5 border-b border-white/[0.08] bg-white/[0.03] backdrop-blur-2xl">
+                <div className="grid divide-x divide-white/5 border-b border-white/[0.08] bg-white/[0.03] backdrop-blur-2xl" style={{ gridTemplateColumns: `repeat(${Math.max(1, stylists.length)}, minmax(0, 1fr))` }}>
                   {stylists.map(stylist => {
                     const cellAppts = getDayAppointments(hour.time24, stylist.id);
                     return (

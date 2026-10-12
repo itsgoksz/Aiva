@@ -23,6 +23,16 @@ class CallResponse(BaseModel):
     provider_call_id: Optional[str] = None
     customer_name: Optional[str] = None
     created_at: datetime
+    
+    call_outcome: Optional[str] = None
+    confidence: Optional[str] = None
+    summary: Optional[str] = None
+    timeline_events: Optional[str] = None
+    phone_number: Optional[str] = None
+    service_requested: Optional[str] = None
+    staff_assigned: Optional[str] = None
+    appointment_datetime: Optional[datetime] = None
+    price: Optional[float] = None
 
     model_config = {"from_attributes": True}
 

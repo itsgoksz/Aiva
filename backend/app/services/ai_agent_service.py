@@ -4,8 +4,12 @@ Implements the tool functions called by voice AI during calls.
 """
 
 from datetime import date as dt_date, datetime, time as dt_time, timedelta, timezone
+from pydantic import BaseModel
+import openai
+import json
+import os
 
-from sqlalchemy import select, func
+from sqlalchemy import select, func, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.appointment import Appointment
@@ -13,6 +17,7 @@ from app.models.business import Business
 from app.models.customer import Customer
 from app.models.service import Service
 from app.models.staff import Staff
+from app.models.call import Call
 from app.services.analytics_service import analytics_service
 import logging
 from app.services.agent_router import should_route_to_echo
@@ -106,6 +111,7 @@ class AIAgentService:
         date_str: str = None,
         time_preference: str = None,
         date: str = None,
+        call_id: str = None,
     ) -> dict:
         """Check available slots for a service on a date."""
         date_str = date_str or date
@@ -117,7 +123,16 @@ class AIAgentService:
         if not service:
             return {"success": False, "message": f"Sorry, we don't offer '{service_name}'. Let me check what services we have available."}
 
-        target_date = dt_date.fromisoformat(date_str)
+        try:
+            date_str_lower = date_str.lower().strip()
+            if date_str_lower == "today":
+                target_date = dt_date.today()
+            elif date_str_lower == "tomorrow":
+                target_date = dt_date.today() + timedelta(days=1)
+            else:
+                target_date = dt_date.fromisoformat(date_str)
+        except ValueError:
+            return {"success": False, "message": "I couldn't understand that date. Could you please provide it again?"}
 
         # Get business hours
         biz_result = await self.db.execute(
@@ -197,6 +212,7 @@ class AIAgentService:
         time_str: str = None,
         date: str = None,
         time: str = None,
+        call_id: str = None,
     ) -> dict:
         """Book an appointment."""
         date_str = date_str or date
@@ -227,7 +243,17 @@ class AIAgentService:
         if not service:
             return {"success": False, "message": f"Sorry, I couldn't find the service '{service_name}'."}
 
-        target_date = dt_date.fromisoformat(date_str)
+        try:
+            date_str_lower = date_str.lower().strip()
+            if date_str_lower == "today":
+                target_date = dt_date.today()
+            elif date_str_lower == "tomorrow":
+                target_date = dt_date.today() + timedelta(days=1)
+            else:
+                target_date = dt_date.fromisoformat(date_str)
+        except ValueError:
+            return {"success": False, "message": "I couldn't understand that date. Could you please provide it again?"}
+            
         # Parse time (handle both HH:MM and HH:MM AM/PM)
         try:
             start_time = datetime.strptime(time_str, "%H:%M").time()
@@ -299,6 +325,7 @@ class AIAgentService:
         new_time_str: str = None,
         new_date: str = None,
         new_time: str = None,
+        call_id: str = None,
     ) -> dict:
         """Reschedule the customer's next upcoming appointment."""
         new_date_str = new_date_str or new_date
@@ -332,7 +359,17 @@ class AIAgentService:
         if not appointment:
             return {"success": False, "message": "I don't see any upcoming appointments for you."}
 
-        new_date_parsed = dt_date.fromisoformat(new_date_str)
+        try:
+            date_str_lower = new_date_str.lower().strip()
+            if date_str_lower == "today":
+                new_date_parsed = dt_date.today()
+            elif date_str_lower == "tomorrow":
+                new_date_parsed = dt_date.today() + timedelta(days=1)
+            else:
+                new_date_parsed = dt_date.fromisoformat(new_date_str)
+        except ValueError:
+            return {"success": False, "message": "I couldn't understand the new date. Could you please provide it again?"}
+            
         try:
             new_time = datetime.strptime(new_time_str, "%H:%M").time()
         except ValueError:
@@ -354,7 +391,7 @@ class AIAgentService:
         }
 
     async def cancel_appointment(
-        self, customer_phone: str, reason: str = None
+        self, customer_phone: str, reason: str = None, call_id: str = None
     ) -> dict:
         """Cancel the customer's next upcoming appointment."""
         cust_result = await self.db.execute(
@@ -393,7 +430,7 @@ class AIAgentService:
             "message": "Your appointment has been cancelled. Would you like to book a new appointment?",
         }
 
-    async def answer_faq(self, question: str) -> dict:
+    async def answer_faq(self, question: str, call_id: str = None) -> dict:
         """Search the business FAQ knowledge base, or route to Echo Farm Agent."""
         
         # 1. Agent-to-Agent Routing
@@ -442,7 +479,7 @@ class AIAgentService:
             "message": "I'm not sure about that. Would you like me to transfer you to someone who can help?",
         }
 
-    async def transfer_to_human(self, reason: str) -> dict:
+    async def transfer_to_human(self, reason: str, call_id: str = None) -> dict:
         """Signal that the call should be transferred to a human."""
         return {
             "success": True,
@@ -450,3 +487,87 @@ class AIAgentService:
             "reason": reason,
             "message": "Let me transfer you to a team member. Please hold for a moment.",
         }
+
+    async def get_service_price(self, service_name: str, call_id: str = None) -> dict:
+        service = await self._find_service(service_name)
+        if not service:
+            return {"success": False, "message": f"Sorry, I couldn't find pricing for '{service_name}'."}
+        return {"success": True, "price": service.price, "message": f"The price for {service.name} is ₹{service.price}."}
+
+    async def log_timeline_event(self, call_id: str, event_name: str, payload: dict):
+        """Append an event to the call's timeline and update structured data deterministically."""
+        if not call_id or call_id == "unknown":
+            return
+            
+        call_result = await self.db.execute(select(Call).where(Call.provider_call_id == call_id))
+        call = call_result.scalar_one_or_none()
+        
+        if not call:
+            # Create a placeholder call if it doesn't exist yet (in case webhook arrives before call creation)
+            call = Call(
+                business_id=self.business_id,
+                provider_call_id=call_id,
+                call_start=datetime.now(timezone.utc),
+                voice_provider="elevenlabs",
+                timeline_events="[]"
+            )
+            self.db.add(call)
+            await self.db.flush()
+
+        events = []
+        if call.timeline_events:
+            try:
+                events = json.loads(call.timeline_events)
+            except:
+                events = []
+                
+        events.append({
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "event": event_name,
+            "data": payload
+        })
+        call.timeline_events = json.dumps(events)
+        
+        # Update structured data based on event
+        if event_name == "tool_result_book_appointment" and payload.get("success"):
+            call.call_outcome = "BOOKED"
+            call.confidence = "HIGH"
+            
+            # Since book_appointment doesn't pass back all the customer details in 'result', 
+            # we should look at the 'tool_call_book_appointment' event payload if it exists.
+            for e in reversed(events):
+                if e["event"] == "tool_call_book_appointment":
+                    data = e["data"]
+                    call.customer_name = data.get("customer_name")
+                    call.phone_number = data.get("customer_phone")
+                    call.service_requested = data.get("service_name")
+                    
+                    try:
+                        date_str = data.get("date") or data.get("date_str")
+                        time_str = data.get("time") or data.get("time_str")
+                        if date_str and time_str:
+                            d = dt_date.fromisoformat(date_str)
+                            try:
+                                t = datetime.strptime(time_str, "%H:%M").time()
+                            except ValueError:
+                                t = datetime.strptime(time_str, "%I:%M %p").time()
+                            call.appointment_datetime = datetime.combine(d, t).replace(tzinfo=timezone.utc)
+                    except:
+                        pass
+                    break
+                    
+            call.summary = f"{call.customer_name or 'A customer'} booked {call.service_requested or 'an appointment'} for {call.appointment_datetime.strftime('%A at %I:%M %p') if call.appointment_datetime else 'a later date'}."
+
+        elif event_name == "tool_result_check_availability" and payload.get("success"):
+            if not call.call_outcome:
+                call.call_outcome = "SERVICE_INQUIRY"
+                call.confidence = "MEDIUM"
+                call.summary = "Customer checked availability but hasn't booked yet."
+
+        elif event_name == "tool_result_get_service_price" and payload.get("success"):
+            if not call.call_outcome:
+                call.call_outcome = "PRICE_INQUIRY"
+                call.confidence = "MEDIUM"
+                call.summary = "Customer asked for pricing information."
+
+        await self.db.commit()

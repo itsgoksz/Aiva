@@ -23,7 +23,7 @@ const PRODUCT_NODES = [
   { radius: 1.2, startAngle: Math.random() * Math.PI * 2, speed: 0.08, color: [0.44, 0.50, 0.56], size: 1.2 }, // 0: Mercury
   { radius: 1.9, startAngle: Math.random() * Math.PI * 2, speed: 0.05, color: [0.9, 0.2, 0.3], size: 2.5 },  // 1: Venus (Aiva - Pink)
   { radius: 2.7, startAngle: Math.random() * Math.PI * 2, speed: 0.04, color: [0.05, 0.9, 0.1], size: 2.0 },  // 2: Earth (Wellora - Green)
-  { radius: 3.6, startAngle: Math.random() * Math.PI * 2, speed: 0.03, color: [0.0, 0.8, 0.7], size: 1.5 }, // 3: Mars (Namma Voice - Teal)
+  { radius: 3.6, startAngle: Math.random() * Math.PI * 2, speed: 0.03, color: [0.06, 0.72, 0.50], size: 1.5 }, // 3: Namma Hood (Emerald Green)
   { radius: 5.2, startAngle: Math.random() * Math.PI * 2, speed: 0.015, color: [0.9, 0.5, 0.05], size: 4.0 },  // 4: Jupiter (Homie - Amber)
   { radius: 7.0, startAngle: Math.random() * Math.PI * 2, speed: 0.01, color: [0.93, 0.86, 0.51], size: 4.0 }, // 5: Saturn
   { radius: 8.8, startAngle: Math.random() * Math.PI * 2, speed: 0.008, color: [0.1, 0.0, 1.0], size: 3.0 },  // 6: Uranus (EV Copilot - Purple)

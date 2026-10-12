@@ -2,7 +2,7 @@
  * Aiva — Services Page
  * Matte Black OS aesthetic.
  * Service catalog with premium card grid.
- * Tailored for Snip & Streak Hair & Beauty Studio.
+ * Tailored for Hair & Care Hair & Beauty Studio.
  */
 
 import { useEffect, useState } from 'react';

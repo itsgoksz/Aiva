@@ -1,29 +1,21 @@
 import asyncio
-from datetime import date
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
+from app.core.database import AsyncSessionLocal
 from app.models.appointment import Appointment
-from app.models.service import Service
-from app.core.config import settings
-from sqlalchemy import select, func
+from app.models.call import Call
+from sqlalchemy import select
 
-async def main():
-    engine = create_async_engine(settings.DATABASE_URL)
-    async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-    
-    async with async_session() as session:
-        today = date.today()
-        print(f"Checking for date: {today}")
+async def run():
+    async with AsyncSessionLocal() as db:
+        res = await db.execute(select(Appointment).order_by(Appointment.created_at.desc()).limit(6))
+        apts = res.scalars().all()
+        print("--- LATEST APPOINTMENTS ---")
+        for a in apts:
+            print(f'Apt {a.id}: Date {a.date}, Time {a.start_time}-{a.end_time}, Source {a.source}')
         
-        estimated_revenue_result = await session.execute(
-            select(func.sum(Service.price))
-            .join(Appointment, Appointment.service_id == Service.id)
-            .where(
-                Appointment.business_id == 1,
-                Appointment.status.in_(["scheduled", "confirmed"]),
-                Appointment.date == today,
-            )
-        )
-        print(f"Result: {estimated_revenue_result.scalar()}")
-            
-asyncio.run(main())
+        res = await db.execute(select(Call).order_by(Call.created_at.desc()).limit(5))
+        calls = res.scalars().all()
+        print("\n--- LATEST CALLS ---")
+        for c in calls:
+            print(f'Call ID: {c.id}, Provider ID: {c.provider_call_id}, Outcome: {c.call_outcome}, Timeline length: {len(c.timeline_events)}')
+
+asyncio.run(run())

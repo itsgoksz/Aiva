@@ -56,7 +56,7 @@ export default function RegisterPage() {
           {/* Brand */}
           <div className="mb-12">
             <h1 className="text-[18px] font-black tracking-[0.2em] text-white uppercase leading-none">
-              Snip & Streak
+              Hair & Care
             </h1>
             <p className="text-[11px] font-medium text-white/25 mt-2 tracking-widest uppercase">
               Powered by Aiva
@@ -110,7 +110,7 @@ export default function RegisterPage() {
             {/* Mobile logo */}
             <div className="lg:hidden flex items-center gap-2.5 mb-8">
               <h1 className="text-[14px] font-black tracking-[0.2em] text-white uppercase">
-                Snip & Streak
+                Hair & Care
               </h1>
             </div>
 

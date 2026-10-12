@@ -150,9 +150,21 @@ export interface Call {
   transcript: string | null;
   recording_url: string | null;
   transfer_reason: string | null;
-  voice_provider: 'vapi' | 'retell';
+  voice_provider: 'vapi' | 'retell' | 'elevenlabs';
   provider_call_id: string | null;
   customer_name: string | null;
+  
+  // New event-driven fields
+  phone_number: string | null;
+  service_requested: string | null;
+  staff_assigned: string | null;
+  appointment_datetime: string | null;
+  price: number | null;
+  call_outcome: 'BOOKED' | 'RESCHEDULED' | 'CANCELLED' | 'PRICE_INQUIRY' | 'SERVICE_INQUIRY' | 'TRANSFERRED' | 'VOICEMAIL' | 'NO_ACTION' | 'FOLLOW_UP_REQUIRED' | string | null;
+  confidence: 'HIGH' | 'MEDIUM' | 'LOW' | null;
+  summary: string | null;
+  timeline_events: string | null; // JSON string
+
   created_at: string;
 }
 

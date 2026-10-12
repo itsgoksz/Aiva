@@ -1,7 +1,7 @@
 /**
  * Aiva — Customers Page
  * Premium, minimal Apple/Linear inspired split-screen directory layout.
- * Custom crafted for Snip & Streak Hair & Beauty Studio.
+ * Custom crafted for Hair & Care Hair & Beauty Studio.
  */
 
 import { useEffect, useState } from 'react';
@@ -167,7 +167,7 @@ export default function CustomersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-[24px] font-black tracking-tight text-white">Clients</h1>
-          <p className="text-[13px] text-white/40 mt-1 font-medium">Directory of Snip & Streak Hair & Beauty Studio</p>
+          <p className="text-[13px] text-white/40 mt-1 font-medium">Directory of Hair & Care Hair & Beauty Studio</p>
         </div>
         <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[12px] font-bold text-gray-900 bg-[#A66B8E] hover:bg-[#B882A2] transition-all shadow-[0_4px_15px_rgba(212,248,75,0.2)] cursor-pointer">
           <Plus size={14} /> New Client
