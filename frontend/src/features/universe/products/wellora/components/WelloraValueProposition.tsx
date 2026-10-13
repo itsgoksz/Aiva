@@ -4,27 +4,29 @@ import { Heart, TrendingUp, Database } from 'lucide-react';
 const propositions = [
   {
     icon: <Heart className="w-8 h-8" />,
-    title: "For the Everyday User",
+    title: "Talk Like a Human, Not a Barcode Scanner",
     benefits: [
-      "Effortless Habit Building: Wellora remembers your preferences, like 'my usual coffee', so you never have to repeat yourself.",
-      "Mental Peace: A calm persona ensures engaging with health metrics reduces anxiety rather than creating it.",
-      "Immediate Support: Get instant, empathetic, and helpful responses for late-night cravings or bad moods."
+      "Understands Home Cooking: Say 'Two dosas with homemade coconut chutney and a filter coffee' — breaks down regional dishes, gravies, and portion weights without searching endless barcode databases.",
+      "Hands-Free Kitchen Voice: Designed for when your hands are wet or covered in flour. Speak naturally and get instant audio confirmations.",
+      "Gentle Clarifications: Asks thoughtful follow-ups ('Did you temper the dal with ghee or mustard oil?') only when it actually matters."
     ]
   },
   {
     icon: <TrendingUp className="w-8 h-8" />,
-    title: "Unprecedented Retention",
+    title: "Zero Guilt, Zero Judgment Philosophy",
     benefits: [
-      "A Joy to Use: By removing friction and adding real empathy, Wellora turns health tracking from a chore into a daily moment of peace.",
-      "Humanized Experience: Users stay because they feel understood and supported, not audited or judged."
+      "No Lecture After Big Feasts: Overate at a weekend wedding dinner? Wellora evaluates your 7-day rolling balance instead of penalizing a single meal.",
+      "Targeted Evening Guidance: Missing 30g of protein before bed? Recommends light, high-casein snacks (paneer, Greek yogurt) that won't disrupt deep sleep.",
+      "Long-Term Habit Momentum: Helps you understand how hydration, sleep latency, and meal pacing influence your everyday energy."
     ]
   },
   {
     icon: <Database className="w-8 h-8" />,
-    title: "Rich Data Moat",
+    title: "Instant Offline Data & True Privacy",
     benefits: [
-      "Deep Personalization: Wellora truly gets to know you over time, remembering your unique habits and routines.",
-      "A Genuine Connection: This deep understanding of your personal preferences makes Wellora feel less like software and more like a real companion."
+      "10,000+ Calibrated Food Database: Instant millisecond lookups powered by a built-in nutrition index (food-calorie-data.csv) without relying on laggy third-party APIs.",
+      "Private On-Device Health Vault: Relational SQLite database keeps your meals and biometrics private with zero data exfiltration.",
+      "Zero Ad Retargeting: Your daily habits are strictly yours—never packaged for targeted ads or sold to health insurance underwriters."
     ]
   }
 ];
@@ -46,7 +48,7 @@ export default function WelloraValueProposition() {
             viewport={{ once: true }}
             className="text-4xl md:text-5xl font-bold mb-6"
           >
-            How Wellora Helps <span style={{ color: 'var(--color-accent)' }}>Everyone</span>
+            A Health Companion That <span style={{ color: 'var(--color-accent)' }}>Actually Understands You</span>
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -56,7 +58,7 @@ export default function WelloraValueProposition() {
             className="text-xl"
             style={{ color: 'var(--color-text-secondary)' }}
           >
-            Why people love using Wellora every day.
+            Nutrition tracking that fits into real life, without spreadsheets or shame.
           </motion.p>
         </div>
 

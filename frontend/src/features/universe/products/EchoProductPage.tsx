@@ -46,7 +46,7 @@ export default function EchoProductPage() {
   }, []);
 
   const { scrollYProgress } = useScroll();
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
+  // const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
 
   return (
     <div className="relative min-h-screen selection:bg-[var(--color-accent)] selection:text-white" style={{ backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-primary)' }}>

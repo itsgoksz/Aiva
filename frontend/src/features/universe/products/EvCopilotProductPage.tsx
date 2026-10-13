@@ -7,7 +7,7 @@
  */
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import EvCopilotHeroSection from "./ev-copilot/components/EvCopilotHeroSection";
@@ -20,6 +20,7 @@ import EvCopilotFooter from "./ev-copilot/components/EvCopilotFooter";
 
 export default function EvCopilotProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
+  const [showEnterTransition, setShowEnterTransition] = useState(true);
 
   // Scroll to top on mount & enforce EV Copilot color tokens
   useEffect(() => {
@@ -52,19 +53,25 @@ export default function EvCopilotProductPage() {
       className="relative min-h-screen selection:bg-[#6D5EF7] selection:text-white"
       style={{ backgroundColor: "#070913", color: "#FFFFFF" }}
     >
-      {/* Seamless Transition Radial Overlay */}
-      <motion.div
-        initial={{ clipPath: "circle(150% at 50% 50%)" }}
-        animate={{ clipPath: "circle(0% at 50% 50%)" }}
-        transition={{ duration: 0.8, ease: [0.7, 0, 0.3, 1] }}
-        style={{
-          position: "fixed",
-          top: 0, left: 0, right: 0, bottom: 0,
-          zIndex: 9999,
-          backgroundColor: "#6D5EF7",
-          pointerEvents: "none"
-        }}
-      />
+      {/* Seamless Enter World Transition */}
+      <AnimatePresence>
+        {showEnterTransition && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            onAnimationComplete={() => setShowEnterTransition(false)}
+            style={{
+              position: "fixed",
+              top: 0, left: 0, right: 0, bottom: 0,
+              zIndex: 9999,
+              backgroundColor: "#6D5EF7",
+              pointerEvents: "none"
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Foreground Content */}
       <div style={{ position: "relative", zIndex: 10 }}>
@@ -160,8 +167,8 @@ export default function EvCopilotProductPage() {
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
             <button
               onClick={() => setIsDemoModalOpen(true)}
-              className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-white transition-all cursor-pointer flex items-center gap-1.5 shadow-md shadow-violet-600/30 hover:scale-[1.03] active:scale-[0.98]"
-              style={{ backgroundColor: "#6D5EF7" }}
+              className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-white transition-colors duration-200 cursor-pointer flex items-center gap-1.5 hover:bg-[#5846f5] active:opacity-90"
+              style={{ backgroundColor: "#6D5EF7", boxShadow: "0 4px 14px rgba(109, 94, 247, 0.35)" }}
             >
               <Sparkles size={14} className="text-[#00E5FF]" />
               <span>Simulate Trip</span>

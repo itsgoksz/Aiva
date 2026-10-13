@@ -7,7 +7,7 @@
  */
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Plane, ExternalLink, Play } from "lucide-react";
 
@@ -21,6 +21,7 @@ import AirportDigitalTwinFooter from "./airport-digital-twin/components/AirportD
 
 export default function AirportDigitalTwinProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
+  const [showEnterTransition, setShowEnterTransition] = useState(true);
 
   // Scroll to top on mount & enforce aerodrome cyan color tokens
   useEffect(() => {
@@ -52,19 +53,25 @@ export default function AirportDigitalTwinProductPage() {
       className="relative min-h-screen selection:bg-[#00E5FF] selection:text-black"
       style={{ backgroundColor: "#050811", color: "#FFFFFF" }}
     >
-      {/* Seamless Transition Radial Overlay */}
-      <motion.div
-        initial={{ clipPath: "circle(150% at 50% 50%)" }}
-        animate={{ clipPath: "circle(0% at 50% 50%)" }}
-        transition={{ duration: 0.8, ease: [0.7, 0, 0.3, 1] }}
-        style={{
-          position: "fixed",
-          top: 0, left: 0, right: 0, bottom: 0,
-          zIndex: 9999,
-          backgroundColor: "#00E5FF",
-          pointerEvents: "none"
-        }}
-      />
+      {/* Seamless Enter World Transition */}
+      <AnimatePresence>
+        {showEnterTransition && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            onAnimationComplete={() => setShowEnterTransition(false)}
+            style={{
+              position: "fixed",
+              top: 0, left: 0, right: 0, bottom: 0,
+              zIndex: 9999,
+              backgroundColor: "#00E5FF",
+              pointerEvents: "none"
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Foreground Content */}
       <div style={{ position: "relative", zIndex: 10 }}>
@@ -169,8 +176,8 @@ export default function AirportDigitalTwinProductPage() {
 
             <button
               onClick={() => setIsDemoModalOpen(true)}
-              className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-black transition-all cursor-pointer flex items-center gap-2 shadow-lg shadow-[#00E5FF]/25 hover:shadow-[#00E5FF]/45 hover:scale-[1.03] active:scale-[0.98]"
-              style={{ backgroundColor: "#00E5FF" }}
+              className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-black transition-colors duration-200 cursor-pointer flex items-center gap-2 hover:bg-cyan-300 active:opacity-90"
+              style={{ backgroundColor: "#00E5FF", boxShadow: "0 4px 14px rgba(0, 229, 255, 0.35)" }}
             >
               <Play size={13} className="fill-black" />
               <span>Launch Simulator</span>

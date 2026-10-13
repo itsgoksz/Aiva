@@ -10,7 +10,7 @@
  *   EV Copilot → Electric blue motion
  */
 
-import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useRef, useEffect, useState } from 'react';
 import { sharedState } from './ParticleField';
@@ -33,8 +33,8 @@ const worlds: ProductWorld[] = [
     id: 'aiva',
     name: 'Aiva',
     emoji: '🧠',
-    tagline: 'The teammate who never lets a customer feel ignored.',
-    description: 'Aiva is your 24/7 business assistant that answers calls, handles WhatsApp enquiries, books appointments, and follows up with customers — automatically.',
+    tagline: 'Autonomous 24/7 voice AI receptionist for high-touch businesses.',
+    description: 'Never let another phone call slip to voicemail. Aiva answers in under a second with natural human warmth, cross-checks real team calendars, locks open slots, and texts instant confirmations.',
     color: '#A66B8E',
     gradientFrom: 'rgba(166, 107, 142, 0.15)',
     gradientTo: 'rgba(166, 107, 142, 0.02)',
@@ -45,8 +45,8 @@ const worlds: ProductWorld[] = [
     id: 'wellora',
     name: 'Wellora',
     emoji: '🌿',
-    tagline: 'A gentle companion that helps you understand and optimize your daily wellbeing.',
-    description: 'Wellora makes health tracking feel less like a chore and more like a supportive conversation. It listens to you without judgment, helping you log food, hydration, sleep, and mood naturally.',
+    tagline: 'Voice-first multi-agent health companion with zero-judgment nutrition coaching.',
+    description: 'Log home-cooked meals by simply speaking. Wellora deconstructs ingredients, portions, and macros via an offline 10,000+ food database—coaching your 7-day balance without spreadsheets or guilt.',
     color: '#2ECC71',
     gradientFrom: 'rgba(46, 204, 113, 0.12)',
     gradientTo: 'rgba(46, 204, 113, 0.02)',
@@ -57,8 +57,8 @@ const worlds: ProductWorld[] = [
     id: 'ev-copilot',
     name: 'EV Copilot',
     emoji: '⚡',
-    tagline: 'Your trusty co-driver for every electric journey, taking the stress out of routing and charging.',
-    description: 'EV Copilot eliminates range anxiety by guiding you to the best charging spots and planning your trips effortlessly. Focus on the drive while it handles the logistics behind the scenes.',
+    tagline: 'Multi-agent travel co-pilot with real aerodynamic & mountain climb physics.',
+    description: 'Never second-guess your battery range. EV Copilot models elevation gain, highway headwinds, and DC charge tapers over an async AgentBus—pairing 150kW fast chargers with curated artisan coffee breaks.',
     color: '#6D5EF7',
     gradientFrom: 'rgba(109, 94, 247, 0.12)',
     gradientTo: 'rgba(109, 94, 247, 0.02)',
@@ -93,8 +93,8 @@ const worlds: ProductWorld[] = [
     id: 'namma-hood',
     name: 'Namma Hood',
     emoji: '📢',
-    tagline: 'Gamified Civic Action',
-    description: 'Namma Hood transforms local civic reporting into an engaging, gamified experience. Track local hotspots on the radar, navigate directly to cleanup sites, and earn XP to climb your neighborhood leaderboard.',
+    tagline: 'Gamified Civic Cleanups & Breakfast Perks',
+    description: 'Skip the bureaucratic black hole. Geotag garbage blackspots, organize neighborhood cleanup squads, and submit before/after photo proof. Earn SplitXP and Eco Points redeemable for breakfast discounts at local partner eateries.',
     color: '#10b981',
     gradientFrom: 'rgba(16, 185, 129, 0.12)',
     gradientTo: 'rgba(16, 185, 129, 0.02)',
@@ -106,6 +106,18 @@ const worlds: ProductWorld[] = [
 export default function ProductWorlds({ activeProductIndexRef }: { activeProductIndexRef?: React.MutableRefObject<number | null> }) {
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
+  const [enteringWorldId, setEnteringWorldId] = useState<string | null>(null);
+
+  const handleEnterWorld = (world: ProductWorld) => {
+    if (!world.available || enteringWorldId) return;
+    setEnteringWorldId(world.id);
+    sharedState.isZoomingInto = world.id;
+    sharedState.spawnZoomedIn = true;
+    setTimeout(() => {
+      sharedState.isZoomingInto = null;
+      navigate(world.route);
+    }, 280);
+  };
 
   // Mathematically perfect tracker that calculates exact float index based on card centers
   useEffect(() => {
@@ -253,17 +265,8 @@ export default function ProductWorlds({ activeProductIndexRef }: { activeProduct
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.8, delay: 0.1 }}
             whileHover={world.available ? { scale: 1.01, y: -2 } : {}}
-            onClick={() => { 
-              if (world.available) {
-                sharedState.isZoomingInto = world.id;
-                sharedState.spawnZoomedIn = true; // Tell the next page to spawn zoomed in!
-                setTimeout(() => {
-                  sharedState.isZoomingInto = null; // Reset for the new page!
-                  navigate(world.route);
-                }, 1200);
-              } 
-            }}
-            className={`flex flex-col md:flex-row items-center justify-between text-center md:text-left relative overflow-hidden md:w-[45%] ml-auto`}
+            onClick={() => handleEnterWorld(world)}
+            className={`group flex flex-col md:flex-row items-center justify-between text-center md:text-left relative overflow-hidden md:w-[45%] ml-auto`}
             style={{
               padding: 'clamp(2.5rem, 5vw, 6rem) clamp(1.5rem, 4vw, 4rem)',
               minHeight: '65vh', // Massive panels
@@ -410,15 +413,14 @@ export default function ProductWorlds({ activeProductIndexRef }: { activeProduct
               </p>
               {world.available && (
                 <div
+                  className="inline-flex items-center gap-2 mt-5 text-sm font-semibold transition-all duration-200"
                   style={{
-                    marginTop: '1.25rem',
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: '0.85rem',
-                    fontWeight: 500,
+                    fontFamily: "'Space Grotesk', 'Inter', sans-serif",
                     color: world.color,
                   }}
                 >
-                  Enter world →
+                  <span>Enter world</span>
+                  <span className="inline-block transition-transform duration-200 group-hover:translate-x-1.5">→</span>
                 </div>
               )}
             </div>
@@ -427,16 +429,17 @@ export default function ProductWorlds({ activeProductIndexRef }: { activeProduct
       </div>
 
       <AnimatePresence>
-        {sharedState.isZoomingInto && (
+        {enteringWorldId && (
           <motion.div
-            initial={{ clipPath: 'circle(0% at 50% 50%)' }}
-            animate={{ clipPath: 'circle(150% at 50% 50%)' }}
-            transition={{ duration: 1.2, ease: [0.7, 0, 0.3, 1] }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.28, ease: 'easeOut' }}
             style={{
               position: 'fixed',
               top: 0, left: 0, right: 0, bottom: 0,
               zIndex: 9999,
-              backgroundColor: worlds.find(w => w.id === sharedState.isZoomingInto)?.color,
+              backgroundColor: worlds.find(w => w.id === enteringWorldId)?.color,
               pointerEvents: 'none'
             }}
           />

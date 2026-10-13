@@ -146,14 +146,14 @@ export default function NammaHoodDemoModal({ isOpen, onClose }: NammaHoodDemoMod
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-3.5 rounded-xl font-semibold text-xs sm:text-sm text-black bg-[#10B981] hover:bg-[#059669] transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 cursor-pointer mt-2"
+                  className="w-full py-3.5 rounded-xl font-semibold text-xs sm:text-sm text-black bg-[#10B981] hover:bg-[#059669] transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer mt-2 active:opacity-90" style={{ boxShadow: "0 4px 14px rgba(16, 185, 129, 0.35)" }}
                 >
                   {isSubmitting ? (
-                    <span>Publishing Geotag...</span>
+                    <span>Publishing to Neighborhood Radar...</span>
                   ) : (
                     <>
                       <Megaphone size={15} />
-                      <span>Publish Report (+50 Eco XP)</span>
+                      <span>Tag Blackspot (+50 XP & +25 Eco Points)</span>
                     </>
                   )}
                 </button>
@@ -171,16 +171,16 @@ export default function NammaHoodDemoModal({ isOpen, onClose }: NammaHoodDemoMod
               </div>
 
               <h3 className="text-xl font-bold font-display text-white mb-2">
-                Report Live on Neighborhood Radar!
+                Live on Neighborhood Radar!
               </h3>
 
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-mono mb-4">
                 <Sparkles size={13} />
-                <span>+50 Eco XP Awarded to Your Citizen Profile</span>
+                <span>+50 XP & +25 Eco Points Awarded</span>
               </div>
 
               <p className="text-xs sm:text-sm text-neutral-300 max-w-sm mx-auto mb-6 leading-relaxed">
-                Your report has been broadcast to {ward}. When 5 neighbors back this issue with their Megaphone, it triggers high-priority municipal routing.
+                Your report is pinned to {ward}. Neighbors can now back this spot with the Megaphone, organize a weekend cleanup crew, and submit verified before/after proof. Clean it up to earn SplitXP and redeem your Eco Points for breakfast discounts!
               </p>
 
               <button

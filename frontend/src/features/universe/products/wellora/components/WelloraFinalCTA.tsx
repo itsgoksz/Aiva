@@ -33,10 +33,14 @@ export default function WelloraFinalCTA({ onOpenDemo }: WelloraFinalCTAProps) {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
           <button
             onClick={onOpenDemo}
-            className="w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-sm text-[#060C08] bg-[#2ECC71] hover:bg-[#27ae60] transition-all flex items-center justify-center gap-2.5 shadow-xl shadow-emerald-500/25 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            className="group w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-sm sm:text-base text-[#060C08] transition-colors duration-200 hover:bg-[#27ae60] active:opacity-90 flex items-center justify-center gap-2.5 cursor-pointer"
+            style={{
+              backgroundColor: "#2ECC71",
+              boxShadow: "0 10px 30px rgba(46, 204, 113, 0.35)",
+            }}
           >
             <span>Request Early Beta Access</span>
-            <ArrowRight size={16} />
+            <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
           </button>
         </div>
 

@@ -4,23 +4,23 @@ import { Sparkles, Battery, UtensilsCrossed, Database } from 'lucide-react';
 const features = [
   {
     icon: <Sparkles className="w-8 h-8" />,
-    title: "Thinking Ahead",
-    description: "It doesn't just react; it anticipates. If there's a steep mountain pass ahead, it figures out you'll need more battery and gently reroutes you to an earlier charger."
+    title: "Aerodynamic & Elevation Physics",
+    description: "Models physical drag against live OpenWeather headwinds, uphill grade resistance (+1,800m Nilgiris climbs), and cabin HVAC draw instead of flat EPA guesses."
   },
   {
     icon: <Battery className="w-8 h-8" />,
-    title: "Smart Battery Management",
-    description: "It only adds a charging stop when you actually need one, so you spend less time waiting and more time driving."
+    title: "10% → 80% Charging Curve Optimization",
+    description: "DC fast charging tapers drastically after 80%. EV Copilot models your battery's non-linear charging curve so you only dwell during peak kW speeds."
   },
   {
     icon: <UtensilsCrossed className="w-8 h-8" />,
-    title: "Amenities You Care About",
-    description: "It pairs your necessary charging stops with highly-rated restaurants that match exactly what you like to eat."
+    title: "Curated 20-Min Coffee & Dining Sync",
+    description: "Never sit in a gravel truck stop. Syncs your required 22-minute charging stop with artisan cafes, specialty roasteries, and clean dining within a 2-minute walk."
   },
   {
     icon: <Database className="w-8 h-8" />,
-    title: "Learning Your Preferences",
-    description: "It remembers how you like to travel, making every future road trip feel more personalized and effortless."
+    title: "OpenChargeMap Corridor Scanner",
+    description: "Downsamples route polylines every 40km, verifying live CCS2 plug availability, dual-gun redundancy, and network uptime across Tata Power, Zeon, and Jio-bp."
   }
 ];
 

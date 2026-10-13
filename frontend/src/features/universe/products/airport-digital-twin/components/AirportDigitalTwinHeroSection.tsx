@@ -166,7 +166,11 @@ export default function AirportDigitalTwinHeroSection({ onOpenDemo }: AirportDig
             >
               <button
                 onClick={onOpenDemo}
-                className="px-6 py-3.5 rounded-xl font-medium text-sm text-black bg-[#00E5FF] hover:bg-[#00cbe3] transition-all flex items-center gap-2 shadow-lg shadow-cyan-500/25 hover:scale-[1.02] active:scale-[0.98] cursor-pointer font-semibold"
+                className="px-6 py-3.5 rounded-xl font-semibold text-sm text-black transition-colors duration-200 hover:bg-cyan-300 active:opacity-90 flex items-center gap-2 cursor-pointer"
+                style={{
+                  backgroundColor: "#00E5FF",
+                  boxShadow: "0 8px 24px rgba(0, 229, 255, 0.35)",
+                }}
               >
                 <Plane size={16} className="text-black" />
                 <span>Launch 3D Twin Simulator</span>
@@ -174,7 +178,7 @@ export default function AirportDigitalTwinHeroSection({ onOpenDemo }: AirportDig
 
               <a
                 href="#spatial-twin"
-                className="px-6 py-3.5 rounded-xl font-medium text-sm text-neutral-300 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 transition-all flex items-center gap-2 cursor-pointer"
+                className="px-6 py-3.5 rounded-xl font-medium text-sm text-neutral-300 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-white/20 transition-colors duration-200 flex items-center gap-2 cursor-pointer"
               >
                 <span>Explore 3D Geospatial Tiles</span>
                 <ChevronRight size={16} />

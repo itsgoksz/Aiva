@@ -265,7 +265,7 @@ export default function WelloraDashboardPreviewSection() {
                   <span className="text-[11px] text-neutral-400">Tap glass to record water:</span>
                   <button
                     onClick={handleAddWater}
-                    className="px-3 py-1.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-400/30 text-sky-300 text-xs font-mono font-medium flex items-center gap-1.5 transition-all cursor-pointer hover:scale-105 active:scale-95"
+                    className="px-3 py-1.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-400/30 text-sky-300 text-xs font-mono font-medium flex items-center gap-1.5 transition-colors cursor-pointer active:opacity-90"
                   >
                     <Plus size={13} />
                     <span>+250ml Glass</span>

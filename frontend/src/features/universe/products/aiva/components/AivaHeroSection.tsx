@@ -26,7 +26,7 @@ const CALL_SCENARIOS = [
     time: "Thursday at 2:30 PM",
     revenue: "₹3,200",
     dialogue: [
-      { speaker: "caller", text: "Hi! Do you have any openings for a balayage with Sarah this Thursday afternoon?" },
+      { speaker: "caller", text: "Hi! Do you have any openings for a HydraFacial with Divya this Thursday afternoon?" },
       { speaker: "aiva", text: "Hello Pooja! Divya has an opening at 2:30 PM or 4:30 PM. Which one works better for you?" },
       { speaker: "caller", text: "2:30 PM is perfect, thank you!" },
       { speaker: "aiva", text: "You're all booked for Thursday at 2:30 PM. I just sent the confirmation and prep tips straight to your WhatsApp!" }
@@ -163,19 +163,19 @@ export default function AivaHeroSection({ onOpenDemo }: AivaHeroSectionProps) {
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-10">
                 <button
                   onClick={onOpenDemo}
-                  className="px-8 py-4 rounded-xl font-semibold text-base sm:text-lg transition-all hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto text-white flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                  className="group px-8 py-4 rounded-xl font-semibold text-base sm:text-lg transition-colors duration-200 hover:bg-[#B882A2] active:opacity-90 w-full sm:w-auto text-white flex items-center justify-center gap-2 cursor-pointer"
                   style={{
                     backgroundColor: "#A66B8E",
                     boxShadow: "0 10px 30px rgba(166, 107, 142, 0.35)",
                   }}
                 >
                   <span>Hear a Live Test Call</span>
-                  <ChevronRight size={18} />
+                  <ChevronRight size={18} className="transition-transform duration-200 group-hover:translate-x-1" />
                 </button>
 
                 <a
                   href="#dashboard-preview"
-                  className="px-7 py-4 rounded-xl font-medium text-base transition-all hover:bg-white/[0.08] active:scale-[0.98] w-full sm:w-auto text-white/90 border border-white/10 flex items-center justify-center gap-2"
+                  className="px-7 py-4 rounded-xl font-medium text-base transition-colors duration-200 hover:bg-white/[0.08] active:opacity-90 w-full sm:w-auto text-white/90 hover:text-white border border-white/10 hover:border-white/20 flex items-center justify-center gap-2"
                   style={{ background: "rgba(255, 255, 255, 0.03)" }}
                 >
                   <Activity size={18} className="text-[#EC89B5]" />

@@ -186,7 +186,7 @@ export default function DemoModal({ isOpen, onClose }: DemoModalProps) {
                     <button
                       type="submit"
                       disabled={!formData.name || !formData.email || !formData.phone}
-                      className="w-full py-3 mt-4 rounded-xl font-semibold text-white transition-all hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100"
+                      className="w-full py-3 mt-4 rounded-xl font-semibold text-white transition-all hover:brightness-110 active:opacity-90 disabled:opacity-50 disabled:hover:scale-100"
                       style={{ backgroundColor: 'var(--color-accent)' }}
                     >
                       Next: Choose a Time
@@ -270,7 +270,7 @@ export default function DemoModal({ isOpen, onClose }: DemoModalProps) {
                       </button>
                       <button
                         disabled={!selectedDate || !selectedTime || isSubmitting}
-                        className="flex-1 py-3 rounded-xl font-semibold text-white transition-all hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-2"
+                        className="flex-1 py-3 rounded-xl font-semibold text-white transition-all hover:brightness-110 active:opacity-90 disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-2"
                         style={{ backgroundColor: 'var(--color-accent)' }}
                         onClick={handleSubmit}
                       >

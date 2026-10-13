@@ -18,7 +18,7 @@ const CALL_RECORDS = [
     sentiment: "Enthusiastic",
     status: "BOOKED",
     revenue: "₹2,800",
-    summary: "Requested weekend afternoon slot with Sarah. Offered Saturday 3:00 PM. Confirmed booking, WhatsApp confirmation sent."
+    summary: "Requested weekend afternoon slot with Dr. Anjali. Offered Saturday 3:00 PM. Confirmed booking, WhatsApp confirmation sent."
   },
   {
     caller: "Rahul Nair",
@@ -30,7 +30,7 @@ const CALL_RECORDS = [
     sentiment: "Quick Booking",
     status: "BOOKED",
     revenue: "₹1,500",
-    summary: "Returning regular client. Matched usual bi-weekly cadence with Marcus. Booked Thursday 5:30 PM."
+    summary: "Returning regular client. Matched usual bi-weekly cadence with Dr. Varun. Booked Thursday 5:30 PM."
   },
   {
     caller: "Claire Dubois",

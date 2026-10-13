@@ -151,7 +151,11 @@ export default function WelloraHeroSection({ onOpenDemo }: WelloraHeroSectionPro
             >
               <button
                 onClick={onOpenDemo}
-                className="px-6 py-3.5 rounded-xl font-medium text-sm text-[#060C08] bg-[#2ECC71] hover:bg-[#27ae60] transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/20 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                className="px-6 py-3.5 rounded-xl font-semibold text-sm text-[#060C08] transition-colors duration-200 hover:bg-[#27ae60] active:opacity-90 flex items-center gap-2 cursor-pointer"
+                style={{
+                  backgroundColor: "#2ECC71",
+                  boxShadow: "0 8px 24px rgba(46, 204, 113, 0.35)",
+                }}
               >
                 <Mic size={16} className="text-black" />
                 <span>Try Voice Logger Live</span>
@@ -159,7 +163,7 @@ export default function WelloraHeroSection({ onOpenDemo }: WelloraHeroSectionPro
 
               <a
                 href="#experience"
-                className="px-6 py-3.5 rounded-xl font-medium text-sm text-neutral-300 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 transition-all flex items-center gap-2 cursor-pointer"
+                className="px-6 py-3.5 rounded-xl font-medium text-sm text-neutral-300 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-white/20 transition-colors duration-200 flex items-center gap-2 cursor-pointer"
               >
                 <span>Explore the Dashboard</span>
                 <ChevronRight size={16} />

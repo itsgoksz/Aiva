@@ -4,27 +4,29 @@ import { User, Car, Globe } from 'lucide-react';
 const propositions = [
   {
     icon: <User className="w-8 h-8" />,
-    title: "For the EV Driver",
+    title: "Conquer Mountain Passes",
     benefits: [
-      "Zero Range Anxiety: Drive with confidence knowing your route and battery needs are completely taken care of.",
-      "Time Savings: Skip the 30+ minutes usually spent cross-referencing maps, weather, and charging apps.",
-      "A VIP Experience: Enjoy a helpful, personalized briefing that caters exactly to your needs."
+      "Western Ghats & Nilgiris Climbs: Real-time kinetic physics accounts for +1,800m elevation gains that drain batteries 3x faster than flat highway estimates.",
+      "Regenerative Braking Yield: Calculates downhill energy recuperation so you know exactly how many kilowatt-hours you will recapture on the descent.",
+      "Preconditioning Guidance: Pre-warms or cools battery chemistry before reaching high-speed DC chargers for maximum acceptance speeds."
     ]
   },
   {
     icon: <Car className="w-8 h-8" />,
-    title: "For Automakers (OEMs)",
+    title: "Dine While You Charge",
     benefits: [
-      "Next-Gen Infotainment: Integrates directly into a vehicle's native OS to provide a seamless, modern driving experience.",
-      "Brand Differentiation: Offering a proactive co-pilot transforms the vehicle into a helpful, evolving ecosystem."
+      "Zero Truck Stop Misery: Automatically filters out bleak industrial substations and unshaded gravel lots.",
+      "Artisan Coffee & Bakery Sync: Pairs optimal 20-to-25 minute DC fast charge windows with third-wave roasteries and clean dining within a 2-minute walk.",
+      "Dietary Preference Matching: Remembers whether you want South Indian filter coffee, pure vegetarian dining, or pet-friendly green lawns."
     ]
   },
   {
     icon: <Globe className="w-8 h-8" />,
-    title: "For the EV Ecosystem",
+    title: "Conversational In-Cockpit Voice",
     benefits: [
-      "Accelerates EV Adoption: Removes the friction and anxiety associated with long-distance EV travel.",
-      "Data-Driven Insights: Helps optimize charging station placements and infrastructure planning."
+      "Hands-Free In-Cabin Co-Pilot: Voice queries powered by natural text-to-speech explain exactly why a stop was scheduled without taking your eyes off the asphalt.",
+      "Dynamic Headwind Compensation: Synthesizes live OpenWeather wind vectors to predict HVAC thermal draw and aero drag penalties in real time.",
+      "Rock-Solid Arrival Reserves: Guarantees your designated battery safety buffer (e.g. 15% SoC) at your final resort or hotel."
     ]
   }
 ];
@@ -40,7 +42,7 @@ export default function EvCopilotValueProposition() {
             viewport={{ once: true }}
             className="text-4xl md:text-5xl font-bold mb-6"
           >
-            Value <span style={{ color: 'var(--color-accent)' }}>Proposition</span>
+            The EV Co-Pilot <span style={{ color: 'var(--color-accent)' }}>Difference</span>
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -50,7 +52,7 @@ export default function EvCopilotValueProposition() {
             className="text-xl"
             style={{ color: 'var(--color-text-secondary)' }}
           >
-            How Car Co-Pilot helps everyone in the EV ecosystem.
+            Engineered for drivers who want effortless road trips, not range anxiety.
           </motion.p>
         </div>
 

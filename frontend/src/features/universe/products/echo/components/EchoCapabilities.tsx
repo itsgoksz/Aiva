@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Mic, Activity, Clock, CheckCircle2 } from 'lucide-react';
+import { Mic, Activity, CheckCircle2 } from 'lucide-react';
 
 const capabilities = [
   {

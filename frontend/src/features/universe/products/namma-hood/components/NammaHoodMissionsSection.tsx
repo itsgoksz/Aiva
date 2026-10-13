@@ -15,26 +15,26 @@ const INITIAL_MISSIONS: MissionItem[] = [
   {
     id: 'scout',
     title: 'Morning Walk Scout',
-    xp: 20,
+    xp: 25,
     type: 'Scout',
     completed: true,
-    instruction: 'Report 1 litter spot or broken utility during your morning walk.'
+    instruction: 'Geotag 1 garbage blackspot or overflowing pile on your morning walk (+10 Eco Points).'
   },
   {
-    id: 'advocate',
-    title: 'Ward Community Advocate',
-    xp: 30,
-    type: 'Advocate',
+    id: 'rally',
+    title: 'Community Megaphone Rally',
+    xp: 35,
+    type: 'Rally',
     completed: true,
-    instruction: 'Support 2 neighbor-submitted issues in your ward using the Megaphone.'
+    instruction: 'Upvote a neighbor\'s report and help assemble a 3-person weekend cleanup squad.'
   },
   {
-    id: 'verify',
-    title: 'Restoration Inspector',
-    xp: 50,
-    type: 'Verification',
+    id: 'cleanup',
+    title: 'Neighborhood Cleanup Squad',
+    xp: 100,
+    type: 'Cleanup',
     completed: false,
-    instruction: 'Verify a resolved cleanup within 200m using your camera for before/after validation.'
+    instruction: 'Join neighbors to clean a tagged spot, post before/after proof, and unlock breakfast discounts!'
   }
 ];
 
@@ -54,15 +54,15 @@ export default function NammaHoodMissionsSection() {
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-500/20 bg-amber-950/20 mb-4 text-[11px] font-mono uppercase tracking-wider text-amber-300">
             <Flame size={12} className="text-amber-400" />
-            <span>DAILY CIVIC MISSIONS & STREAKS</span>
+            <span>DAILY MISSIONS & ECO-POINTS ECONOMY</span>
           </div>
 
           <h2 className="font-display text-3xl sm:text-4xl font-medium tracking-tight text-white mb-4">
-            Small daily actions that compound into spotless streets.
+            Gamified civic action that pays for your morning breakfast.
           </h2>
 
           <p className="text-neutral-400 text-sm sm:text-base leading-relaxed">
-            Gamified with daily missions, streak bonuses, and split XP rewards when municipal crews clean up your reported spot.
+            Take on daily missions, organize community cleanup drives, and earn SplitXP plus Eco Points redeemable for real breakfast discounts at neighborhood darshinis and cafes.
           </p>
         </div>
 
@@ -78,9 +78,18 @@ export default function NammaHoodMissionsSection() {
             <div className="text-xs font-mono uppercase tracking-wider text-amber-400 font-semibold mt-0.5">
               ACTIVE CIVIC STREAK
             </div>
-            <p className="text-xs text-neutral-400 mt-3 leading-relaxed">
-              You have helped protect your neighborhood 7 days in a row. +15% XP multiplier active.
+            <p className="text-xs text-neutral-400 mt-2 leading-relaxed">
+              7-day neighborhood protection streak. +15% XP multiplier active.
             </p>
+            <div className="mt-4 pt-3 border-t border-white/[0.08] w-full text-left">
+              <div className="flex items-center justify-between text-xs font-mono text-emerald-400">
+                <span>Eco Points:</span>
+                <span className="font-bold">180 🍃</span>
+              </div>
+              <div className="text-[11px] text-amber-300 font-medium mt-1">
+                ☕ Unlocked: 20% off breakfast at Brahmin's & local partner cafes
+              </div>
+            </div>
           </div>
 
           {/* Missions List */}

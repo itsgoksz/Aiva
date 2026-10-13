@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Monitor, Smartphone, Volume2, MessageSquare } from 'lucide-react';
+import { Monitor, Smartphone, Volume2 } from 'lucide-react';
 
 export default function EchoInterfaces() {
   return (

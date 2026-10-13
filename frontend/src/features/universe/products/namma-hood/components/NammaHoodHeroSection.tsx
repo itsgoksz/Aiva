@@ -30,7 +30,7 @@ const SAMPLE_SPOTS: CivicSpot[] = [
     guardian: 'Kavitha R.',
     guardianXp: 1840,
     beforeLabel: 'Reported: Unregulated commercial waste pile',
-    afterLabel: 'Resolved: Cleared & barricaded by BBMP Marshall crew'
+    afterLabel: 'Restored: Sunday neighborhood drive cleaned & cleared (+120 Eco Points)'
   },
   {
     id: 'hsr',
@@ -44,7 +44,7 @@ const SAMPLE_SPOTS: CivicSpot[] = [
     guardian: 'Arun Kumar',
     guardianXp: 2150,
     beforeLabel: 'Reported: Overflowing wet waste container',
-    afterLabel: 'Resolved: Cleared & daily segregation bin installed'
+    afterLabel: 'Restored: Resident cleanup squad cleared & placed potted plants (+95 Eco Points)'
   }
 ];
 
@@ -110,7 +110,7 @@ export default function NammaHoodHeroSection({ onOpenDemo }: NammaHoodHeroSectio
             >
               <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
               <span className="text-[11px] font-mono tracking-wider uppercase font-semibold text-emerald-300">
-                COMMUNITY CIVIC ACTION & RESTORATION
+                GAMIFIED CIVIC CLEANUP & REWARDS PLATFORM
               </span>
             </motion.div>
 
@@ -120,9 +120,9 @@ export default function NammaHoodHeroSection({ onOpenDemo }: NammaHoodHeroSectio
               transition={{ duration: 0.7, delay: 0.1 }}
               className="font-display text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-white leading-[1.08] mb-6"
             >
-              Turn neighborhood litter into{' '}
+              Spot the trash. Clean it together.{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#10B981] via-emerald-300 to-amber-300 font-semibold">
-                resolved action.
+                Earn breakfast on the house.
               </span>
             </motion.h1>
 
@@ -132,7 +132,7 @@ export default function NammaHoodHeroSection({ onOpenDemo }: NammaHoodHeroSectio
               transition={{ duration: 0.7, delay: 0.2 }}
               className="text-base sm:text-lg text-neutral-300 max-w-xl mx-auto lg:mx-0 font-normal leading-relaxed mb-8"
             >
-              Take a 5-second geotagged photo of illegal dumping or broken public utilities. Your neighbors back the report with a single tap, escalating priority to ward marshals with verified photographic proof of resolution.
+              Don't wait months for a government portal to reply. Snap a 5-second geotag of illegal dumping, mobilize your neighbors, clean it up yourselves, and post verified before/after photos. Earn SplitXP and Eco Points redeemable for real discounts on morning idlis, filter coffee, and neighborhood cafe treats.
             </motion.p>
 
             <motion.div
@@ -143,17 +143,21 @@ export default function NammaHoodHeroSection({ onOpenDemo }: NammaHoodHeroSectio
             >
               <button
                 onClick={onOpenDemo}
-                className="px-6 py-3.5 rounded-xl font-medium text-sm text-black bg-[#10B981] hover:bg-[#059669] transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/25 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                className="px-6 py-3.5 rounded-xl font-semibold text-sm text-black transition-colors duration-200 hover:bg-[#059669] active:opacity-90 flex items-center gap-2 cursor-pointer"
+                style={{
+                  backgroundColor: "#10B981",
+                  boxShadow: "0 8px 24px rgba(16, 185, 129, 0.35)",
+                }}
               >
                 <Camera size={16} className="text-black" />
-                <span>Simulate a 5-Sec Report</span>
+                <span>Simulate a 5-Sec Report & Cleanup</span>
               </button>
 
               <a
                 href="#territories"
-                className="px-6 py-3.5 rounded-xl font-medium text-sm text-neutral-300 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 transition-all flex items-center gap-2 cursor-pointer"
+                className="px-6 py-3.5 rounded-xl font-medium text-sm text-neutral-300 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-white/20 transition-colors duration-200 flex items-center gap-2 cursor-pointer"
               >
-                <span>View Ward Territories</span>
+                <span>View Ward Territories & Guardians</span>
                 <ChevronRight size={16} />
               </a>
             </motion.div>
@@ -167,15 +171,15 @@ export default function NammaHoodHeroSection({ onOpenDemo }: NammaHoodHeroSectio
             >
               <div>
                 <div className="text-xl font-bold font-mono text-emerald-400">5 seconds</div>
-                <div className="text-xs text-neutral-400 mt-0.5">To snap & report</div>
+                <div className="text-xs text-neutral-400 mt-0.5">To snap & geotag</div>
               </div>
               <div>
-                <div className="text-xl font-bold font-mono text-amber-400">100% Verified</div>
-                <div className="text-xs text-neutral-400 mt-0.5">Before/After photos</div>
+                <div className="text-xl font-bold font-mono text-amber-400">SplitXP</div>
+                <div className="text-xs text-neutral-400 mt-0.5">Shared with spotter & crew</div>
               </div>
               <div>
-                <div className="text-xl font-bold font-mono text-white">198 Wards</div>
-                <div className="text-xs text-neutral-400 mt-0.5">Bangalore coverage</div>
+                <div className="text-xl font-bold font-mono text-white">Eco Points</div>
+                <div className="text-xs text-neutral-400 mt-0.5">Breakfast discounts & perks</div>
               </div>
             </motion.div>
           </div>

@@ -25,7 +25,7 @@ const products: Product[] = [
     id: 'aiva',
     name: 'Aiva',
     emoji: '🧠',
-    tagline: 'Your adaptive intelligence layer for thinking, building, and deciding faster.',
+    tagline: 'Autonomous 24/7 voice AI receptionist: answers inbound calls, locks calendar slots, and books appointments.',
     color: '#A66B8E',
     glowColor: 'rgba(166, 107, 142, 0.3)',
     route: '/products/aiva',
@@ -34,7 +34,7 @@ const products: Product[] = [
     id: 'wellora',
     name: 'Wellora',
     emoji: '🌿',
-    tagline: 'A quiet system that helps you understand and optimize your physical and mental wellbeing.',
+    tagline: 'Voice-first nutrition companion: speak your meals naturally, track macros, and get non-judgmental guidance.',
     color: '#2ECC71',
     glowColor: 'rgba(46, 204, 113, 0.25)',
     route: '/products/wellora',
@@ -43,7 +43,7 @@ const products: Product[] = [
     id: 'ev-copilot',
     name: 'EV Copilot',
     emoji: '⚡',
-    tagline: 'A real-time intelligence layer for EV routing, charging, and energy decisions.',
+    tagline: 'Multi-agent EV co-pilot: models aerodynamic & mountain climb drag, pairing fast chargers with artisan coffee stops.',
     color: '#6D5EF7',
     glowColor: 'rgba(109, 94, 247, 0.3)',
     route: '/products/ev-copilot',
@@ -70,7 +70,7 @@ const products: Product[] = [
     id: 'namma-hood',
     name: 'Namma Hood',
     emoji: '📢',
-    tagline: 'A real-time, community-driven issue reporting platform for your neighborhood.',
+    tagline: 'Gamified community cleanups: spot trash, clean it together, and earn Eco Points for breakfast discounts.',
     color: '#10b981',
     glowColor: 'rgba(16, 185, 129, 0.25)',
     route: '/products/namma-hood',
@@ -99,6 +99,7 @@ export default function UniverseMap() {
 
   return (
     <section
+      id="constellation"
       style={{
         position: 'relative',
         zIndex: 10,

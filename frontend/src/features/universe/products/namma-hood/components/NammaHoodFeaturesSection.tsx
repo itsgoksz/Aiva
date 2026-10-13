@@ -69,9 +69,9 @@ export default function NammaHoodFeaturesSection() {
               </div>
             </div>
             <div className="md:w-2/3">
-              <h3 className="text-2xl font-bold mb-3">Gamification & XP</h3>
+              <h3 className="text-2xl font-bold mb-3">SplitXP & Breakfast Perks</h3>
               <p className="text-lg leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
-                Every report and cleanup earns you XP. Climb the local leaderboards, earn exclusive titles like "Eco-Guardian", and compete with neighboring sectors.
+                Every verified cleanup shares SplitXP between the spotter and the cleanup crew. Earn Eco Points to redeem in the Eco Shop for real discounts on morning breakfast at partner darshinis, golden profile auras, and titles like "The Trash Terminator".
               </p>
             </div>
           </motion.div>
@@ -89,9 +89,9 @@ export default function NammaHoodFeaturesSection() {
               </div>
             </div>
             <div className="md:w-2/3 md:text-right">
-              <h3 className="text-2xl font-bold mb-3">Frictionless Reporting</h3>
+              <h3 className="text-2xl font-bold mb-3">5-Second Snap & Cleanup Drives</h3>
               <p className="text-lg leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
-                Quickly capture an issue using the bottom '+' button. Provide a photo and description in seconds to create a new mission for the community.
+                Auto-lock GPS coordinates and capture before-photos in five seconds. Rally neighbors to organize a weekend cleanup drive, upload verified after-photos, and celebrate clean streets together.
               </p>
             </div>
           </motion.div>

@@ -27,7 +27,7 @@ export default function Navbar({ onOpenDemo }: NavbarProps) {
           </Link>
           <button
             onClick={onOpenDemo}
-            className="px-5 py-2.5 rounded-lg text-sm font-semibold transition-all hover:scale-105 active:scale-95 text-white"
+            className="px-5 py-2.5 rounded-lg text-sm font-semibold transition-all hover:brightness-110 active:opacity-90 text-white"
             style={{ backgroundColor: 'var(--color-accent)' }}
           >
             Book a Demo

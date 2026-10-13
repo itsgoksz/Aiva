@@ -30,7 +30,7 @@ export default function FinalCTASection({ onOpenDemo }: FinalCTASectionProps) {
           
           <button
             onClick={onOpenDemo}
-            className="px-10 py-5 rounded-xl font-bold text-xl transition-all hover:scale-[1.02] active:scale-[0.98] text-white shadow-2xl"
+            className="px-10 py-5 rounded-xl font-bold text-xl transition-all hover:brightness-110 active:opacity-90 text-white shadow-2xl"
             style={{ backgroundColor: 'var(--color-accent)', boxShadow: '0 10px 40px -10px var(--color-accent)' }}
           >
             Hire Aiva Today

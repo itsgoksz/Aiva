@@ -127,7 +127,11 @@ export default function EvCopilotHeroSection({ onOpenDemo }: EvCopilotHeroSectio
             >
               <button
                 onClick={onOpenDemo}
-                className="px-6 py-3.5 rounded-xl font-medium text-sm text-white bg-[#6D5EF7] hover:bg-[#5846f5] transition-all flex items-center gap-2 shadow-lg shadow-violet-600/30 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                className="px-6 py-3.5 rounded-xl font-semibold text-sm text-white transition-colors duration-200 hover:bg-[#5846f5] active:opacity-90 flex items-center gap-2 cursor-pointer"
+                style={{
+                  backgroundColor: "#6D5EF7",
+                  boxShadow: "0 8px 24px rgba(109, 94, 247, 0.35)",
+                }}
               >
                 <Zap size={16} className="text-[#00E5FF]" />
                 <span>Simulate Route & Charging</span>
@@ -135,7 +139,7 @@ export default function EvCopilotHeroSection({ onOpenDemo }: EvCopilotHeroSectio
 
               <a
                 href="#architecture"
-                className="px-6 py-3.5 rounded-xl font-medium text-sm text-neutral-300 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 transition-all flex items-center gap-2 cursor-pointer"
+                className="px-6 py-3.5 rounded-xl font-medium text-sm text-neutral-300 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-white/20 transition-colors duration-200 flex items-center gap-2 cursor-pointer"
               >
                 <span>How the Agent Bus Works</span>
                 <ChevronRight size={16} />

@@ -33,10 +33,14 @@ export default function EvCopilotFinalCTA({ onOpenDemo }: EvCopilotFinalCTAProps
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
           <button
             onClick={onOpenDemo}
-            className="w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-sm text-white bg-[#6D5EF7] hover:bg-[#5846f5] transition-all flex items-center justify-center gap-2.5 shadow-xl shadow-violet-600/30 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            className="group w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-sm sm:text-base text-white transition-colors duration-200 hover:bg-[#5846f5] active:opacity-90 flex items-center justify-center gap-2.5 cursor-pointer"
+            style={{
+              backgroundColor: "#6D5EF7",
+              boxShadow: "0 10px 30px rgba(109, 94, 247, 0.35)",
+            }}
           >
             <span>Launch Route Simulator</span>
-            <ArrowRight size={16} />
+            <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
           </button>
         </div>
 

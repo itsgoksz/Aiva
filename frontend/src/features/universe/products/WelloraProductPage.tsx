@@ -7,7 +7,7 @@
  */
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import WelloraHeroSection from "./wellora/components/WelloraHeroSection";
@@ -21,6 +21,7 @@ import WelloraFooter from "./wellora/components/WelloraFooter";
 
 export default function WelloraProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
+  const [showEnterTransition, setShowEnterTransition] = useState(true);
 
   // Scroll to top on mount & enforce Wellora color tokens
   useEffect(() => {
@@ -53,19 +54,25 @@ export default function WelloraProductPage() {
       className="relative min-h-screen selection:bg-[#2ECC71] selection:text-black"
       style={{ backgroundColor: "#060C08", color: "#FFFFFF" }}
     >
-      {/* Seamless Transition Radial Overlay */}
-      <motion.div
-        initial={{ clipPath: "circle(150% at 50% 50%)" }}
-        animate={{ clipPath: "circle(0% at 50% 50%)" }}
-        transition={{ duration: 0.8, ease: [0.7, 0, 0.3, 1] }}
-        style={{
-          position: "fixed",
-          top: 0, left: 0, right: 0, bottom: 0,
-          zIndex: 9999,
-          backgroundColor: "#2ECC71",
-          pointerEvents: "none"
-        }}
-      />
+      {/* Seamless Enter World Transition */}
+      <AnimatePresence>
+        {showEnterTransition && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            onAnimationComplete={() => setShowEnterTransition(false)}
+            style={{
+              position: "fixed",
+              top: 0, left: 0, right: 0, bottom: 0,
+              zIndex: 9999,
+              backgroundColor: "#2ECC71",
+              pointerEvents: "none"
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Foreground Content */}
       <div style={{ position: "relative", zIndex: 10 }}>
@@ -161,8 +168,8 @@ export default function WelloraProductPage() {
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
             <button
               onClick={() => setIsDemoModalOpen(true)}
-              className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-[#060C08] transition-all cursor-pointer flex items-center gap-1.5 shadow-md shadow-emerald-500/20 hover:scale-[1.03] active:scale-[0.98]"
-              style={{ backgroundColor: "#2ECC71" }}
+              className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-[#060C08] transition-colors duration-200 cursor-pointer flex items-center gap-1.5 hover:bg-[#27ae60] active:opacity-90"
+              style={{ backgroundColor: "#2ECC71", boxShadow: "0 4px 14px rgba(46, 204, 113, 0.35)" }}
             >
               <Sparkles size={14} />
               <span>Get Beta Access</span>

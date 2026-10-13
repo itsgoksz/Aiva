@@ -80,9 +80,9 @@ export default function AivaRoiCalculatorSection() {
                 </div>
                 <input
                   type="range"
-                  min="40"
-                  max="350"
-                  step="5"
+                  min="500"
+                  max="6000"
+                  step="100"
                   value={averageTicket}
                   onChange={(e) => setAverageTicket(Number(e.target.value))}
                   className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-emerald-400"

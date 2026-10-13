@@ -40,7 +40,7 @@ export default function HeroSection({ onOpenDemo }: HeroSectionProps) {
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                 <button
                   onClick={onOpenDemo}
-                  className="px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto text-white"
+                  className="px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:brightness-110 active:opacity-90 w-full sm:w-auto text-white"
                   style={{ backgroundColor: 'var(--color-accent)', boxShadow: 'var(--shadow-premium)' }}
                 >
                   Book a Demo

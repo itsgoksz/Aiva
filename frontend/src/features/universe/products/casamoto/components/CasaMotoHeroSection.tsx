@@ -101,19 +101,19 @@ export default function CasaMotoHeroSection({ onOpenDemo }: CasaMotoHeroSectionP
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-10">
                 <button
                   onClick={onOpenDemo}
-                  className="px-8 py-4 rounded-xl font-semibold text-base sm:text-lg transition-all hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto text-black flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                  className="group px-8 py-4 rounded-xl font-semibold text-base sm:text-lg transition-colors duration-200 hover:bg-[#FFA800] active:opacity-90 w-full sm:w-auto text-black flex items-center justify-center gap-2 cursor-pointer"
                   style={{
                     backgroundColor: "#FF6B00",
                     boxShadow: "0 10px 30px rgba(255, 107, 0, 0.35)",
                   }}
                 >
                   <span>Get Early Access</span>
-                  <ChevronRight size={18} />
+                  <ChevronRight size={18} className="transition-transform duration-200 group-hover:translate-x-1" />
                 </button>
 
                 <a
                   href="#garage-demo"
-                  className="px-7 py-4 rounded-xl font-medium text-base transition-all hover:bg-white/[0.08] active:scale-[0.98] w-full sm:w-auto text-white/90 border border-white/10 flex items-center justify-center gap-2"
+                  className="px-7 py-4 rounded-xl font-medium text-base transition-colors duration-200 hover:bg-white/[0.08] active:opacity-90 w-full sm:w-auto text-white/90 hover:text-white border border-white/10 hover:border-white/20 flex items-center justify-center gap-2"
                   style={{ background: "rgba(255, 255, 255, 0.03)" }}
                 >
                   <Wrench size={18} className="text-[#FF6B00]" />
@@ -322,7 +322,7 @@ export default function CasaMotoHeroSection({ onOpenDemo }: CasaMotoHeroSectionP
                   <button
                     onClick={handleSimulateTrip}
                     disabled={isSimulating}
-                    className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] active:scale-95 text-white font-mono text-xs flex items-center justify-center gap-2 border border-white/10 transition-all cursor-pointer shrink-0"
+                    className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] active:opacity-90 text-white font-mono text-xs flex items-center justify-center gap-2 border border-white/10 transition-colors cursor-pointer shrink-0"
                   >
                     <Play size={13} className={isSimulating ? "animate-spin text-[#FF6B00]" : "text-[#FF6B00]"} />
                     <span>{isSimulating ? "Simulating +150km..." : "Simulate 150km Ride"}</span>

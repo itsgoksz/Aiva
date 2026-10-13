@@ -155,7 +155,7 @@ export default function AivaDemoModal({ isOpen, onClose }: AivaDemoModalProps) {
                 onClick={() => startCall(sc)}
                 className={`p-3 rounded-xl text-left border transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-[#A66B8E]/25 border-[#A66B8E]/60 text-white shadow-md shadow-[#A66B8E]/20'
+                    ? 'bg-[#A66B8E]/25 border-[#A66B8E]/60 text-white shadow-md'
                     : 'bg-white/[0.02] border-white/[0.06] text-neutral-400 hover:text-neutral-200'
                 }`}
               >
@@ -181,7 +181,7 @@ export default function AivaDemoModal({ isOpen, onClose }: AivaDemoModalProps) {
               </p>
               <button
                 onClick={() => startCall(selectedScenario)}
-                className="px-6 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#A66B8E] hover:bg-[#8e5276] transition-all flex items-center gap-2 mx-auto cursor-pointer shadow-lg shadow-[#A66B8E]/30"
+                className="px-6 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#A66B8E] hover:bg-[#B882A2] transition-colors duration-200 flex items-center gap-2 mx-auto cursor-pointer active:opacity-90" style={{ boxShadow: "0 4px 14px rgba(166, 107, 142, 0.35)" }}
               >
                 <PhoneCall size={14} />
                 <span>Answer Call with Aiva</span>

@@ -34,7 +34,7 @@ export default function SingularityIntro() {
   const introOpacity = useTransform(scrollYProgress, [0.85, 1.0], [1, 0]);
 
   return (
-    <div ref={containerRef} style={{ height: '400vh', position: 'relative' }}>
+    <div id="singularity" ref={containerRef} style={{ height: '400vh', position: 'relative' }}>
       <motion.div
         style={{
           position: 'sticky',

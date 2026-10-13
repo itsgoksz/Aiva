@@ -66,7 +66,11 @@ export default function AirportDigitalTwinFinalCTA({ onOpenDemo }: AirportDigita
         >
           <button
             onClick={onOpenDemo}
-            className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-[#00E5FF] hover:bg-cyan-300 text-black font-semibold text-sm transition-all duration-300 shadow-[0_0_35px_rgba(0,229,255,0.3)] hover:shadow-[0_0_45px_rgba(0,229,255,0.5)] flex items-center justify-center gap-2.5 cursor-pointer"
+            className="group w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-sm sm:text-base text-black transition-colors duration-200 hover:bg-cyan-300 active:opacity-90 flex items-center justify-center gap-2.5 cursor-pointer"
+            style={{
+              backgroundColor: "#00E5FF",
+              boxShadow: "0 10px 30px rgba(0, 229, 255, 0.35)",
+            }}
           >
             <Plane size={18} />
             <span>Launch Flight Simulator</span>
@@ -76,7 +80,7 @@ export default function AirportDigitalTwinFinalCTA({ onOpenDemo }: AirportDigita
             href="https://github.com/gokulgautham/live-airport-simulator"
             target="_blank"
             rel="noreferrer"
-            className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] text-white font-medium text-sm border border-white/[0.1] transition-all duration-300 flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-white font-medium text-sm sm:text-base border border-white/10 hover:border-white/20 transition-colors duration-200 flex items-center justify-center gap-2"
           >
             <ExternalLink size={16} />
             <span>Explore Code on GitHub</span>

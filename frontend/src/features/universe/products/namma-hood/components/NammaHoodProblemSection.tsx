@@ -6,22 +6,22 @@ const CIVIC_PAIN_POINTS = [
     icon: FileQuestion,
     title: 'The bureaucratic black hole',
     stat: '84% portal drop-off rate',
-    description: 'Government portals force you through multi-page forms, municipal department codes, and captchas. After all that effort, you get an obscure ticket ID that disappears without action.',
+    description: 'Government portals force you through multi-page forms, municipal department codes, and captchas. After all that effort, you get an obscure ticket ID that disappears into digital oblivion.',
     quote: '"I tried reporting open garbage dumping twice. The portal required me to know the exact sub-divisional executive engineer code."'
   },
   {
     icon: Users,
-    title: 'The isolated resident',
-    stat: 'Zero community leverage',
-    description: 'A single resident complaining is easy for municipal contractors to ignore. Without a shared neighborhood feed, neighbors have no way to rally together and prove collective urgency.',
-    quote: '"When one person complains, nothing happens. When 50 neighbors stand behind a report, the cleanup crew arrives that evening."'
+    title: 'Waiting for someone else to care',
+    stat: 'Months of inaction',
+    description: 'Waiting for ward authorities to clear a street corner usually means months of rotting trash. Without a way to rally neighbors into direct action, everyone walks past feeling frustrated and powerless.',
+    quote: '"We waited four months for someone to clear the corner lot. Finally three neighbors and I took 45 minutes on Sunday morning and transformed the spot ourselves."'
   },
   {
     icon: XCircle,
     title: 'Ghost ticket closures',
     stat: 'Unverified status updates',
-    description: 'Tickets routinely get marked as \'Resolved\' in municipal backends without anyone ever visiting the physical spot. No photographic evidence, no before-and-after verification.',
-    quote: '"My grievance was marked \'Completed\' while the debris was still overflowing onto the road."'
+    description: 'Public grievance portals routinely mark tickets as \'Resolved\' without anyone ever touching the physical debris. Zero before-and-after proof, zero community accountability.',
+    quote: '"My grievance was marked \'Completed\' while the debris was still overflowing right onto the road."'
   }
 ];
 
@@ -38,15 +38,15 @@ export default function NammaHoodProblemSection() {
         <div className="text-center max-w-2xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-red-500/20 bg-red-950/20 mb-4 text-[11px] font-mono uppercase tracking-wider text-red-300">
             <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
-            <span>The Reality of Public Grievance Portals</span>
+            <span>The Broken Grievance Loophole</span>
           </div>
 
           <h2 className="font-display text-3xl sm:text-4xl font-medium tracking-tight text-white mb-4">
-            Why reporting civic issues still feels futile.
+            Why waiting for bureaucratic help feels futile.
           </h2>
 
           <p className="text-neutral-400 text-sm sm:text-base leading-relaxed">
-            Neighborhoods don\'t get cleaned up by filing endless paperwork. They get restored when citizens have transparent, collective proof.
+            Neighborhoods don't get cleaned by filing paperwork into a void. They get restored when residents organize directly, verify real progress, and get rewarded for their efforts.
           </p>
         </div>
 

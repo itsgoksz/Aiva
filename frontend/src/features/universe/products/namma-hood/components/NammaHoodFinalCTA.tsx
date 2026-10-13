@@ -27,28 +27,32 @@ export default function NammaHoodFinalCTA({ onOpenDemo }: NammaHoodFinalCTAProps
         </h2>
 
         <p className="text-base sm:text-lg text-neutral-300 mb-10 max-w-2xl mx-auto leading-relaxed font-normal">
-          No more unanswered complaint portals. Report issues with 5-second geotags, rally your neighborhood, and see verified cleanup proof.
+          No more unanswered grievance portals. Geotag blackspots in 5 seconds, rally neighbors into a weekend cleanup squad, post verified photo proof, and earn Eco Points for breakfast discounts at local cafes.
         </p>
         
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
           <button
             onClick={onOpenDemo}
-            className="w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-sm text-black bg-[#10B981] hover:bg-[#059669] transition-all flex items-center justify-center gap-2.5 shadow-xl shadow-emerald-500/25 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            className="group w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-sm sm:text-base text-black transition-colors duration-200 hover:bg-[#059669] active:opacity-90 flex items-center justify-center gap-2.5 cursor-pointer"
+            style={{
+              backgroundColor: "#10B981",
+              boxShadow: "0 10px 30px rgba(16, 185, 129, 0.35)",
+            }}
           >
-            <span>Simulate a 5-Second Report</span>
-            <ArrowRight size={16} />
+            <span>Simulate Report & Cleanup Drive</span>
+            <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
           </button>
         </div>
 
-        <div className="flex items-center justify-center gap-6 text-xs text-neutral-400 font-mono">
+        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs text-neutral-400 font-mono">
           <span className="flex items-center gap-1.5">
             <ShieldCheck size={14} className="text-emerald-400" />
-            <span>100% Geotagged before/after photos</span>
+            <span>100% Geotagged before/after proof</span>
           </span>
           <span className="text-neutral-600">•</span>
-          <span>Zero bureaucratic paperwork</span>
+          <span>SplitXP rewards for solvers & spotters</span>
           <span className="text-neutral-600">•</span>
-          <span>Community governed</span>
+          <span>Eco Points for local breakfast perks</span>
         </div>
       </div>
     </section>
