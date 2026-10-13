@@ -1,41 +1,49 @@
 <p align="center">
-  <img src="assets/logo.png" alt="Aiva Logo" width="130" style="border-radius: 26px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);" />
+  <img src="assets/logo.png" alt="Aiva Logo" width="120" style="border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);" />
 </p>
 
 # 🤖 Aiva
 
-> **Autonomous voice AI receptionist & appointment booking platform for high-touch businesses.** Never miss a client call again. Answers inbound calls, checks live staff availability, schedules appointments, and sends instant confirmations.
+> **Autonomous voice AI receptionist & appointment booking platform for high-touch businesses.** Answers inbound client phone calls 24/7 in natural voice, cross-checks real specialist calendars, prevents double-booking, and texts instant confirmations.
 
 <p align="center">
-  <img src="assets/preview.png" alt="Aiva Operations Dashboard" width="100%" style="border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);" />
+  <img src="assets/aiva_hero_preview.png" alt="Aiva Product Showcase" width="100%" style="border-radius: 18px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.12);" />
 </p>
 
 ---
 
-## The Problem Aiva Solves
+## ⚡ The High-Touch Business Dilemma
 
-For appointment-driven businesses—luxury salons, aesthetic clinics, wellness spas, and boutique fitness studios—the front desk is a chronic bottleneck:
-- **Missed Inbound Calls:** Up to 30% of calls go unanswered during peak operating hours or after closing, directly forfeiting high-ticket appointments.
-- **Double-Bookings & Calendar Chaos:** Front-desk staff constantly juggle multi-staff schedules, service durations, and client preferences on paper or fragmented tools.
-- **No-Show Revenue Loss:** Without instant calendar confirmations and automated reminders, no-show rates eat into specialist earnings.
+For appointment-driven businesses—luxury salons, aesthetic medical clinics, wellness spas, and boutique fitness studios—the front desk is a chronic bottleneck:
+- **30% Missed Inbound Calls:** During peak hours or after closing, calls roll to voicemail. High-ticket clients rarely leave messages—they simply call your competitor.
+- **Calendar Fragmentation & Double-Bookings:** Receptionists juggle paper appointment books, overlapping stylist schedules, and variable treatment durations on the fly.
+- **Costly No-Shows:** Without instant multi-channel confirmations (WhatsApp, SMS, email), forgotten appointments directly hit specialist earnings.
 
-**Aiva acts as a tireless front-desk coordinator:** answering client calls 24/7 in natural voice, checking real-time staff schedules, booking appointments directly into the calendar, and dispatching instant confirmations over WhatsApp and SMS.
+**Aiva functions as an autonomous front-desk coordinator:** answering client calls 24/7 in low-latency natural voice, looking up specialist availability in real time, locking appointments into the calendar, and dispatching instant confirmations over WhatsApp and SMS.
 
 ---
 
 ## 🏢 Tailored for High-Touch Verticals
 
 <p align="center">
-  <img src="assets/luxury-salon.png" width="23%" alt="Luxury Salon" style="border-radius: 12px; margin: 4px;" />
-  <img src="assets/clinic-reception.png" width="23%" alt="Aesthetic Clinic" style="border-radius: 12px; margin: 4px;" />
-  <img src="assets/luxury-gym.png" width="23%" alt="Fitness Studio" style="border-radius: 12px; margin: 4px;" />
-  <img src="assets/luxury-home.png" width="23%" alt="Home Services" style="border-radius: 12px; margin: 4px;" />
+  <img src="assets/luxury-salon.png" width="23%" alt="Luxury Salon" style="border-radius: 12px; margin: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);" />
+  <img src="assets/clinic-reception.png" width="23%" alt="Aesthetic Clinic" style="border-radius: 12px; margin: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);" />
+  <img src="assets/luxury-gym.png" width="23%" alt="Fitness Studio" style="border-radius: 12px; margin: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);" />
+  <img src="assets/luxury-home.png" width="23%" alt="Home Services" style="border-radius: 12px; margin: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);" />
 </p>
 
-- **Hair Salons & Spas:** Books haircuts, balayage, massages, and nail treatments with specific stylists based on exact duration.
-- **Aesthetic Clinics:** Schedules consultations and treatments with doctors or specialists while answering common procedural FAQs.
-- **Fitness & Wellness Gyms:** Reserves personal training slots and class orientations.
-- **Luxury Home Services:** Dispatches technicians and confirms appointment windows.
+- **Hair Salons & Spas:** Schedules balayage, haircuts, massages, and nail treatments with specific stylists based on exact duration.
+- **Aesthetic Clinics:** Reserves consultations and clinical treatments with certified doctors while answering procedural FAQs.
+- **Fitness & Wellness Gyms:** Schedules personal training evaluations and class orientations.
+- **Luxury Home Services:** Dispatches technicians and confirms service arrival windows.
+
+---
+
+## 📱 Live Operator Dashboard
+
+<p align="center">
+  <img src="assets/preview.png" alt="Aiva Operator Dashboard Preview" width="100%" style="border-radius: 16px; box-shadow: 0 16px 40px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);" />
+</p>
 
 ---
 
@@ -43,55 +51,55 @@ For appointment-driven businesses—luxury salons, aesthetic clinics, wellness s
 
 ```mermaid
 flowchart TD
-    Caller([Client Calls Inbound Number]) --> VoiceProvider[Voice AI Gateway
-Vapi / Retell AI Webhook]
-    VoiceProvider --> WebhookAPI[FastAPI /webhooks/vapi]
+    Caller([Client Inbound Call]) --> VoiceGateway[Voice AI Gateway
+Vapi / Retell AI Webhooks]
+    VoiceGateway --> FastAPIServer[FastAPI /webhooks/vapi]
     
-    subgraph IntelligenceCore [Aiva Backend Core]
-        WebhookAPI --> IntentRouter[Agent Router & NLP]
-        IntentRouter --> AvailService[Availability Service
-- Checks Operating Hours
-- Verifies Specialist Free Slots
-- Factors Service Duration]
+    subgraph CoreEngine [Aiva Backend Core]
+        FastAPIServer --> Router[Agent Router & NLP Intent Classifier]
+        Router --> AvailService[Availability Service Engine
+- Verifies Operating Hours
+- Checks Specialist Free Slots
+- Factors Service Durations & Buffers]
         
-        AvailService --> BookingEngine[Appointment Booking Engine]
+        AvailService --> BookingEngine[Atomic Appointment Booking Engine]
         BookingEngine --> DB[(SQLAlchemy Database
 app.db / PostgreSQL)]
         
-        BookingEngine --> Notifs[Notification Service
-- WhatsApp Confirmation
-- SMS Alert
-- Email Receipt]
+        BookingEngine --> Notifs[Notification Dispatcher
+- Instant WhatsApp Booking Card
+- Twilio SMS Alert
+- Email Calendar Invite]
     end
 
-    WebhookAPI --> CallLogger[Call Intelligence
-- Audio Recording
-- Full Transcript
-- Sentiment & Duration]
+    FastAPIServer --> CallLogger[Call Intelligence Hub
+- Playable Audio Recordings
+- Full Timestamped Transcripts
+- Caller Sentiment & Conversion Tagging]
     CallLogger --> DB
     DB --> Dashboard[React 19 Operator Dashboard]
 ```
 
 ### Core System Features
-- **Dynamic Slot Availability:** `AvailabilityService` calculates unallocated time slots in real time, preventing double-booking and factoring in buffer times between appointments.
-- **Voice Webhook Orchestration:** Seamless bidirectional webhook integration with Vapi and Retell AI for natural, low-latency conversational audio. Includes local fallback support via Ollama.
-- **Call Recordings & Transcripts:** Full visibility into every phone interaction. Listen to call audio, inspect timestamped transcripts, and evaluate caller sentiment.
-- **Automated Client Confirmations:** Sends immediate booking receipts and calendar invites via WhatsApp, SMS, and Email.
-- **Background Tasks:** Automated scripts manage day-before appointment reminders, no-show tracking, and daily summary reports for business owners.
+- **Dynamic Slot Availability (`availability_service.py`):** Calculates unallocated time slots in real time, preventing double-booking and factoring in required buffer times between appointments.
+- **Dual Voice Provider Support:** Seamless bidirectional webhook architecture supporting Vapi, Retell AI, and ElevenLabs voice models, with an offline local fallback via Ollama.
+- **Call Recordings & Full Transcripts:** Live call log with audio player, duration tracking, full transcription, and sentiment analysis.
+- **Automated Client Confirmations:** Dispatches instant booking receipts and calendar invites via WhatsApp, SMS, and Email.
+- **Background Automation (`app/tasks/`):** Automated background scripts handle 24-hour appointment reminders, no-show recovery, and daily revenue reports for owners.
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology | Details |
+| Layer | Technology | Description |
 | :--- | :--- | :--- |
-| **Backend Framework** | [FastAPI](https://fastapi.tiangolo.com/) (Python 3.10+) | High-throughput asynchronous API & webhook endpoints |
-| **Voice AI Layer** | Vapi & Retell AI | Low-latency voice pipelines with ElevenLabs voice models |
+| **Backend Framework** | [FastAPI](https://fastapi.tiangolo.com/) (Python 3.10+) | High-throughput asynchronous API & webhook router |
+| **Voice AI Layer** | Vapi & Retell AI | Low-latency voice pipelines with ElevenLabs models |
 | **Local Fallback** | Ollama | Offline local AI agent fallback service |
 | **Database & ORM** | [SQLAlchemy](https://www.sqlalchemy.org/) + SQLite / PostgreSQL | Async database sessions with Alembic migrations |
 | **Notifications** | WhatsApp, Twilio SMS & Email | Omni-channel automated client confirmations |
-| **Frontend UI** | [React 19](https://react.dev/) + [Vite](https://vite.dev/) | Sleek, modern operator dashboard with Lucide icons |
-| **Styling** | [Tailwind CSS](https://tailwindcss.com/) | Dark minimalist aesthetic engineered for busy front desks |
+| **Frontend UI** | [React 19](https://react.dev/) + [Vite](https://vite.dev/) | Sleek operator dashboard with Lucide icons |
+| **Styling** | [Tailwind CSS](https://tailwindcss.com/) | Dark minimalist aesthetic built for busy front desks |
 
 ---
 
@@ -99,13 +107,14 @@ app.db / PostgreSQL)]
 
 ```text
 Aiva/
-├── assets/                       # UI previews & vertical graphics
-│   ├── preview.png
-│   ├── logo.png
-│   ├── luxury-salon.png
-│   ├── clinic-reception.png
-│   ├── luxury-gym.png
-│   └── luxury-home.png
+├── assets/                       # Showcases, logos & vertical graphics
+│   ├── aiva_hero_preview.png     # Namma Universe product showcase
+│   ├── preview.png               # Live operator dashboard capture
+│   ├── logo.png                  # Aiva branding
+│   ├── luxury-salon.png          # Salon vertical card
+│   ├── clinic-reception.png      # Clinic vertical card
+│   ├── luxury-gym.png            # Gym vertical card
+│   └── luxury-home.png           # Home services card
 ├── backend/                      # Python FastAPI server
 │   ├── app/
 │   │   ├── api/
@@ -148,7 +157,7 @@ Aiva/
 ### 1. Prerequisites
 - **Python 3.10+**
 - **Node.js 18+**
-- A Vapi or Retell AI account (optional for mock / local mode)
+- A Vapi or Retell AI account (optional for local/mock mode)
 
 ### 2. Clone the Repository
 ```bash
@@ -185,10 +194,10 @@ cd frontend
 npm install
 npm run dev
 ```
-Open [http://localhost:5173](http://localhost:5173) in your browser to access the Aiva operations dashboard.
+Open [http://localhost:5173](http://localhost:5173) in your browser to view the Aiva operations dashboard.
 
 ---
 
 <p align="center">
-  Developed by <a href="https://github.com/itsgoksz">itsgoksz</a>
+  Engineered by <a href="https://github.com/itsgoksz">itsgoksz</a>
 </p>
