@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Camera, MapPin, CheckCircle2, Megaphone, Sparkles } from 'lucide-react';
+import { X, Camera, MapPin, CheckCircle2, Megaphone, Sparkles, ExternalLink } from 'lucide-react';
 
 interface NammaHoodDemoModalProps {
   isOpen: boolean;
@@ -183,12 +183,24 @@ export default function NammaHoodDemoModal({ isOpen, onClose }: NammaHoodDemoMod
                 Your report is pinned to {ward}. Neighbors can now back this spot with the Megaphone, organize a weekend cleanup crew, and submit verified before/after proof. Clean it up to earn SplitXP and redeem your Eco Points for breakfast discounts!
               </p>
 
-              <button
-                onClick={handleReset}
-                className="px-6 py-2.5 rounded-xl text-xs font-semibold text-black bg-[#10B981] hover:bg-[#059669] transition-all cursor-pointer"
-              >
-                Close Simulator
-              </button>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <a
+                  href="https://nammavoice.nammauniverse.in"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-semibold text-black bg-[#10B981] hover:bg-[#059669] transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-md"
+                >
+                  <span>Launch Live App</span>
+                  <ExternalLink size={13} />
+                </a>
+
+                <button
+                  onClick={handleReset}
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-medium text-neutral-300 hover:text-white bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 transition-all cursor-pointer"
+                >
+                  Close Simulator
+                </button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

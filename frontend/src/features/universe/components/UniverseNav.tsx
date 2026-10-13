@@ -8,19 +8,16 @@
  */
 
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useScroll } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
-  Sparkles, 
   Layers, 
   X, 
   ArrowUpRight, 
   Volume2, 
   VolumeX, 
   Compass, 
-  ChevronRight,
-  Radio,
-  Command
+  ExternalLink
 } from 'lucide-react';
 
 interface ProductItem {
@@ -32,6 +29,7 @@ interface ProductItem {
   color: string;
   route: string;
   keyNumber: string;
+  liveUrl?: string;
 }
 
 const PRODUCTS: ProductItem[] = [
@@ -93,7 +91,8 @@ const PRODUCTS: ProductItem[] = [
     emoji: '📢',
     color: '#10B981',
     route: '/products/namma-hood',
-    keyNumber: '6'
+    keyNumber: '6',
+    liveUrl: 'https://nammavoice.nammauniverse.in'
   }
 ];
 
@@ -132,7 +131,6 @@ const playTactileTone = (freq = 720, type: OscillatorType = 'sine', duration = 0
 
 export default function UniverseNav() {
   const navigate = useNavigate();
-  const { scrollY } = useScroll();
   const [activeSection, setActiveSection] = useState('singularity');
   const [isMatrixOpen, setIsMatrixOpen] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -246,7 +244,9 @@ export default function UniverseNav() {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-4 left-0 right-0 z-50 px-4 sm:px-6 pointer-events-none"
+        className={`fixed top-4 left-0 right-0 z-50 px-4 sm:px-6 pointer-events-none transition-all duration-300 ${
+          hasScrolled ? 'translate-y-0 opacity-100' : 'opacity-95'
+        }`}
       >
         <div className="max-w-5xl mx-auto flex items-center justify-between pointer-events-auto">
           
@@ -308,8 +308,11 @@ export default function UniverseNav() {
             {/* Audio Toggle */}
             <button
               onClick={() => {
-                setSoundEnabled(prev => !prev);
-                triggerSound(prev ? 440 : 880);
+                setSoundEnabled(prev => {
+                  const next = !prev;
+                  triggerSound(next ? 880 : 440);
+                  return next;
+                });
               }}
               title={soundEnabled ? 'Mute Interface Audio' : 'Enable Tactile Chimes'}
               className="w-9 h-9 rounded-full border border-white/10 bg-[#070913]/70 backdrop-blur-2xl flex items-center justify-center text-neutral-400 hover:text-white hover:border-white/25 transition-all cursor-pointer"
@@ -415,6 +418,19 @@ export default function UniverseNav() {
                           <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-white/[0.06] text-neutral-400 uppercase">
                             {prod.category}
                           </span>
+                          {prod.liveUrl && (
+                            <a
+                              href={prod.liveUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors flex items-center gap-1 shrink-0"
+                              title="Open live web app"
+                            >
+                              <span>LIVE APP</span>
+                              <ExternalLink size={9} />
+                            </a>
+                          )}
                         </div>
                         <p className="text-[11px] text-neutral-400 truncate mt-0.5 font-normal">
                           {prod.tagline}

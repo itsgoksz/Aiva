@@ -13,6 +13,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useRef, useEffect, useState } from 'react';
+import { ExternalLink } from 'lucide-react';
 import { sharedState } from './ParticleField';
 
 interface ProductWorld {
@@ -26,6 +27,7 @@ interface ProductWorld {
   gradientTo: string;
   route: string;
   available: boolean;
+  liveUrl?: string;
 }
 
 const worlds: ProductWorld[] = [
@@ -100,6 +102,7 @@ const worlds: ProductWorld[] = [
     gradientTo: 'rgba(16, 185, 129, 0.02)',
     route: '/products/namma-hood',
     available: true,
+    liveUrl: 'https://nammavoice.nammauniverse.in',
   },
 ];
 
@@ -412,15 +415,30 @@ export default function ProductWorlds({ activeProductIndexRef }: { activeProduct
                 {world.description}
               </p>
               {world.available && (
-                <div
-                  className="inline-flex items-center gap-2 mt-5 text-sm font-semibold transition-all duration-200"
-                  style={{
-                    fontFamily: "'Space Grotesk', 'Inter', sans-serif",
-                    color: world.color,
-                  }}
-                >
-                  <span>Enter world</span>
-                  <span className="inline-block transition-transform duration-200 group-hover:translate-x-1.5">→</span>
+                <div className="flex flex-wrap items-center gap-3 mt-5">
+                  <div
+                    className="inline-flex items-center gap-2 text-sm font-semibold transition-all duration-200"
+                    style={{
+                      fontFamily: "'Space Grotesk', 'Inter', sans-serif",
+                      color: world.color,
+                    }}
+                  >
+                    <span>Enter world</span>
+                    <span className="inline-block transition-transform duration-200 group-hover:translate-x-1.5">→</span>
+                  </div>
+
+                  {world.liveUrl && (
+                    <a
+                      href={world.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-300 bg-emerald-950/70 hover:bg-emerald-900 border border-emerald-500/40 transition-all hover:scale-105 shadow-sm cursor-pointer z-10"
+                    >
+                      <span>Launch Live App</span>
+                      <ExternalLink size={12} />
+                    </a>
+                  )}
                 </div>
               )}
             </div>

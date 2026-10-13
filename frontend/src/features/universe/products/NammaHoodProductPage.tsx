@@ -9,7 +9,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft, Sparkles, ExternalLink } from "lucide-react";
 import NammaHoodHeroSection from "./namma-hood/components/NammaHoodHeroSection";
 import NammaHoodProblemSection from "./namma-hood/components/NammaHoodProblemSection";
 import NammaHoodTerritorySection from "./namma-hood/components/NammaHoodTerritorySection";
@@ -164,14 +164,25 @@ export default function NammaHoodProductPage() {
           </div>
 
           {/* Actions */}
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <a
+              href="https://nammavoice.nammauniverse.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-emerald-300 bg-emerald-950/60 hover:bg-emerald-900/60 border border-emerald-500/40 transition-colors duration-200 cursor-pointer flex items-center gap-1.5"
+            >
+              <span>Launch Live App</span>
+              <ExternalLink size={13} />
+            </a>
+
             <button
               onClick={() => setIsDemoModalOpen(true)}
-              className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-black transition-colors duration-200 cursor-pointer flex items-center gap-1.5 hover:bg-[#059669] active:opacity-90"
+              className="px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-black transition-colors duration-200 cursor-pointer flex items-center gap-1.5 hover:bg-[#059669] active:opacity-90"
               style={{ backgroundColor: "#10B981", boxShadow: "0 4px 14px rgba(16, 185, 129, 0.35)" }}
             >
               <Sparkles size={14} />
-              <span>Simulate Report & Cleanup</span>
+              <span className="hidden sm:inline">Simulate Report & Cleanup</span>
+              <span className="sm:hidden">Demo</span>
             </button>
           </div>
         </nav>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Megaphone, MapPin, CheckCircle2, ChevronRight, Camera } from 'lucide-react';
+import { Megaphone, MapPin, CheckCircle2, ChevronRight, Camera, ExternalLink } from 'lucide-react';
 
 interface CivicSpot {
   id: string;
@@ -141,16 +141,26 @@ export default function NammaHoodHeroSection({ onOpenDemo }: NammaHoodHeroSectio
               transition={{ duration: 0.7, delay: 0.3 }}
               className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mb-10"
             >
-              <button
-                onClick={onOpenDemo}
-                className="px-6 py-3.5 rounded-xl font-semibold text-sm text-black transition-colors duration-200 hover:bg-[#059669] active:opacity-90 flex items-center gap-2 cursor-pointer"
+              <a
+                href="https://nammavoice.nammauniverse.in"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3.5 rounded-xl font-semibold text-sm text-black transition-all duration-200 hover:bg-[#059669] hover:scale-[1.02] active:opacity-90 flex items-center gap-2 cursor-pointer shadow-lg"
                 style={{
                   backgroundColor: "#10B981",
                   boxShadow: "0 8px 24px rgba(16, 185, 129, 0.35)",
                 }}
               >
-                <Camera size={16} className="text-black" />
-                <span>Simulate a 5-Sec Report & Cleanup</span>
+                <span>Launch Live App</span>
+                <ExternalLink size={16} className="text-black" />
+              </a>
+
+              <button
+                onClick={onOpenDemo}
+                className="px-6 py-3.5 rounded-xl font-medium text-sm text-neutral-200 hover:text-white bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 hover:border-white/20 transition-all duration-200 flex items-center gap-2 cursor-pointer"
+              >
+                <Camera size={16} className="text-emerald-400" />
+                <span>Simulate 5-Sec Report</span>
               </button>
 
               <a

@@ -1,4 +1,4 @@
-import { ArrowRight, Megaphone, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Megaphone, ShieldCheck, ExternalLink } from 'lucide-react';
 
 interface NammaHoodFinalCTAProps {
   onOpenDemo: () => void;
@@ -31,15 +31,25 @@ export default function NammaHoodFinalCTA({ onOpenDemo }: NammaHoodFinalCTAProps
         </p>
         
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
-          <button
-            onClick={onOpenDemo}
-            className="group w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-sm sm:text-base text-black transition-colors duration-200 hover:bg-[#059669] active:opacity-90 flex items-center justify-center gap-2.5 cursor-pointer"
+          <a
+            href="https://nammavoice.nammauniverse.in"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-sm sm:text-base text-black transition-all duration-200 hover:bg-[#059669] hover:scale-[1.02] active:opacity-90 flex items-center justify-center gap-2.5 cursor-pointer shadow-lg"
             style={{
               backgroundColor: "#10B981",
-              boxShadow: "0 10px 30px rgba(16, 185, 129, 0.35)",
+              boxShadow: "0 10px 30px rgba(16, 185, 129, 0.4)",
             }}
           >
-            <span>Simulate Report & Cleanup Drive</span>
+            <span>Launch Live Application</span>
+            <ExternalLink size={17} className="text-black" />
+          </a>
+
+          <button
+            onClick={onOpenDemo}
+            className="group w-full sm:w-auto px-7 py-4 rounded-xl font-medium text-sm sm:text-base text-neutral-200 hover:text-white bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 hover:border-white/20 transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer"
+          >
+            <span>Simulate Report & Cleanup</span>
             <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
           </button>
         </div>
