@@ -1,13 +1,9 @@
-<p align="center">
-  <img src="assets/logo.png" alt="Aiva Logo" width="120" style="border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);" />
-</p>
-
 # Aiva
 
 > Autonomous voice AI receptionist and appointment booking platform for high-touch businesses. Answers inbound client phone calls 24/7 in natural voice, cross-checks real specialist calendars, prevents double-booking, and texts instant confirmations.
 
 <p align="center">
-  <img src="assets/preview.png" alt="Aiva Operator Dashboard" width="100%" style="border-radius: 18px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.12);" />
+  <img src="assets/voice_call_preview.png" alt="Aiva Conversational Voice Call Booking Experience" width="480" style="border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.12);" />
 </p>
 
 ---
@@ -47,10 +43,6 @@ Whether it is a dental practice handling urgent toothache calls, a hair salon ma
 - **Atomic Calendar Synchronization:** Cross-checks doctor, stylist, or specialist schedules in real time, preventing accidental double-bookings and respecting buffer times.
 - **Cuts Administrative Overhead:** Eliminates repetitive phone tag and manual intake data entry, freeing staff to focus entirely on delivering exceptional in-person client care.
 
-<p align="center">
-  <img src="assets/voice_call_preview.png" alt="Aiva Conversational Voice Call Booking Experience" width="480" style="border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.12);" />
-</p>
-
 ---
 
 ## Live Operator Dashboard
@@ -60,6 +52,10 @@ The Aiva operator console provides real-time visibility into the daily workflow:
 - **Unified Flow & Live Queue:** Instant overview of confirmed client appointments, upcoming walk-ins, and automated phone bookings.
 - **AI Intelligence & Staff Insights:** Real-time tracking of specialist capacity, open time slots, and proactive notifications for unscheduled return clients.
 - **Voice Intelligence & Call Transcripts:** Complete inbound call feed with duration tracking, intent classification, customer sentiment, and verified booking outcomes.
+
+<p align="center">
+  <img src="assets/preview.png" alt="Aiva Operator Dashboard" width="100%" style="border-radius: 18px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.12);" />
+</p>
 
 ---
 
@@ -123,10 +119,9 @@ app.db / PostgreSQL)]
 
 ```text
 Aiva/
-├── assets/                       # Showcases, logos & interface previews
-│   ├── preview.png               # Live operator dashboard capture
+├── assets/                       # Showcases & interface previews
 │   ├── voice_call_preview.png    # Inbound voice booking call & WhatsApp confirmation
-│   └── logo.png                  # Aiva branding
+│   └── preview.png               # Live operator dashboard capture
 ├── backend/                      # Python FastAPI server
 │   ├── app/
 │   │   ├── api/
