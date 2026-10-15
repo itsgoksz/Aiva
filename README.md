@@ -25,10 +25,31 @@ Aiva functions as an autonomous front-desk coordinator: answering client calls 2
 
 ## Tailored for Appointment-Driven Verticals
 
-- **Hair Salons & Spas:** Schedules balayage, haircuts, massages, and nail treatments with specific stylists based on exact duration.
+- **Dental & Medical Clinics:** Handles urgent emergency slots, routine hygiene exams, and doctor availability inquiries while texting intake forms in advance.
+- **Hair Salons & Spas:** Schedules balayage, haircuts, massages, and styling with specific specialists based on exact service durations.
 - **Aesthetic Clinics:** Reserves consultations and clinical treatments with certified doctors while answering procedural FAQs.
-- **Fitness & Wellness Studios:** Schedules personal training evaluations and class orientations.
-- **Luxury Home Services:** Dispatches technicians and confirms service arrival windows.
+- **Fitness & Wellness Studios:** Schedules personal training evaluations, recovery sessions, and class orientations.
+- **Home & Professional Services:** Dispatches technicians, handles quotes, and confirms service arrival windows.
+
+---
+
+## Effortless Voice Booking for Customers & Businesses
+
+Whether it is a dental practice handling urgent toothache calls, a hair salon managing high-demand stylists, or any service enterprise fielding daily inquiries—Aiva eliminates front-desk bottlenecks on both sides of the phone line:
+
+### For Customers
+- **Zero Hold Time, Zero Phone Menus:** Callers speak directly to a calm, natural voice without navigating confusing IVR menus or waiting on hold.
+- **Natural Conversational Inquiries:** Customers can ask open questions (*"Hello, I have a bad toothache. Do you have any emergency dentist openings today?"*), request preferred specialists, or check pricing on the fly.
+- **Instant Mobile Confirmation:** The second an appointment is locked, Aiva dispatches an immediate confirmation and pre-visit intake form via WhatsApp and SMS so everything is prepared prior to arrival.
+
+### For Business Owners & Front-Desk Staff
+- **100% Inbound Capture:** Never lose revenue to missed calls during peak service hours, lunch rushes, or after closing time.
+- **Atomic Calendar Synchronization:** Cross-checks doctor, stylist, or specialist schedules in real time, preventing accidental double-bookings and respecting buffer times.
+- **Cuts Administrative Overhead:** Eliminates repetitive phone tag and manual intake data entry, freeing staff to focus entirely on delivering exceptional in-person client care.
+
+<p align="center">
+  <img src="assets/voice_call_preview.png" alt="Aiva Conversational Voice Call Booking Experience" width="480" style="border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.12);" />
+</p>
 
 ---
 
@@ -104,6 +125,7 @@ app.db / PostgreSQL)]
 Aiva/
 ├── assets/                       # Showcases, logos & interface previews
 │   ├── preview.png               # Live operator dashboard capture
+│   ├── voice_call_preview.png    # Inbound voice booking call & WhatsApp confirmation
 │   └── logo.png                  # Aiva branding
 ├── backend/                      # Python FastAPI server
 │   ├── app/
