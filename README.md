@@ -2,52 +2,47 @@
   <img src="assets/logo.png" alt="Aiva Logo" width="120" style="border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);" />
 </p>
 
-# 🤖 Aiva
+# Aiva
 
-> **Autonomous voice AI receptionist & appointment booking platform for high-touch businesses.** Answers inbound client phone calls 24/7 in natural voice, cross-checks real specialist calendars, prevents double-booking, and texts instant confirmations.
+> Autonomous voice AI receptionist and appointment booking platform for high-touch businesses. Answers inbound client phone calls 24/7 in natural voice, cross-checks real specialist calendars, prevents double-booking, and texts instant confirmations.
 
 <p align="center">
-  <img src="assets/aiva_hero_preview.png" alt="Aiva Product Showcase" width="100%" style="border-radius: 18px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.12);" />
+  <img src="assets/preview.png" alt="Aiva Operator Dashboard" width="100%" style="border-radius: 18px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.12);" />
 </p>
 
 ---
 
-## ⚡ The High-Touch Business Dilemma
+## The High-Touch Business Dilemma
 
 For appointment-driven businesses—luxury salons, aesthetic medical clinics, wellness spas, and boutique fitness studios—the front desk is a chronic bottleneck:
-- **30% Missed Inbound Calls:** During peak hours or after closing, calls roll to voicemail. High-ticket clients rarely leave messages—they simply call your competitor.
+- **30% Missed Inbound Calls:** During peak hours or after closing, calls roll to voicemail. High-ticket clients rarely leave messages—they simply call a competitor.
 - **Calendar Fragmentation & Double-Bookings:** Receptionists juggle paper appointment books, overlapping stylist schedules, and variable treatment durations on the fly.
 - **Costly No-Shows:** Without instant multi-channel confirmations (WhatsApp, SMS, email), forgotten appointments directly hit specialist earnings.
 
-**Aiva functions as an autonomous front-desk coordinator:** answering client calls 24/7 in low-latency natural voice, looking up specialist availability in real time, locking appointments into the calendar, and dispatching instant confirmations over WhatsApp and SMS.
+Aiva functions as an autonomous front-desk coordinator: answering client calls 24/7 in low-latency natural voice, looking up specialist availability in real time, locking appointments into the calendar, and dispatching instant confirmations over WhatsApp and SMS.
 
 ---
 
-## 🏢 Tailored for High-Touch Verticals
-
-<p align="center">
-  <img src="assets/luxury-salon.png" width="23%" alt="Luxury Salon" style="border-radius: 12px; margin: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);" />
-  <img src="assets/clinic-reception.png" width="23%" alt="Aesthetic Clinic" style="border-radius: 12px; margin: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);" />
-  <img src="assets/luxury-gym.png" width="23%" alt="Fitness Studio" style="border-radius: 12px; margin: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);" />
-  <img src="assets/luxury-home.png" width="23%" alt="Home Services" style="border-radius: 12px; margin: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);" />
-</p>
+## Tailored for Appointment-Driven Verticals
 
 - **Hair Salons & Spas:** Schedules balayage, haircuts, massages, and nail treatments with specific stylists based on exact duration.
 - **Aesthetic Clinics:** Reserves consultations and clinical treatments with certified doctors while answering procedural FAQs.
-- **Fitness & Wellness Gyms:** Schedules personal training evaluations and class orientations.
+- **Fitness & Wellness Studios:** Schedules personal training evaluations and class orientations.
 - **Luxury Home Services:** Dispatches technicians and confirms service arrival windows.
 
 ---
 
-## 📱 Live Operator Dashboard
+## Live Operator Dashboard
 
-<p align="center">
-  <img src="assets/preview.png" alt="Aiva Operator Dashboard Preview" width="100%" style="border-radius: 16px; box-shadow: 0 16px 40px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);" />
-</p>
+The Aiva operator console provides real-time visibility into the daily workflow:
+
+- **Unified Flow & Live Queue:** Instant overview of confirmed client appointments, upcoming walk-ins, and automated phone bookings.
+- **AI Intelligence & Staff Insights:** Real-time tracking of specialist capacity, open time slots, and proactive notifications for unscheduled return clients.
+- **Voice Intelligence & Call Transcripts:** Complete inbound call feed with duration tracking, intent classification, customer sentiment, and verified booking outcomes.
 
 ---
 
-## 🕹️ Architecture & Voice Workflow
+## Architecture & Voice Workflow
 
 ```mermaid
 flowchart TD
@@ -89,7 +84,7 @@ app.db / PostgreSQL)]
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology | Description |
 | :--- | :--- | :--- |
@@ -103,18 +98,13 @@ app.db / PostgreSQL)]
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```text
 Aiva/
-├── assets/                       # Showcases, logos & vertical graphics
-│   ├── aiva_hero_preview.png     # Namma Universe product showcase
+├── assets/                       # Showcases, logos & interface previews
 │   ├── preview.png               # Live operator dashboard capture
-│   ├── logo.png                  # Aiva branding
-│   ├── luxury-salon.png          # Salon vertical card
-│   ├── clinic-reception.png      # Clinic vertical card
-│   ├── luxury-gym.png            # Gym vertical card
-│   └── luxury-home.png           # Home services card
+│   └── logo.png                  # Aiva branding
 ├── backend/                      # Python FastAPI server
 │   ├── app/
 │   │   ├── api/
@@ -141,7 +131,8 @@ Aiva/
 │   │   │   ├── staff/            # Specialist management & working hours
 │   │   │   ├── services/         # Pricing, service durations & categories
 │   │   │   ├── analytics/        # Conversion rates, peak hours & revenue
-│   │   │   └── landing/          # Vertical marketing showcases
+│   │   │   ├── dashboard/        # Operator overview & live queue
+│   │   │   └── universe/         # Namma Universe product showcases
 │   │   ├── App.tsx
 │   │   └── main.tsx
 │   ├── package.json
@@ -152,7 +143,7 @@ Aiva/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Prerequisites
 - **Python 3.10+**

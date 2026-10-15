@@ -68,8 +68,8 @@ function AppRoutes() {
       <Route path="/products/ev-copilot" element={<EvCopilotProductPage />} />
       <Route path="/products/wellora" element={<WelloraProductPage />} />
       <Route path="/products/airport-digital-twin" element={<AirportDigitalTwinProductPage />} />
-        <Route path="/products/homie" element={<Navigate to="/products/airport-digital-twin" replace />} />
-        <Route path="/products/airport-3d-simulator" element={<Navigate to="/products/airport-digital-twin" replace />} />
+      <Route path="/products/homie" element={<Navigate to="/products/airport-digital-twin" replace />} />
+      <Route path="/products/airport-3d-simulator" element={<Navigate to="/products/airport-digital-twin" replace />} />
       <Route path="/products/namma-hood" element={<NammaHoodProductPage />} />
       <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
       <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />

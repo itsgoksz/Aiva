@@ -47,15 +47,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Check for existing session on mount
   useEffect(() => {
     const token = localStorage.getItem('access_token');
+    const isDemoMode = window.location.pathname.startsWith('/app') || window.location.search.includes('demo=true');
+    const DEMO_USER: User = {
+      id: 1,
+      email: 'gokul@aiva.ai',
+      full_name: 'Gokul Gautham',
+      business_id: 1,
+      role: 'owner',
+      is_active: true,
+      created_at: new Date().toISOString(),
+    };
+
     if (token) {
       authAPI
         .me()
         .then(setUser)
         .catch(() => {
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
+          if (isDemoMode) {
+            setUser(DEMO_USER);
+          } else {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+          }
         })
         .finally(() => setIsLoading(false));
+    } else if (isDemoMode) {
+      setUser(DEMO_USER);
+      setIsLoading(false);
     } else {
       setIsLoading(false);
     }
