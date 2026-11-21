@@ -6,6 +6,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider, useAuth } from './features/auth/AuthProvider';
+import { isAivaSubdomain } from './lib/subdomain';
 import DashboardLayout from './components/layout/DashboardLayout';
 import LoginPage from './features/auth/LoginPage';
 import RegisterPage from './features/auth/RegisterPage';
@@ -17,6 +18,7 @@ import ServicesPage from './features/services/ServicesPage';
 import StaffPage from './features/staff/StaffPage';
 import AnalyticsPage from './features/analytics/AnalyticsPage';
 import SettingsPage from './features/settings/SettingsPage';
+import AivaMarketingPage from './features/marketing/AivaMarketingPage';
 import NammaUniversePage from './features/universe/NammaUniversePage';
 import AivaProductPage from './features/universe/products/AivaProductPage';
 import CasaMotoProductPage from './features/universe/products/CasaMotoProductPage';
@@ -58,9 +60,46 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 }
 
 function AppRoutes() {
+  const isAivaHost = isAivaSubdomain();
+
+  if (isAivaHost) {
+    return (
+      <Routes>
+        {/* Aiva Subdomain Routes (aiva.nammauniverse.in) */}
+        <Route path="/" element={<AivaProductPage />} />
+        <Route path="/products/aiva" element={<Navigate to="/" replace />} />
+        <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+        <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
+
+        {/* Protected Dashboard Routes */}
+        <Route
+          path="/app"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<DashboardPage />} />
+          <Route path="appointments" element={<AppointmentsPage />} />
+          <Route path="customers" element={<CustomersPage />} />
+          <Route path="calls" element={<CallsPage />} />
+          <Route path="services" element={<ServicesPage />} />
+          <Route path="staff" element={<StaffPage />} />
+          <Route path="analytics" element={<AnalyticsPage />} />
+          <Route path="settings" element={<SettingsPage />} />
+          <Route path="marketing" element={<AivaMarketingPage />} />
+        </Route>
+
+        {/* Catch-all on Aiva subdomain redirects to Aiva home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    );
+  }
+
   return (
     <Routes>
-      {/* Public routes */}
+      {/* Public routes on Main Universe (nammauniverse.in / www.nammauniverse.in) */}
       <Route path="/" element={<PublicRoute><NammaUniversePage /></PublicRoute>} />
       <Route path="/products/aiva" element={<AivaProductPage />} />
       <Route path="/products/casamoto" element={<CasaMotoProductPage />} />
@@ -91,6 +130,7 @@ function AppRoutes() {
         <Route path="staff" element={<StaffPage />} />
         <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="settings" element={<SettingsPage />} />
+        <Route path="marketing" element={<AivaMarketingPage />} />
       </Route>
 
       {/* Catch-all */}

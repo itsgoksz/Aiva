@@ -1,6 +1,24 @@
 import { Link } from "react-router-dom";
+import { isAivaSubdomain, getUniverseUrl } from "../../../../../lib/subdomain";
 
 export default function AivaFooter() {
+  const isSubdomain = isAivaSubdomain();
+
+  const universeLink = (path: string, label: string, colorHover = "hover:text-white") => {
+    if (isSubdomain) {
+      return (
+        <a href={getUniverseUrl(path)} className={`${colorHover} transition-colors`}>
+          {label}
+        </a>
+      );
+    }
+    return (
+      <Link to={path} className={`${colorHover} transition-colors`}>
+        {label}
+      </Link>
+    );
+  };
+
   return (
     <footer className="py-14 border-t border-white/[0.06]" style={{ backgroundColor: "#0E070C" }}>
       <div className="container mx-auto px-6 max-w-7xl">
@@ -20,12 +38,12 @@ export default function AivaFooter() {
           </div>
 
           <div className="flex flex-wrap justify-center gap-8 text-xs font-mono text-white/50">
-            <Link to="/#products" className="hover:text-white transition-colors">Products</Link>
-            <Link to="/products/wellora" className="hover:text-[#2ECC71] transition-colors">Wellora</Link>
-            <Link to="/products/casamoto" className="hover:text-[#FF6B00] transition-colors">CasaMoto</Link>
-            <Link to="/products/ev-copilot" className="hover:text-[#6D5EF7] transition-colors">EV Copilot</Link>
-            <Link to="/products/airport-digital-twin" className="hover:text-[#00E5FF] transition-colors">Airport Twin</Link>
-            <Link to="/#philosophy" className="hover:text-white transition-colors">Philosophy</Link>
+            {universeLink("/#products", "Products")}
+            {universeLink("/products/wellora", "Wellora", "hover:text-[#2ECC71]")}
+            {universeLink("/products/casamoto", "CasaMoto", "hover:text-[#FF6B00]")}
+            {universeLink("/products/ev-copilot", "EV Copilot", "hover:text-[#6D5EF7]")}
+            {universeLink("/products/airport-digital-twin", "Airport Twin", "hover:text-[#00E5FF]")}
+            {universeLink("/#philosophy", "Philosophy")}
             <Link to="/login" className="hover:text-white transition-colors">Sign in</Link>
           </div>
 

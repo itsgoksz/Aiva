@@ -41,7 +41,8 @@ const PRODUCTS: ProductItem[] = [
     emoji: '🧠',
     color: '#A66B8E',
     route: '/products/aiva',
-    keyNumber: '1'
+    keyNumber: '1',
+    liveUrl: 'https://aiva.nammauniverse.in'
   },
   {
     id: 'wellora',

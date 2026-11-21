@@ -1,11 +1,13 @@
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { isAivaSubdomain, getUniverseUrl } from "../../../../../lib/subdomain";
 
 interface AivaFinalCTASectionProps {
   onOpenDemo: () => void;
 }
 
 export default function AivaFinalCTASection({ onOpenDemo }: AivaFinalCTASectionProps) {
+  const isSubdomain = isAivaSubdomain();
   return (
     <section 
       className="py-32 relative overflow-hidden" 
@@ -53,24 +55,45 @@ export default function AivaFinalCTASection({ onOpenDemo }: AivaFinalCTASectionP
             <ArrowRight size={18} className="transition-transform duration-200 group-hover:translate-x-1" />
           </button>
 
-          <Link
-            to="/#products"
-            className="group w-full sm:w-auto px-8 py-4 rounded-xl text-white/90 hover:text-white font-medium text-base transition-all duration-200 text-center flex items-center justify-center cursor-pointer active:opacity-90"
-            style={{
-              backgroundColor: "rgba(255, 255, 255, 0.04)",
-              boxShadow: "inset 0 0 0 1px rgba(255, 255, 255, 0.12)",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.08)";
-              e.currentTarget.style.boxShadow = "inset 0 0 0 1px rgba(255, 255, 255, 0.22)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.04)";
-              e.currentTarget.style.boxShadow = "inset 0 0 0 1px rgba(255, 255, 255, 0.12)";
-            }}
-          >
-            <span>Explore Other Universe Products</span>
-          </Link>
+          {isSubdomain ? (
+            <a
+              href={getUniverseUrl("/#products")}
+              className="group w-full sm:w-auto px-8 py-4 rounded-xl text-white/90 hover:text-white font-medium text-base transition-all duration-200 text-center flex items-center justify-center cursor-pointer active:opacity-90"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, 0.04)",
+                boxShadow: "inset 0 0 0 1px rgba(255, 255, 255, 0.12)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.08)";
+                e.currentTarget.style.boxShadow = "inset 0 0 0 1px rgba(255, 255, 255, 0.22)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.04)";
+                e.currentTarget.style.boxShadow = "inset 0 0 0 1px rgba(255, 255, 255, 0.12)";
+              }}
+            >
+              <span>Explore Other Universe Products</span>
+            </a>
+          ) : (
+            <Link
+              to="/#products"
+              className="group w-full sm:w-auto px-8 py-4 rounded-xl text-white/90 hover:text-white font-medium text-base transition-all duration-200 text-center flex items-center justify-center cursor-pointer active:opacity-90"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, 0.04)",
+                boxShadow: "inset 0 0 0 1px rgba(255, 255, 255, 0.12)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.08)";
+                e.currentTarget.style.boxShadow = "inset 0 0 0 1px rgba(255, 255, 255, 0.22)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.04)";
+                e.currentTarget.style.boxShadow = "inset 0 0 0 1px rgba(255, 255, 255, 0.12)";
+              }}
+            >
+              <span>Explore Other Universe Products</span>
+            </Link>
+          )}
         </div>
       </div>
     </section>

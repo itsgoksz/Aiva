@@ -42,6 +42,7 @@ const worlds: ProductWorld[] = [
     gradientTo: 'rgba(166, 107, 142, 0.02)',
     route: '/products/aiva',
     available: true,
+    liveUrl: 'https://aiva.nammauniverse.in',
   },
   {
     id: 'wellora',

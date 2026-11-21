@@ -17,7 +17,8 @@ import {
   X,
   LogOut,
   Activity,
-  Phone
+  Phone,
+  Sparkles
 } from 'lucide-react';
 import { useAuth } from '../../features/auth/AuthProvider';
 import { analyticsAPI } from '../../lib/api';
@@ -31,6 +32,7 @@ const navItems = [
   { divider: true },
   { path: '/app/analytics', icon: BarChart3, label: 'Insights' },
   { path: '/app/calls', icon: Phone, label: 'AI Calls' },
+  { path: '/app/marketing', icon: Sparkles, label: 'Marketing' },
   { path: '/app/settings', icon: Settings, label: 'Settings' },
 ];
 

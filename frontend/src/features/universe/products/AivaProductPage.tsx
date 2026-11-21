@@ -9,7 +9,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Sparkles, LogIn } from "lucide-react";
+import { ArrowLeft, Sparkles, LogIn, LayoutDashboard } from "lucide-react";
+import { useAuth } from "../../auth/AuthProvider";
+import { isAivaSubdomain } from "../../../lib/subdomain";
 import AivaHeroSection from "./aiva/components/AivaHeroSection";
 import AivaProblemSection from "./aiva/components/AivaProblemSection";
 import AivaDashboardPreviewSection from "./aiva/components/AivaDashboardPreviewSection";
@@ -23,6 +25,8 @@ import AivaFooter from "./aiva/components/AivaFooter";
 export default function AivaProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const [showEnterTransition, setShowEnterTransition] = useState(true);
+  const { isAuthenticated } = useAuth();
+  const isSubdomain = isAivaSubdomain();
 
   // Scroll to top on mount & enforce Aiva color tokens
   useEffect(() => {
@@ -96,37 +100,71 @@ export default function AivaProductPage() {
           }}
         >
           {/* Back to Universe */}
-          <Link
-            to="/#products"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.75rem",
-              textDecoration: "none",
-              color: "rgba(255, 255, 255, 0.6)",
-              fontFamily: "'Inter', sans-serif",
-              fontSize: "0.85rem",
-              fontWeight: 400,
-              transition: "color 0.2s",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255, 255, 255, 0.6)")}
-          >
-            <ArrowLeft size={16} />
-            <span
-              className="hidden sm:inline"
+          {isSubdomain ? (
+            <a
+              href="https://www.nammauniverse.in/#products"
               style={{
-                fontFamily: "'Space Grotesk', 'Inter', sans-serif",
-                fontWeight: 600,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                fontSize: "0.75rem",
-                color: "rgba(255, 255, 255, 0.4)",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.75rem",
+                textDecoration: "none",
+                color: "rgba(255, 255, 255, 0.6)",
+                fontFamily: "'Inter', sans-serif",
+                fontSize: "0.85rem",
+                fontWeight: 400,
+                transition: "color 0.2s",
               }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255, 255, 255, 0.6)")}
             >
-              NAMMA UNIVERSE
-            </span>
-          </Link>
+              <ArrowLeft size={16} />
+              <span
+                className="hidden sm:inline"
+                style={{
+                  fontFamily: "'Space Grotesk', 'Inter', sans-serif",
+                  fontWeight: 600,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  fontSize: "0.75rem",
+                  color: "rgba(255, 255, 255, 0.4)",
+                }}
+              >
+                NAMMA UNIVERSE
+              </span>
+            </a>
+          ) : (
+            <Link
+              to="/#products"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.75rem",
+                textDecoration: "none",
+                color: "rgba(255, 255, 255, 0.6)",
+                fontFamily: "'Inter', sans-serif",
+                fontSize: "0.85rem",
+                fontWeight: 400,
+                transition: "color 0.2s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255, 255, 255, 0.6)")}
+            >
+              <ArrowLeft size={16} />
+              <span
+                className="hidden sm:inline"
+                style={{
+                  fontFamily: "'Space Grotesk', 'Inter', sans-serif",
+                  fontWeight: 600,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  fontSize: "0.75rem",
+                  color: "rgba(255, 255, 255, 0.4)",
+                }}
+              >
+                NAMMA UNIVERSE
+              </span>
+            </Link>
+          )}
 
           {/* Product Wordmark */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
@@ -167,13 +205,23 @@ export default function AivaProductPage() {
 
           {/* Actions */}
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <Link
-              to="/login"
-              className="hidden sm:flex items-center gap-1.5 text-xs font-mono text-white/60 hover:text-white transition-colors"
-            >
-              <LogIn size={14} />
-              <span>Sign in</span>
-            </Link>
+            {isAuthenticated ? (
+              <Link
+                to="/app"
+                className="hidden sm:flex items-center gap-1.5 text-xs font-mono text-white/80 hover:text-white transition-colors px-3 py-1.5 rounded-lg bg-white/5 border border-white/10"
+              >
+                <LayoutDashboard size={14} />
+                <span>Dashboard</span>
+              </Link>
+            ) : (
+              <Link
+                to="/login"
+                className="hidden sm:flex items-center gap-1.5 text-xs font-mono text-white/60 hover:text-white transition-colors"
+              >
+                <LogIn size={14} />
+                <span>Sign in</span>
+              </Link>
+            )}
 
             <button
               onClick={() => setIsDemoModalOpen(true)}

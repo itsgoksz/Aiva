@@ -5,6 +5,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Calendar,
   PhoneCall,
@@ -364,6 +365,13 @@ export default function DashboardPage() {
           </h2>
         </div>
         <div className="flex items-center gap-3">
+          <Link
+            to="/app/marketing"
+            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#D94676] to-[#A6365C] hover:from-[#E65C8E] hover:to-[#B83E67] text-white text-[13px] font-bold rounded-full transition-all shadow-[0_4px_16px_rgba(217,70,118,0.35)] hover:scale-105 active:scale-95"
+          >
+            <Sparkles size={16} strokeWidth={2.5} />
+            Aiva Marketing
+          </Link>
           <button 
             onClick={() => setIsChatOpen(true)}
             className="flex items-center gap-2 px-5 py-2.5 bg-[#A66B8E]/10 hover:bg-[#A66B8E]/20 border border-[#A66B8E]/20 rounded-full text-[#A66B8E] text-[13px] font-bold transition-colors shadow-lg"

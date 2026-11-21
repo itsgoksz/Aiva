@@ -34,7 +34,13 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
     # CORS
-    CORS_ORIGINS: list[str] = ["http://localhost:5173", "http://localhost:3000"]
+    CORS_ORIGINS: list[str] = [
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "https://nammauniverse.in",
+        "https://www.nammauniverse.in",
+        "https://aiva.nammauniverse.in",
+    ]
 
     # Voice Providers
     VOICE_PROVIDER: str = "vapi"  # "vapi" or "retell"
