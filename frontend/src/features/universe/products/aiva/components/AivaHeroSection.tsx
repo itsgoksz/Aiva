@@ -219,9 +219,9 @@ export default function AivaHeroSection({ onOpenDemo }: AivaHeroSectionProps) {
               className="relative w-full max-w-xl mx-auto"
             >
               <div 
-                className="rounded-3xl p-6 sm:p-7 relative overflow-hidden backdrop-blur-2xl border border-white/10 shadow-2xl"
+                className="rounded-3xl p-6 sm:p-7 relative overflow-hidden border border-white/10 shadow-2xl"
                 style={{
-                  background: "linear-gradient(150deg, rgba(20, 12, 18, 0.88) 0%, rgba(10, 6, 9, 0.96) 100%)",
+                  background: "linear-gradient(150deg, #170B14 0%, #0A0508 100%)",
                   boxShadow: "0 30px 100px -20px rgba(0, 0, 0, 0.85), 0 0 50px -10px rgba(166, 107, 142, 0.2)",
                 }}
               >
@@ -346,7 +346,7 @@ export default function AivaHeroSection({ onOpenDemo }: AivaHeroSectionProps) {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.08] backdrop-blur-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+                    className="p-4 rounded-2xl border border-emerald-500/30 bg-[#0E1C12] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">

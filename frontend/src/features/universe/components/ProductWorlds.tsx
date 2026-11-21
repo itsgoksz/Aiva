@@ -119,7 +119,7 @@ export default function ProductWorlds({ activeProductIndexRef }: { activeProduct
     sharedState.spawnZoomedIn = true;
     setTimeout(() => {
       sharedState.isZoomingInto = null;
-      navigate(world.route);
+      navigate(world.route, { state: { fromUniverse: true } });
     }, 280);
   };
 

@@ -36,9 +36,9 @@ export default function AivaRoiCalculatorSection() {
 
         {/* The Calculator Box */}
         <div 
-          className="rounded-3xl border border-white/10 p-6 sm:p-12 backdrop-blur-2xl shadow-2xl max-w-4xl mx-auto"
+          className="rounded-3xl border border-white/10 p-6 sm:p-12 shadow-2xl max-w-4xl mx-auto"
           style={{
-            background: "linear-gradient(150deg, rgba(22, 14, 20, 0.8) 0%, rgba(10, 6, 9, 0.95) 100%)",
+            background: "linear-gradient(150deg, #170A14 0%, #0A0508 100%)",
             boxShadow: "0 30px 100px -20px rgba(0, 0, 0, 0.9), 0 0 50px rgba(166, 107, 142, 0.15)",
           }}
         >

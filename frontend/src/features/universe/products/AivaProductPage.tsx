@@ -8,7 +8,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, Sparkles, LogIn, LayoutDashboard } from "lucide-react";
 import { useAuth } from "../../auth/AuthProvider";
 import { isAivaSubdomain } from "../../../lib/subdomain";
@@ -24,7 +24,11 @@ import AivaFooter from "./aiva/components/AivaFooter";
 
 export default function AivaProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
-  const [showEnterTransition, setShowEnterTransition] = useState(true);
+  const location = useLocation();
+  // Only trigger the enter world animation if arriving from Namma Universe navigation
+  const [showEnterTransition, setShowEnterTransition] = useState(() => {
+    return !!(location.state as any)?.fromUniverse;
+  });
   const { isAuthenticated } = useAuth();
   const isSubdomain = isAivaSubdomain();
 
@@ -66,13 +70,16 @@ export default function AivaProductPage() {
             initial={{ opacity: 1 }}
             animate={{ opacity: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            onAnimationComplete={() => setShowEnterTransition(false)}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+            onAnimationComplete={() => {
+              setShowEnterTransition(false);
+              window.history.replaceState({}, document.title);
+            }}
             style={{
               position: "fixed",
               top: 0, left: 0, right: 0, bottom: 0,
               zIndex: 9999,
-              backgroundColor: "#A66B8E",
+              background: "radial-gradient(circle at 50% 50%, rgba(166, 107, 142, 0.35) 0%, #0A0508 80%)",
               pointerEvents: "none"
             }}
           />

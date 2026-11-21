@@ -143,7 +143,7 @@ export default function AivaDashboardPreviewSection() {
 
         {/* Top Metric Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-          <div className="p-6 rounded-3xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-2xl">
+          <div className="p-6 rounded-2xl border border-white/10 bg-[#0E060D] shadow-xl">
             <div className="flex items-center justify-between text-xs font-mono text-white/40 uppercase mb-2">
               <span>Calls Today</span>
               <Phone size={14} className="text-[#EC89B5]" />
@@ -155,7 +155,7 @@ export default function AivaDashboardPreviewSection() {
             </div>
           </div>
 
-          <div className="p-6 rounded-3xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-2xl">
+          <div className="p-6 rounded-2xl border border-white/10 bg-[#0E060D] shadow-xl">
             <div className="flex items-center justify-between text-xs font-mono text-white/40 uppercase mb-2">
               <span>Booked Revenue</span>
               <IndianRupee size={14} className="text-emerald-400" />
@@ -164,7 +164,7 @@ export default function AivaDashboardPreviewSection() {
             <div className="text-xs text-white/50 font-mono mt-1">18 appointments scheduled</div>
           </div>
 
-          <div className="p-6 rounded-3xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-2xl">
+          <div className="p-6 rounded-2xl border border-white/10 bg-[#0E060D] shadow-xl">
             <div className="flex items-center justify-between text-xs font-mono text-white/40 uppercase mb-2">
               <span>Hours Saved</span>
               <Clock size={14} className="text-[#6366F1]" />
@@ -173,7 +173,7 @@ export default function AivaDashboardPreviewSection() {
             <div className="text-xs text-white/50 font-mono mt-1">This week alone</div>
           </div>
 
-          <div className="p-6 rounded-3xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-2xl">
+          <div className="p-6 rounded-2xl border border-white/10 bg-[#0E060D] shadow-xl">
             <div className="flex items-center justify-between text-xs font-mono text-white/40 uppercase mb-2">
               <span>Customer Feedback</span>
               <HeartHandshake size={14} className="text-pink-400" />
@@ -186,8 +186,8 @@ export default function AivaDashboardPreviewSection() {
         {/* Tab 1: Call Logs */}
         {activeTab === "calls" && (
           <div 
-            className="rounded-3xl border border-white/[0.08] p-6 sm:p-8 backdrop-blur-2xl"
-            style={{ background: "rgba(18, 12, 17, 0.75)" }}
+            className="rounded-2xl border border-white/10 p-6 sm:p-8 shadow-2xl"
+            style={{ background: "#0E060D" }}
           >
             <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/[0.08]">
               <h3 className="text-xl font-bold text-white flex items-center gap-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
@@ -242,8 +242,8 @@ export default function AivaDashboardPreviewSection() {
         {/* Tab 2: Calendar */}
         {activeTab === "schedule" && (
           <div 
-            className="rounded-3xl border border-white/[0.08] p-6 sm:p-8 backdrop-blur-2xl"
-            style={{ background: "rgba(18, 12, 17, 0.75)" }}
+            className="rounded-2xl border border-white/10 p-6 sm:p-8 shadow-2xl"
+            style={{ background: "#0E060D" }}
           >
             <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/[0.08]">
               <h3 className="text-xl font-bold text-white flex items-center gap-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
@@ -288,8 +288,8 @@ export default function AivaDashboardPreviewSection() {
         {/* Tab 3: CRM */}
         {activeTab === "crm" && (
           <div 
-            className="rounded-3xl border border-white/[0.08] p-6 sm:p-8 backdrop-blur-2xl"
-            style={{ background: "rgba(18, 12, 17, 0.75)" }}
+            className="rounded-2xl border border-white/10 p-6 sm:p-8 shadow-2xl"
+            style={{ background: "#0E060D" }}
           >
             <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/[0.08]">
               <h3 className="text-xl font-bold text-white flex items-center gap-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>

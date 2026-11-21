@@ -1,126 +1,237 @@
-import { motion } from "framer-motion";
 import { 
   PhoneCall, 
   CalendarCheck, 
   MessageSquare, 
-  BrainCircuit
+  BrainCircuit,
+  ShieldCheck,
+  Check,
+  TrendingUp,
+  Sparkles
 } from "lucide-react";
 
-const STAGES = [
+interface StageItem {
+  step: string;
+  phase: string;
+  title: string;
+  metric: string;
+  metricLabel: string;
+  icon: typeof PhoneCall;
+  color: string;
+  desc: string;
+  telemetry: {
+    label: string;
+    value: string;
+    accent?: string;
+  };
+}
+
+const STAGES: StageItem[] = [
   {
     step: "01",
-    title: "Answers on the first ring",
-    metric: "Under 1 second",
+    phase: "AUDIO INGESTION",
+    title: "Answers on Ring 1 in Fluent Voice",
+    metric: "240ms",
+    metricLabel: "Sub-human speech latency",
     icon: PhoneCall,
-    color: "#EC89B5",
-    desc: "Aiva picks up right away with a warm, natural voice. It understands everyday conversational speech, accents, interruptions, and questions."
+    color: "#E65C8E",
+    desc: "Aiva answers instantly with warm, natural hospitality. Effortlessly navigates interruptions, everyday Indian conversational speech, clinical questions, and background noise.",
+    telemetry: {
+      label: "LIVE VOICE STREAM",
+      value: "Sub-300ms Speech • Bangalore Node",
+      accent: "text-emerald-400"
+    }
   },
   {
     step: "02",
-    title: "Checks your real calendar",
-    metric: "Zero double-bookings",
+    phase: "SCHEDULE ENGINE",
+    title: "Checks Operatory & Doctor Buffer",
+    metric: "0 Clashes",
+    metricLabel: "Multi-doctor operatory lock",
     icon: CalendarCheck,
     color: "#A66B8E",
-    desc: "Looks at staff schedules, service durations, and buffer times in real time to suggest open slots that actually fit."
+    desc: "Cross-checks real-time doctor availability across Google Calendar & Practo. Enforces 15-minute sanitization prep buffers so chairs never get double-booked.",
+    telemetry: {
+      label: "CALENDAR DEFENSE",
+      value: "15-Min Buffer Locked • Zero Overlap",
+      accent: "text-[#ECA9B7]"
+    }
   },
   {
     step: "03",
-    title: "Sends instant text confirmation",
-    metric: "Sent in seconds",
+    phase: "DISPATCH AUTOMATION",
+    title: "Dispatches WhatsApp Slip & Map",
+    metric: "3.4s",
+    metricLabel: "Instant client delivery",
     icon: MessageSquare,
     color: "#6366F1",
-    desc: "Texts the caller a confirmation on WhatsApp or SMS with the appointment time, Google Calendar link, and address before they hang up."
+    desc: "Dispatches an official branded WhatsApp slip with specialist doctor name, appointment time, Google Maps pin, and UPI advance token link before caller hangs up.",
+    telemetry: {
+      label: "WHATSAPP API",
+      value: "Verified Green Badge • 98% Open Rate",
+      accent: "text-emerald-400"
+    }
   },
   {
     step: "04",
-    title: "Saves client history & notes",
-    metric: "Saved to your dashboard",
+    phase: "EXECUTIVE DOSSIER",
+    title: "Saves Client Dossier & VIP Notes",
+    metric: "100%",
+    metricLabel: "Automated CRM logging",
     icon: BrainCircuit,
     color: "#10B981",
-    desc: "Logs what service they booked, their preferred staff member, and any special notes directly to your customer dashboard."
+    desc: "Logs treatment type, preferred specialist, call audio replay, and transcript directly to your owner dashboard. Remembers repeat clients for future warm greetings.",
+    telemetry: {
+      label: "CLIENT MEMORY",
+      value: "Rahul Dravid • Operatory 1 Recorded",
+      accent: "text-white/80"
+    }
   }
 ];
 
 export default function AivaAutonomousLoopSection() {
   return (
-    <section className="py-28 relative overflow-hidden" style={{ backgroundColor: "#0E070C" }}>
+    <section className="py-24 relative overflow-hidden" style={{ backgroundColor: "#080306" }}>
+      {/* Static subtle background glow (Zero repaint jitter) */}
       <div 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[500px] rounded-full blur-[220px] pointer-events-none opacity-15"
-        style={{ background: "radial-gradient(circle, #A66B8E 0%, #6366F1 100%)" }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[550px] rounded-full pointer-events-none opacity-20"
+        style={{
+          background: "radial-gradient(ellipse at center, rgba(166, 107, 142, 0.22) 0%, transparent 70%)"
+        }}
       />
 
       <div className="container mx-auto px-6 max-w-6xl relative z-10">
+        {/* Section Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase text-[#EC89B5] border border-[#A66B8E]/30 bg-[#A66B8E]/10 mb-4 font-mono">
-            How It Works
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[11px] font-mono tracking-widest uppercase text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
+            WORKFLOW PIPELINE // HOW AIVA OPERATES
           </div>
           <h2 
-            className="text-3xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight"
+            className="text-3xl sm:text-5xl font-black tracking-tight text-white mb-5 leading-[1.1]"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
-            From phone call to booked appointment. <br />
-            <span className="text-white/40">Handled completely from start to finish.</span>
+            From inquiry to locked appointment. <br />
+            <span className="bg-gradient-to-r from-white/90 via-[#FCE7F3] to-[#E65C8E] bg-clip-text text-transparent">
+              In twenty-eight seconds.
+            </span>
           </h2>
-          <p className="text-lg text-white/60 max-w-2xl mx-auto font-light leading-relaxed">
-            Here is what happens behind the scenes every time someone calls your business.
+          <p className="text-base sm:text-lg text-white/60 max-w-2xl mx-auto font-normal leading-relaxed">
+            Here is the exact autonomous loop that runs inside Aiva every time a client dials your business number.
           </p>
         </div>
 
-        {/* 4-Stage Cards */}
-        <div className="grid md:grid-cols-4 gap-6 mb-16">
-          {STAGES.map((s, idx) => {
+        {/* 4 Apple-Style Process Cards (Solid obsidian, zero flicker) */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          {STAGES.map((s) => {
             const Icon = s.icon;
             return (
-              <motion.div
+              <div
                 key={s.step}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.6, delay: idx * 0.1 }}
-                className="p-6 rounded-3xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-xl relative flex flex-col justify-between group hover:border-white/20 transition-all"
+                className="rounded-2xl border border-white/10 bg-[#0E060D] p-6 relative overflow-hidden flex flex-col justify-between transition-all duration-200 hover:border-[#E65C8E]/40 shadow-xl"
+                style={{
+                  boxShadow: "inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 20px 40px rgba(0, 0, 0, 0.6)"
+                }}
               >
                 <div>
-                  <div className="flex items-center justify-between mb-5">
-                    <span className="font-mono text-xs font-bold text-white/40 group-hover:text-white transition-colors">
-                      STEP {s.step}
+                  {/* Top: Step indicator & Icon */}
+                  <div className="flex items-center justify-between pb-4 border-b border-white/[0.06] mb-5">
+                    <span className="font-mono text-[10px] font-bold text-white/40 tracking-widest uppercase">
+                      STEP {s.step} // {s.phase}
                     </span>
                     <div 
-                      className="w-10 h-10 rounded-2xl flex items-center justify-center border border-white/10"
+                      className="w-8 h-8 rounded-lg flex items-center justify-center border border-white/10"
                       style={{ background: `${s.color}15`, color: s.color }}
                     >
-                      <Icon size={18} />
+                      <Icon size={16} />
                     </div>
                   </div>
 
-                  <h3 className="text-lg font-bold text-white mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                  {/* Title */}
+                  <h3 
+                    className="text-base sm:text-lg font-bold text-white tracking-tight mb-2.5 leading-snug"
+                    style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
                     {s.title}
                   </h3>
-                  <p className="text-xs text-white/60 font-light leading-relaxed">
+
+                  {/* Description */}
+                  <p className="text-xs text-white/65 font-light leading-relaxed mb-5">
                     {s.desc}
                   </p>
+
+                  {/* Simulated Telemetry HUD Box */}
+                  <div className="p-3 rounded-xl bg-[#140A12] border border-white/[0.07] mb-4">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[9px] font-mono uppercase tracking-wider text-white/40">
+                        {s.telemetry.label}
+                      </span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    </div>
+                    <span className={`text-[11px] font-mono font-medium block truncate ${s.telemetry.accent || "text-white/80"}`}>
+                      {s.telemetry.value}
+                    </span>
+                  </div>
                 </div>
 
-                <div className="mt-6 pt-3 border-t border-white/5 font-mono text-[11px]" style={{ color: s.color }}>
-                  {s.metric}
+                {/* Bottom Metric Pill */}
+                <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between">
+                  <span className="text-[10px] font-mono text-white/40">RESULT</span>
+                  <span className="text-xs font-mono font-bold text-white flex items-center gap-1.5">
+                    <Check size={12} className="text-emerald-400" />
+                    <span style={{ color: s.color }}>{s.metric}</span>
+                  </span>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>
 
-        {/* Bottom Banner */}
+        {/* Bottom Banner: Executive Impact Slab (Solid obsidian gradient: Zero flicker) */}
         <div 
-          className="rounded-3xl border border-white/10 p-8 sm:p-12 text-center relative overflow-hidden backdrop-blur-2xl"
+          className="rounded-3xl border border-white/10 p-8 sm:p-12 relative overflow-hidden shadow-2xl"
           style={{
-            background: "linear-gradient(135deg, rgba(166, 107, 142, 0.1) 0%, rgba(99, 102, 241, 0.08) 100%)",
+            background: "linear-gradient(135deg, #170914 0%, #0D050C 50%, #130811 100%)",
+            boxShadow: "inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 30px 60px rgba(0, 0, 0, 0.7)"
           }}
         >
-          <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-            Give your staff their time back.
-          </h3>
-          <p className="text-white/70 max-w-2xl mx-auto text-sm sm:text-base font-light leading-relaxed">
-            No more running across the salon or clinic to grab the phone. Your team can give 100% of their attention to the clients in the room.
-          </p>
+          <div className="grid lg:grid-cols-12 gap-8 items-center relative z-10">
+            <div className="lg:col-span-7 space-y-3 text-left">
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold tracking-widest uppercase text-[#ECA9B7] bg-[#E65C8E]/15 px-3 py-1 rounded-full border border-[#E65C8E]/30">
+                <Sparkles size={12} />
+                STAFF PRODUCTIVITY GUARANTEE
+              </span>
+              <h3 
+                className="text-2xl sm:text-4xl font-black text-white tracking-tight leading-[1.15]"
+                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                Give your staff their time back.<br />
+                <span className="text-white/40">Not their patience.</span>
+              </h3>
+              <p className="text-sm sm:text-base text-white/70 font-light leading-relaxed max-w-xl">
+                No more running across the salon floor or clinical operatory to grab the desk phone. 
+                Your team delivers 100% undistracted care to the clients and patients right in front of them.
+              </p>
+            </div>
+
+            {/* 3 Metric Counters */}
+            <div className="lg:col-span-5 grid grid-cols-3 gap-3">
+              <div className="p-4 rounded-2xl bg-[#090307]/90 border border-white/10 text-center shadow-lg">
+                <span className="text-[10px] font-mono text-white/40 block mb-1">REVENUE ROI</span>
+                <span className="text-2xl sm:text-3xl font-black text-[#ECA9B7] font-mono block">3.8x</span>
+                <span className="text-[10px] text-white/60 block mt-1">Average boost</span>
+              </div>
+              <div className="p-4 rounded-2xl bg-[#090307]/90 border border-emerald-500/20 text-center shadow-lg">
+                <span className="text-[10px] font-mono text-white/40 block mb-1">MISSED CALLS</span>
+                <span className="text-2xl sm:text-3xl font-black text-emerald-400 font-mono block">0</span>
+                <span className="text-[10px] text-emerald-400 block mt-1">100% Captured</span>
+              </div>
+              <div className="p-4 rounded-2xl bg-[#090307]/90 border border-white/10 text-center shadow-lg">
+                <span className="text-[10px] font-mono text-white/40 block mb-1">RETENTION</span>
+                <span className="text-2xl sm:text-3xl font-black text-white font-mono block">94.6%</span>
+                <span className="text-[10px] text-white/60 block mt-1">Top tier clinic</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
