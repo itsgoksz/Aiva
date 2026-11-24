@@ -495,13 +495,14 @@ function CameraFlightController({
   floatStageRef?: React.MutableRefObject<number>;
   smoothIndexRef: React.MutableRefObject<number>;
 }) {
-  const { camera, mouse, clock } = useThree();
+  const { camera, mouse, clock, size } = useThree();
   const smoothMouse = useRef({ x: 0, y: 0 });
   const isFirstFrame = useRef(true);
 
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.1);
     const elapsed = clock.elapsedTime;
+    const isPortrait = size.width < size.height;
 
     // 1. Track continuous float target (scroll) or discrete target (tour/clicks)
     const rawTarget = floatStageRef ? floatStageRef.current : stageIndex;
@@ -529,12 +530,11 @@ function CameraFlightController({
     _camTargetLook.copy(_pos0).lerp(_pos1, t);
 
     // 4. Cinematic Parabolic Arc during planet-to-planet flight:
-    // At rest (t=0 or t=1), camera hovers cleanly in front of the active planet (z + 3.4)
-    // so the glowing planet & solar system rings sit prominently behind the card.
-    // During mid-transition (t ~ 0.5), camera pulls back (+4.8) to sweep across the solar system!
-    const flightArcPullback = Math.sin(t * Math.PI) * 4.8;
-    const camDistZ = 3.6 + flightArcPullback;
-    const camHeightY = 0.45 + Math.sin(t * Math.PI) * 1.4;
+    // On portrait mobile screens, pull back slightly further so surrounding orbits remain visible
+    const baseDistZ = isPortrait ? 5.2 : 3.6;
+    const flightArcPullback = Math.sin(t * Math.PI) * (isPortrait ? 5.6 : 4.8);
+    const camDistZ = baseDistZ + flightArcPullback;
+    const camHeightY = (isPortrait ? 0.65 : 0.45) + Math.sin(t * Math.PI) * 1.4;
 
     _camTargetPos.set(
       _camTargetLook.x + smoothMouse.current.x * 1.15,

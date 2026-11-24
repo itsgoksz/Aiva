@@ -18,9 +18,6 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useScroll } from "framer-motion";
 import { 
   PhoneCall, 
-  RotateCcw, 
-  CheckCircle2, 
-  User, 
   PhoneMissed, 
   Clock, 
   Users, 
@@ -29,7 +26,6 @@ import {
   CalendarCheck, 
   MessageSquare, 
   Database, 
-  ArrowRight,
   Play,
   Pause,
   ChevronDown,
@@ -41,51 +37,6 @@ import {
 import AivaSolarSystemBackground from "./AivaSolarSystemBackground";
 
 // --- STATIC STAGE REPOSITORY & DATA STRUCTURES ---
-
-const CALL_SCENARIOS = [
-  {
-    id: "salon",
-    title: "Boutique Salon (Indiranagar)",
-    caller: "Pooja Menon",
-    service: "HydraFacial with Divya",
-    time: "Thursday 2:30 PM",
-    revenue: "₹3,700",
-    dialogue: [
-      { speaker: "caller", text: "Hi! Do you have any openings for a HydraFacial with Divya this Thursday afternoon?" },
-      { speaker: "aiva", text: "Hello Pooja! Divya has an opening at 2:30 PM or 4:30 PM. Which one works better for you?" },
-      { speaker: "caller", text: "2:30 PM is perfect, thank you!" },
-      { speaker: "aiva", text: "You're all booked for Thursday at 2:30 PM. I just sent the confirmation and prep tips straight to your WhatsApp!" },
-    ],
-  },
-  {
-    id: "dental",
-    title: "Dental Clinic",
-    caller: "Dr. Vikram Seth",
-    service: "Root Canal Follow-up",
-    time: "Tomorrow 11:00 AM",
-    revenue: "₹5,200",
-    dialogue: [
-      { speaker: "caller", text: "I have throbbing tooth pain from yesterday's filling. Can I see the doctor tomorrow morning?" },
-      { speaker: "aiva", text: "I'm so sorry you're in discomfort. I'm holding an emergency slot with Dr. Rao tomorrow at 11:00 AM. Does that work?" },
-      { speaker: "caller", text: "Yes please, please confirm that." },
-      { speaker: "aiva", text: "Locked in for 11:00 AM. An SMS token and pain relief guidance have been dispatched to your mobile." },
-    ],
-  },
-  {
-    id: "studio",
-    title: "Design Studio",
-    caller: "Aarav Sharma",
-    service: "Brand Discovery Session",
-    time: "Friday 4:00 PM",
-    revenue: "₹15,000",
-    dialogue: [
-      { speaker: "caller", text: "Hey team, we're launching a fintech app and need a 45-minute discovery consultation this Friday." },
-      { speaker: "aiva", text: "Exciting! Our creative partner Kabir is open Friday at 4:00 PM. Shall I reserve that for your team?" },
-      { speaker: "caller", text: "That sounds great, let's lock it in." },
-      { speaker: "aiva", text: "Confirmed for Friday at 4:00 PM. A calendar invite and Google Meet link are in your inbox." },
-    ],
-  },
-];
 
 const PROBLEMS = [
   {
@@ -241,20 +192,19 @@ const PLANET_EMERGENCE_TRANSITION = {
     rotateX: direction >= 0 ? -6 : 6,
     filter: "blur(14px) brightness(1.4)",
     transition: {
-      duration: 0.42,
+      duration: 0.26,
       ease: [0.4, 0, 1, 1],
     },
   }),
 };
 
 const STAGE_PLANET_COLORS = [
-  "#E65C8E", // 01: Aiva Pink
+  "#E65C8E", // 01: 28s Autonomous Loop (Aiva Pink)
   "#A66B8E", // 02: Logic Violet
   "#38BDF8", // 03: Parity Cyan
   "#34D399", // 04: Telemetry Emerald
-  "#F472B6", // 05: 28s Loop Rose
-  "#FBBF24", // 06: ROI Amber Gold
-  "#FB7185", // 07: Governance Crimson
+  "#FBBF24", // 05: ROI Amber Gold
+  "#FB7185", // 06: Governance Crimson
 ];
 
 // ─── 3D INTERACTIVE TILT CONTAINER ───────────────────────────
@@ -271,6 +221,8 @@ function TiltCard({ children, className = "", style = {} }: TiltCardProps) {
   const [glarePos, setGlarePos] = useState({ x: 50, y: 50, opacity: 0 });
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    // Skip 3D hover tilt on touch devices to prevent sticky mobile tilt states
+    if (e.pointerType === "touch") return;
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -314,6 +266,47 @@ function TiltCard({ children, className = "", style = {} }: TiltCardProps) {
   );
 }
 
+// ─── UNIFORM SCROLL BOUNDS FOR 6 SINGLE-SCREEN CARDS ─────────
+const MOBILE_STAGE_WEIGHTS = [1, 1, 1, 1, 1, 1];
+const DESKTOP_STAGE_WEIGHTS = [1, 1, 1, 1, 1, 1];
+
+function buildNormalizedBounds(weights: number[]) {
+  const total = weights.reduce((a, b) => a + b, 0);
+  const bounds: { start: number; end: number }[] = [];
+  let acc = 0;
+  for (const w of weights) {
+    const start = acc / total;
+    acc += w;
+    bounds.push({ start, end: acc / total });
+  }
+  return bounds;
+}
+
+const MOBILE_BOUNDS = buildNormalizedBounds(MOBILE_STAGE_WEIGHTS);
+const DESKTOP_BOUNDS = buildNormalizedBounds(DESKTOP_STAGE_WEIGHTS);
+
+function mapProgressToStage(latest: number, isMobile: boolean) {
+  const bounds = isMobile ? MOBILE_BOUNDS : DESKTOP_BOUNDS;
+  const clamped = Math.max(0, Math.min(0.999999, latest));
+  for (let i = 0; i < bounds.length; i++) {
+    const { start, end } = bounds[i];
+    if (clamped >= start && (clamped < end || i === bounds.length - 1)) {
+      const frac = Math.max(0, Math.min(1, (clamped - start) / (end - start)));
+      // Hold at top card (panProgress = 0) until 28% so entering Section 2, 5, 7 always starts at the top card
+      const panProgress = frac <= 0.28 ? 0 : frac >= 0.80 ? 1 : (frac - 0.28) / 0.52;
+      // Camera holds on Planet i during reading & card pan, then flies to Planet i+1 (80% -> 100%)
+      let floatStage = i;
+      if (i < bounds.length - 1 && frac > 0.80) {
+        const t = (frac - 0.80) / 0.20;
+        const eased = t * t * (3 - 2 * t);
+        floatStage = i + eased;
+      }
+      return { stageIndex: i, panProgress, floatStage };
+    }
+  }
+  return { stageIndex: 0, panProgress: 0, floatStage: 0 };
+}
+
 // ─── MAIN CINEMATIC CARD STAGE ───────────────────────────────
 
 interface AivaCinematicCardStageProps {
@@ -321,11 +314,13 @@ interface AivaCinematicCardStageProps {
   onOpenTestCall?: () => void;
 }
 
-export default function AivaCinematicCardStage({
-  onOpenBookDemo,
-  onOpenTestCall,
-}: AivaCinematicCardStageProps) {
+export default function AivaCinematicCardStage(
+  _props: AivaCinematicCardStageProps
+) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const stageViewportRef = useRef<HTMLDivElement>(null);
+  const stageInnerRef = useRef<HTMLDivElement>(null);
+  const panProgressRef = useRef<number>(0);
 
   // Active Stage Index (0 to 6) + Continuous Float Index for Namma Universe Camera Flight
   const [stageIndex, setStageIndex] = useState(0);
@@ -333,17 +328,14 @@ export default function AivaCinematicCardStage({
   // Direction: 0 = initial zoom from deep space, 1 = forward orbit, -1 = backward orbit
   const [direction, setDirection] = useState(0);
   const prevStageRef = useRef(0);
+  const programmaticTargetRef = useRef<number | null>(null);
+  const programmaticTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isPlayingTour, setIsPlayingTour] = useState(false);
-
-  // Audio Demo State (Stage 01)
-  const [scenarioIdx, setScenarioIdx] = useState(0);
-  const [currentLine, setCurrentLine] = useState(0);
-  const [isPlayingAudio, setIsPlayingAudio] = useState(true);
 
   // Dashboard Preview Tab State (Stage 04)
   const [dashTab, setDashTab] = useState<"calls" | "schedule" | "crm">("calls");
 
-  // ROI Calculator State (Stage 06)
+  // ROI Calculator State (Stage 05)
   const [weeklyCalls, setWeeklyCalls] = useState(120);
   const [averageTicket, setAverageTicket] = useState(1800);
 
@@ -352,35 +344,47 @@ export default function AivaCinematicCardStage({
   const recoveredBookings = Math.round(missedCallsMonthly * 0.65);
   const recoveredRevenueMonthly = Math.round(recoveredBookings * averageTicket);
 
-  // Change Stage with Directional Camera Orbit + Synced Scroll Target
+  const applyCardPan = () => {
+    const viewport = stageViewportRef.current;
+    const inner = stageInnerRef.current;
+    if (!viewport || !inner) return;
+    const maxOverflow = Math.max(0, inner.scrollHeight - viewport.clientHeight);
+    const offset = panProgressRef.current * maxOverflow;
+    inner.style.transform = `translate3d(0, ${-offset.toFixed(2)}px, 0)`;
+  };
+
+  // Change Stage with Directional Camera Orbit + Glitch-Free Synced Smooth Scroll
   const changeStage = (newIndex: number) => {
-    const clamped = Math.max(0, Math.min(6, newIndex));
+    const clamped = Math.max(0, Math.min(5, newIndex));
+    if (programmaticTimerRef.current) clearTimeout(programmaticTimerRef.current);
+    programmaticTargetRef.current = clamped;
+
     if (containerRef.current) {
+      const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+      const bounds = isMobile ? MOBILE_BOUNDS : DESKTOP_BOUNDS;
+      const seg = bounds[clamped];
       const rect = containerRef.current.getBoundingClientRect();
       const containerTop = window.scrollY + rect.top;
       const scrollable = Math.max(1, containerRef.current.offsetHeight - window.innerHeight);
-      const targetScroll = containerTop + scrollable * ((clamped + 0.5) / 7);
+      // Land cleanly at top-card resting zone (panProgress = 0)
+      const targetProgress = seg.start + (seg.end - seg.start) * 0.16;
+      const targetScroll = containerTop + scrollable * targetProgress;
       window.scrollTo({ top: targetScroll, behavior: "smooth" });
     }
+
+    // Fallback release in case smooth scroll finishes early or target is already in view
+    programmaticTimerRef.current = setTimeout(() => {
+      programmaticTargetRef.current = null;
+    }, 1400);
+
     if (clamped === stageIndex) return;
     setDirection(clamped > stageIndex ? 1 : -1);
     prevStageRef.current = clamped;
     floatStageRef.current = clamped;
+    panProgressRef.current = 0;
+    applyCardPan();
     setStageIndex(clamped);
   };
-
-  // Auto-advance audio dialogue in Stage 01
-  const activeScenario = CALL_SCENARIOS[scenarioIdx];
-  useEffect(() => {
-    if (!isPlayingAudio) return;
-    if (currentLine >= activeScenario.dialogue.length - 1) return;
-
-    const timer = setTimeout(() => {
-      setCurrentLine((prev) => prev + 1);
-    }, 2400);
-
-    return () => clearTimeout(timer);
-  }, [currentLine, isPlayingAudio, activeScenario]);
 
   // Automated Cinematic Tour Timer
   useEffect(() => {
@@ -388,8 +392,9 @@ export default function AivaCinematicCardStage({
 
     const timer = setInterval(() => {
       setDirection(1);
+      panProgressRef.current = 0;
       setStageIndex((prev) => {
-        const next = (prev + 1) % 7;
+        const next = (prev + 1) % 6;
         prevStageRef.current = next;
         floatStageRef.current = next;
         return next;
@@ -399,7 +404,7 @@ export default function AivaCinematicCardStage({
     return () => clearInterval(timer);
   }, [isPlayingTour]);
 
-  // Scroll Sync: Continuous Namma Universe Plateau Curve (0.0 -> 6.0)
+  // Scroll Sync: Continuous Namma Universe Plateau Curve + Seamless Internal Card Pan
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
@@ -408,41 +413,53 @@ export default function AivaCinematicCardStage({
   useEffect(() => {
     return scrollYProgress.on("change", (latest) => {
       if (isPlayingTour) return;
-      // Map latest [0..1] across 7 modules with Namma Universe plateau snapping:
-      // Holds camera steady on Planet i while reading, smoothly flies between planets near segment boundaries
-      const raw = Math.max(0, Math.min(6.9999, latest * 7));
-      const baseIdx = Math.floor(raw);
-      const frac = raw - baseIdx;
+      const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+      const mapped = mapProgressToStage(latest, isMobile);
 
-      let snappedFloat = baseIdx;
-      if (baseIdx < 6) {
-        if (frac < 0.72) {
-          snappedFloat = baseIdx;
+      // While bottom-bar smooth scroll is in flight, ignore intermediate stage snaps
+      if (programmaticTargetRef.current !== null) {
+        if (mapped.stageIndex === programmaticTargetRef.current) {
+          programmaticTargetRef.current = null;
+          if (programmaticTimerRef.current) clearTimeout(programmaticTimerRef.current);
         } else {
-          const t = (frac - 0.72) / 0.28;
-          const eased = t * t * (3 - 2 * t);
-          snappedFloat = baseIdx + eased;
+          return;
         }
       }
-      floatStageRef.current = snappedFloat;
 
-      const targetIndex = Math.min(6, Math.max(0, baseIdx));
-      if (targetIndex !== prevStageRef.current) {
-        setDirection(targetIndex > prevStageRef.current ? 1 : -1);
-        prevStageRef.current = targetIndex;
-        setStageIndex(targetIndex);
+      floatStageRef.current = mapped.floatStage;
+      panProgressRef.current = mapped.panProgress;
+      applyCardPan();
+
+      if (mapped.stageIndex !== prevStageRef.current) {
+        setDirection(mapped.stageIndex > prevStageRef.current ? 1 : -1);
+        prevStageRef.current = mapped.stageIndex;
+        setStageIndex(mapped.stageIndex);
       }
     });
   }, [scrollYProgress, isPlayingTour]);
 
+  // Keep internal card vertical pan synced cleanly across stage transitions, tab changes, & resizes
+  useEffect(() => {
+    const raf = requestAnimationFrame(applyCardPan);
+    const ro = new ResizeObserver(() => {
+      applyCardPan();
+    });
+    if (stageViewportRef.current) ro.observe(stageViewportRef.current);
+    if (stageInnerRef.current) ro.observe(stageInnerRef.current);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+    };
+  }, [stageIndex, dashTab]);
+
   const STAGE_METADATA = [
-    { num: "01", short: "CORE", name: "Live Audio Ingest", title: "Answers on Ring One in Fluent Voice", badge: "AUTONOMOUS INGESTION" },
-    { num: "02", short: "LOGIC", name: "4-Quadrant Resolution", title: "Every Missed Call is Revenue Lost", badge: "FRONT-DESK REALITY" },
-    { num: "03", short: "MATRIX", name: "Capability Parity", title: "Traditional Front Desk vs Aiva Teammate", badge: "SYSTEM COMPARISON" },
-    { num: "04", short: "DECK", name: "Telemetry Console", title: "Real-Time Clinic Management Deck", badge: "LIVE TELEMETRY" },
-    { num: "05", short: "LOOP", name: "28s Autonomous Loop", title: "From Inquiry to Confirmed Booking", badge: "WORKFLOW PIPELINE" },
-    { num: "06", short: "ROI", name: "Financial Recovery", title: "Live Missed-Call Cost & Revenue Engine", badge: "FINANCIAL IMPACT" },
-    { num: "07", short: "SHIELD", name: "Enterprise Governance", title: "Strict Compliance & Zero Risk Protocol", badge: "ENTERPRISE PROTOCOLS" },
+    { num: "01", short: "LOOP", name: "28s Autonomous Loop", title: "From Inquiry to Confirmed Booking" },
+    { num: "02", short: "LOGIC", name: "4-Quadrant Resolution", title: "Every Missed Call is Revenue Lost" },
+    { num: "03", short: "MATRIX", name: "Capability Parity", title: "Traditional Front Desk vs Aiva Teammate" },
+    { num: "04", short: "DECK", name: "Telemetry Console", title: "Real-Time Clinic Management Deck" },
+    { num: "05", short: "ROI", name: "Financial Recovery", title: "Live Missed-Call Cost & Revenue Engine" },
+    { num: "06", short: "SHIELD", name: "Enterprise Governance", title: "Strict Compliance & Zero Risk Protocol" },
   ];
 
   const currentMeta = STAGE_METADATA[stageIndex];
@@ -451,7 +468,7 @@ export default function AivaCinematicCardStage({
   return (
     <section 
       ref={containerRef}
-      className="relative min-h-[480vh] md:min-h-[520vh] bg-transparent"
+      className="relative min-h-[660vh] md:min-h-[720vh] bg-transparent"
     >
       {/* Sticky Cinematic Theater (Full remaining viewport below navbar, dvh resilient) */}
       <div 
@@ -464,24 +481,19 @@ export default function AivaCinematicCardStage({
           className="absolute inset-0 pointer-events-none z-0"
         />
         
-        {/* Stage Header: Active Theory Style High-Altitude Narrative Ribbon */}
-        <div className="max-w-5xl mx-auto w-full pt-1.5 sm:pt-2.5 text-center select-none shrink-0 relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono tracking-widest uppercase text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-1 sm:mb-1.5 backdrop-blur-md">
-            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: activePlanetColor }} />
-            <span>MODULE {currentMeta.num} // {currentMeta.badge}</span>
-          </div>
-
+        {/* Stage Header: Apple-Style Balanced Centered Heading */}
+        <div className="max-w-2xl mx-auto w-full pt-4 sm:pt-6 pb-2 sm:pb-3 px-2 text-center select-none shrink-0 relative z-10">
           <h2 
-            className="text-base sm:text-2xl md:text-[28px] font-extrabold text-white tracking-tight leading-tight line-clamp-1"
+            className="text-[22px] sm:text-3xl md:text-[38px] font-bold tracking-[-0.03em] leading-[1.14] text-balance bg-gradient-to-b from-white via-white to-white/75 bg-clip-text text-transparent drop-shadow-[0_4px_24px_rgba(0,0,0,0.85)]"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
             {currentMeta.title}
           </h2>
         </div>
 
-        {/* Central Morphing Stage (min-h-0 prevents flexbox clipping over bottom dock) */}
+        {/* Central Morphing Stage (min-h-0 + scroll-driven pan viewport eliminates touch scroll traps) */}
         <div 
-          className="flex-1 min-h-0 max-w-5xl mx-auto w-full flex items-center justify-center py-1.5 sm:py-2 relative z-10"
+          className="flex-1 min-h-0 max-w-5xl mx-auto w-full flex items-center justify-center relative z-10"
           style={{ perspective: "1400px" }}
         >
           {/* Planetary Emergence Aura Pulse: glows from the planet's center as card blooms out */}
@@ -496,9 +508,17 @@ export default function AivaCinematicCardStage({
             }}
           />
 
-          <AnimatePresence mode="wait" custom={direction}>
+          <div
+            ref={stageViewportRef}
+            className="w-full h-full flex flex-col overflow-hidden relative z-10"
+          >
+            <div
+              ref={stageInnerRef}
+              className="w-full my-auto py-2 sm:py-3 px-0.5 will-change-transform"
+            >
+              <AnimatePresence mode="wait" custom={direction}>
             
-            {/* === STAGE 01: HERO AUDIO DEMO CARD === */}
+            {/* === STAGE 01: UNIFIED 28-SECOND AUTONOMOUS PIPELINE (FITS CARD 4 FOOTPRINT) === */}
             {stageIndex === 0 && (
               <motion.div
                 key="stage-01"
@@ -507,114 +527,96 @@ export default function AivaCinematicCardStage({
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="w-full max-w-xl mx-auto relative"
+                className="w-full max-w-4xl mx-auto relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
                 <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-5 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
-                  {/* Chassis Ribbon */}
-                  <div className="flex items-center justify-between pb-2.5 mb-2.5 sm:mb-3 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+                  {/* Top Apparatus Bar */}
+                  <div className="flex items-center justify-between pb-2 mb-2.5 sm:mb-3.5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
                     <span className="flex items-center gap-2 text-[#EC89B5] font-semibold">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
-                      AIVA APPARATUS // UNIT 01
+                      AUTONOMOUS PIPELINE // 28S LOOP
                     </span>
-                    <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
-                      LIVE AUDIO INGESTION CORE
+                    <span className="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-semibold">
+                      28s END-TO-END
                     </span>
                   </div>
 
-                  {/* Scenarios Switcher */}
-                  <div className="flex items-center justify-between gap-2 mb-2.5 sm:mb-3 pb-2 border-b border-white/[0.06]">
-                    <span className="font-mono text-[11px] sm:text-xs uppercase tracking-wider text-[#EC89B5] font-bold shrink-0">
-                      AIVA LIVE CALL DEMO
-                    </span>
-                    <div className="flex items-center gap-1 bg-black/40 p-1 rounded-xl border border-white/5 overflow-x-auto scrollbar-none">
-                      {CALL_SCENARIOS.map((sc, idx) => (
-                        <button
-                          key={sc.id}
-                          onClick={() => {
-                            setScenarioIdx(idx);
-                            setCurrentLine(0);
-                            setIsPlayingAudio(true);
-                          }}
-                          className={`px-2 py-1 text-[10px] font-medium rounded-lg transition-all cursor-pointer whitespace-nowrap ${
-                            scenarioIdx === idx
-                              ? "bg-[#A66B8E] text-white font-semibold shadow-sm"
-                              : "text-white/40 hover:text-white"
-                          }`}
+                  {/* 4 Compact Steps: Horizontal rows on mobile (fits 1 screen), 2x2 grid on desktop */}
+                  <div className="space-y-1.5 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-3 mb-2.5 sm:mb-3.5">
+                    {WORKFLOW_STEPS.map((s) => {
+                      const Icon = s.icon;
+                      return (
+                        <div
+                          key={s.step}
+                          className="p-2 sm:p-3 rounded-xl bg-white/[0.025] border border-white/10 flex sm:flex-col items-center sm:items-stretch justify-between gap-2.5 sm:gap-1.5"
                         >
-                          {sc.title}
-                        </button>
-                      ))}
-                    </div>
+                          <div className="flex items-center sm:justify-between gap-2.5 min-w-0">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <div
+                                className="w-7 h-7 sm:w-6 sm:h-6 rounded-lg flex items-center justify-center border border-white/10 shrink-0"
+                                style={{ background: `${s.color}18`, color: s.color }}
+                              >
+                                <Icon size={13} />
+                              </div>
+                              <div className="min-w-0 sm:hidden">
+                                <h4 className="text-xs font-bold text-white leading-tight truncate">{s.title}</h4>
+                                <p className="text-[10.5px] text-white/60 leading-snug line-clamp-1">{s.desc}</p>
+                              </div>
+                              <span className="hidden sm:inline text-[10px] font-mono tracking-wider text-white/50">
+                                STEP {s.step} · {s.phase}
+                              </span>
+                            </div>
+                            <span className="hidden sm:inline px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 text-[10px] font-mono font-bold shrink-0">
+                              ✓ {s.metric}
+                            </span>
+                          </div>
+
+                          <span className="sm:hidden px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 text-[10px] font-mono font-bold shrink-0">
+                            {s.metric}
+                          </span>
+
+                          <div className="hidden sm:block">
+                            <h4 className="text-sm font-bold text-white mb-0.5 leading-snug">{s.title}</h4>
+                            <p className="text-xs text-white/70 font-light leading-relaxed">{s.desc}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
 
-                  {/* Caller Bar */}
-                  <div className="p-2.5 sm:p-3 rounded-2xl bg-white/[0.02] border border-white/10 flex items-center justify-between mb-2.5 sm:mb-3">
-                    <div className="flex items-center gap-2.5 sm:gap-3">
-                      <div className="w-8 h-8 rounded-xl bg-[#A66B8E]/20 text-[#EC89B5] flex items-center justify-center font-bold">
-                        <PhoneCall size={14} className="animate-pulse" />
+                  {/* Unified Staff Productivity Guarantee Footer */}
+                  <div className="pt-2.5 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+                    <div className="max-w-md">
+                      <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-mono text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-1">
+                        <ShieldCheck size={10} className="text-[#EC89B5]" />
+                        <span>STAFF PRODUCTIVITY GUARANTEE</span>
+                      </div>
+                      <p className="text-xs sm:text-sm font-semibold text-white leading-snug">
+                        Give your staff their time back. Not their patience.
+                      </p>
+                    </div>
+
+                    <div className="w-full sm:w-auto flex items-center justify-between sm:justify-end gap-4 shrink-0 border-t sm:border-t-0 sm:border-l border-white/10 pt-2 sm:pt-0 sm:pl-5 text-center">
+                      <div>
+                        <span className="text-[9px] font-mono text-white/40 block">ROI</span>
+                        <span className="text-sm sm:text-lg font-bold font-mono text-emerald-400">3.8x</span>
                       </div>
                       <div>
-                        <div className="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
-                          <span>Caller: {activeScenario.caller}</span>
-                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
-                            SAVED CLIENT
-                          </span>
-                        </div>
-                        <div className="text-[11px] text-white/50 font-mono">Line 1 • Direct AI Phone Assistant</div>
+                        <span className="text-[9px] font-mono text-white/40 block">MISSED</span>
+                        <span className="text-sm sm:text-lg font-bold font-mono text-white">0</span>
+                      </div>
+                      <div>
+                        <span className="text-[9px] font-mono text-white/40 block">RETENTION</span>
+                        <span className="text-sm sm:text-lg font-bold font-mono text-[#EC89B5]">94.6%</span>
                       </div>
                     </div>
-                    <button
-                      onClick={() => {
-                        setCurrentLine(0);
-                        setIsPlayingAudio(true);
-                      }}
-                      className="p-1.5 sm:p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/50 hover:text-white transition-colors cursor-pointer"
-                    >
-                      <RotateCcw size={13} />
-                    </button>
-                  </div>
-
-                  {/* Dialogue Feed */}
-                  <div className="space-y-1.5 sm:space-y-2 min-h-[110px] max-h-[225px] sm:max-h-[250px] overflow-y-auto overscroll-contain pr-1 scrollbar-none mb-2.5 sm:mb-3">
-                    {activeScenario.dialogue.slice(0, currentLine + 1).map((msg, i) => (
-                      <motion.div
-                        key={i}
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className={`flex gap-2 items-start ${
-                          msg.speaker === "aiva" ? "flex-row" : "flex-row-reverse"
-                        }`}
-                      >
-                        <div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 text-[10px] font-bold ${
-                          msg.speaker === "aiva" ? "bg-[#A66B8E] text-white" : "bg-white/10 text-white/70"
-                        }`}>
-                          {msg.speaker === "aiva" ? "A" : <User size={11} />}
-                        </div>
-                        <div className={`p-2 sm:p-2.5 rounded-2xl text-[11px] sm:text-xs max-w-[85%] leading-snug ${
-                          msg.speaker === "aiva"
-                            ? "bg-[#A66B8E]/15 border border-[#A66B8E]/30 text-white"
-                            : "bg-white/5 border border-white/10 text-white/85"
-                        }`}>
-                          {msg.text}
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  {/* Booking Confirmation Output */}
-                  <div className="p-2.5 rounded-xl border border-emerald-500/30 bg-emerald-950/35 flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
-                      <span className="text-white font-medium truncate">Appointment Booked: {activeScenario.service}</span>
-                    </div>
-                    <span className="font-mono text-emerald-400 font-bold shrink-0 ml-2">{activeScenario.revenue}</span>
                   </div>
                 </TiltCard>
               </motion.div>
             )}
 
-            {/* === STAGE 02: 4-QUADRANT PROBLEM RESOLUTION CARDS === */}
+            {/* === STAGE 02: FRONT-DESK REALITY MATRIX (SINGLE CARD, FITS CARD 4 FOOTPRINT) === */}
             {stageIndex === 1 && (
               <motion.div
                 key="stage-02"
@@ -623,88 +625,58 @@ export default function AivaCinematicCardStage({
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="w-full max-w-5xl relative"
+                className="w-full max-w-4xl mx-auto relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <div className="grid sm:grid-cols-2 gap-2.5 sm:gap-3.5 max-h-[calc(100dvh-13.5rem)] sm:max-h-[calc(100dvh-12.5rem)] overflow-y-auto overscroll-contain pr-0.5 scrollbar-none">
-                  {PROBLEMS.map((p, idx) => {
-                    const Icon = p.icon;
-                    const isLeft = idx % 2 === 0;
-                    const isTop = idx < 2;
-                    return (
-                      <motion.div
-                        key={p.title}
-                        initial={{
-                          opacity: 0,
-                          scale: 0.45,
-                          x: isLeft ? 50 : -50,
-                          y: isTop ? 35 : -35,
-                        }}
-                        animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
-                        transition={{
-                          duration: 0.72,
-                          delay: 0.08 + idx * 0.055,
-                          ease: [0.16, 1, 0.3, 1],
-                        }}
-                        className="flex"
-                      >
-                        <TiltCard 
-                          className="w-full rounded-2xl border border-white/15 p-3 sm:p-4 shadow-[0_12px_40px_rgba(0,0,0,0.85)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl flex flex-col justify-between"
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-5 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
+                  <div className="flex items-center justify-between pb-2 mb-2.5 sm:mb-3.5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+                    <span className="text-[#EC89B5] font-semibold">FRONT-DESK REALITY // 4-POINT AUDIT</span>
+                    <span className="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-semibold">
+                      100% CAPTURE
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                    {PROBLEMS.map((p) => {
+                      const Icon = p.icon;
+                      return (
+                        <div
+                          key={p.title}
+                          className="p-2.5 sm:p-3.5 rounded-xl bg-white/[0.025] border border-white/10 flex flex-col justify-between"
                         >
-                          <div>
-                            {/* Header Ribbon */}
-                            <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-white/[0.08] text-[10px] font-mono">
-                              <span className="flex items-center gap-1.5 text-[#EC89B5] font-semibold">
-                                <Icon size={12} />
-                                {p.category}
-                              </span>
-                              <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/55">
-                                {p.stat} · {p.statLabel}
-                              </span>
-                            </div>
-
-                            {/* Equal-height Title for horizontal alignment across left & right cards */}
-                            <h4 className="text-[13px] sm:text-[15px] font-bold text-white tracking-tight mb-2 leading-snug sm:min-h-[2.45rem] flex items-center">
-                              {p.title}
-                            </h4>
-
-                            {/* Friction vs Advantage Blocks (uniform heights for equal alignment) */}
-                            <div className="space-y-1.5 mb-2.5">
-                              <div className="p-2 rounded-xl bg-[#180A0E] border border-red-500/25 text-[11px] text-white/80 sm:min-h-[64px] flex flex-col justify-center">
-                                <span className="font-mono text-[9px] text-red-400 uppercase font-semibold flex items-center gap-1 mb-0.5">
-                                  <span>✕</span> THE FRICTION · WITHOUT AIVA
-                                </span>
-                                <p className="line-clamp-2 leading-snug text-white/80">{p.description}</p>
-                              </div>
-                              <div className="p-2 rounded-xl bg-[#160812] border border-[#E65C8E]/30 text-[11px] text-white/95 sm:min-h-[64px] flex flex-col justify-center">
-                                <span className="font-mono text-[9px] text-[#ECA9B7] uppercase font-semibold flex items-center gap-1 mb-0.5">
-                                  <span>✓</span> THE AIVA ADVANTAGE
-                                </span>
-                                <p className="line-clamp-2 leading-snug text-white/95">{p.solution}</p>
-                              </div>
-                            </div>
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <span className="flex items-center gap-1.5 text-[9.5px] font-mono text-[#EC89B5] font-semibold">
+                              <Icon size={11} />
+                              {p.category}
+                            </span>
+                            <span className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[9.5px] font-mono text-white/60 shrink-0">
+                              {p.stat} · {p.statLabel}
+                            </span>
                           </div>
 
-                          {/* Bottom Feature Tags */}
-                          <div className="pt-1.5 border-t border-white/[0.06] flex items-center gap-1.5 flex-wrap">
-                            {p.tags.map((tag) => (
-                              <span 
-                                key={tag}
-                                className="px-2 py-0.5 rounded-md bg-white/[0.04] border border-white/10 text-[9.5px] font-mono text-white/75 whitespace-nowrap"
-                              >
-                                {tag}
-                              </span>
-                            ))}
+                          <h4 className="text-xs sm:text-sm font-bold text-white leading-snug mb-1.5">
+                            {p.title}
+                          </h4>
+
+                          <div className="space-y-1 text-[10.5px] sm:text-[11px] leading-snug">
+                            <p className="text-white/55 line-clamp-1 sm:line-clamp-2">
+                              <span className="text-red-400 font-mono mr-1">✕</span>
+                              {p.description}
+                            </p>
+                            <p className="text-white/90 line-clamp-1 sm:line-clamp-2">
+                              <span className="text-emerald-400 font-mono mr-1">✓</span>
+                              {p.solution}
+                            </p>
                           </div>
-                        </TiltCard>
-                      </motion.div>
-                    );
-                  })}
-                </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </TiltCard>
               </motion.div>
             )}
 
-            {/* === STAGE 03: CAPABILITY PARITY MATRIX (COMPARISON TABLE) === */}
+            {/* === STAGE 03: CAPABILITY PARITY MATRIX (ZERO HORIZONTAL SCROLL ON MOBILE) === */}
             {stageIndex === 2 && (
               <motion.div
                 key="stage-03"
@@ -713,17 +685,45 @@ export default function AivaCinematicCardStage({
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="w-full max-w-4xl relative"
+                className="w-full max-w-4xl mx-auto relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-4 sm:p-7 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl max-h-[calc(100dvh-13.5rem)] sm:max-h-[calc(100dvh-12.5rem)] overflow-y-auto overscroll-contain scrollbar-none">
-                  <div className="flex items-center justify-between pb-3 mb-4 sm:mb-5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
-                    <span className="text-[#EC89B5] font-semibold">SYSTEM COMPARISON // UNIT 03</span>
-                    <span className="text-white/40">Validated on 100+ Live Deployments</span>
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-6 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
+                  <div className="flex items-center justify-between pb-2 mb-2.5 sm:mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+                    <span className="text-[#EC89B5] font-semibold">SYSTEM COMPARISON</span>
+                    <span className="text-white/40">100+ Live Deployments</span>
                   </div>
 
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs sm:text-sm min-w-[520px]">
+                  {/* Mobile View: Zero Horizontal Scroll — Clean 5-Row Split Cards */}
+                  <div className="sm:hidden space-y-1.5">
+                    {[
+                      { cap: "Hours of Operation", old: "10 AM – 8 PM only", aiva: "✓ 24/7/365 without overtime" },
+                      { cap: "Simultaneous Calls", old: "1 caller (busy tone)", aiva: "✓ Unlimited concurrent lines" },
+                      { cap: "Calendar & Buffer Sync", old: "Manual entry / message", aiva: "✓ Direct slot & buffer lock" },
+                      { cap: "WhatsApp & UPI Slip", old: "Manual / no routing", aiva: "✓ Instant slip in 3.4s" },
+                      { cap: "Cost Structure", old: "₹35k–₹55k/mo + PF/ESI", aiva: "✓ Predictable flat monthly plan" },
+                    ].map((row) => (
+                      <div
+                        key={row.cap}
+                        className="p-2 rounded-xl bg-white/[0.025] border border-white/10"
+                      >
+                        <div className="text-[11px] font-bold text-white mb-1">{row.cap}</div>
+                        <div className="grid grid-cols-2 gap-2 text-[10px] leading-snug">
+                          <div className="text-white/50 truncate">
+                            <span className="text-white/30 font-mono mr-1">OLD:</span>
+                            {row.old}
+                          </div>
+                          <div className="text-emerald-400 font-semibold truncate text-right">
+                            {row.aiva}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Desktop View: Full 4-Column Comparison Table */}
+                  <div className="hidden sm:block">
+                    <table className="w-full text-left text-xs sm:text-sm">
                       <thead>
                         <tr className="border-b border-white/10 text-white/40 font-mono text-[10px] sm:text-[11px]">
                           <th className="pb-3 font-normal">CORE CAPABILITY</th>
@@ -782,7 +782,7 @@ export default function AivaCinematicCardStage({
                 className="w-full max-w-4xl relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-5 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl max-h-[calc(100dvh-13.5rem)] sm:max-h-[calc(100dvh-12.5rem)] overflow-y-auto overscroll-contain scrollbar-none">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-5 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
                   {/* Top 4 Metrics */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 mb-3 sm:mb-4">
                     <div className="p-2 sm:p-2.5 rounded-xl bg-white/[0.02] border border-white/10">
@@ -838,7 +838,7 @@ export default function AivaCinematicCardStage({
                   </div>
 
                   {/* Tab Feed Content */}
-                  <div className="space-y-1.5 text-xs max-h-[240px] overflow-y-auto overscroll-contain pr-1 scrollbar-none">
+                  <div className="space-y-1.5 text-xs">
                     <div className="p-2 sm:p-2.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
                       <div>
                         <div className="flex items-center gap-2">
@@ -900,7 +900,7 @@ export default function AivaCinematicCardStage({
               </motion.div>
             )}
 
-            {/* === STAGE 05: 28-SECOND AUTONOMOUS LOOP === */}
+            {/* === STAGE 05: FINANCIAL RECOVERY ENGINE (ROI SLIDER) === */}
             {stageIndex === 4 && (
               <motion.div
                 key="stage-05"
@@ -909,100 +909,10 @@ export default function AivaCinematicCardStage({
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="w-full max-w-5xl relative max-h-[calc(100dvh-13.5rem)] sm:max-h-[calc(100dvh-12.5rem)] overflow-y-auto overscroll-contain scrollbar-none"
-                style={{ transformStyle: "preserve-3d" }}
-              >
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5 mb-3 sm:mb-4">
-                  {WORKFLOW_STEPS.map((s, idx) => {
-                    const Icon = s.icon;
-                    return (
-                      <motion.div
-                        key={s.step}
-                        initial={{
-                          opacity: 0,
-                          scale: 0.45,
-                          x: (1.5 - idx) * 45,
-                          y: 20,
-                        }}
-                        animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
-                        transition={{
-                          duration: 0.72,
-                          delay: 0.08 + idx * 0.055,
-                          ease: [0.16, 1, 0.3, 1],
-                        }}
-                        className="flex"
-                      >
-                        <TiltCard className="w-full p-3 sm:p-4 rounded-2xl border border-white/15 bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl flex flex-col justify-between shadow-[0_12px_40px_rgba(0,0,0,0.85)]">
-                          <div>
-                            <div className="flex items-center justify-between pb-2 mb-2 sm:mb-2.5 border-b border-white/[0.06] text-[9px] sm:text-[10px] font-mono text-white/40">
-                              <span>STEP {s.step} // {s.phase}</span>
-                              <div className="w-5 sm:w-6 h-5 sm:h-6 rounded-md flex items-center justify-center border border-white/10" style={{ background: `${s.color}15`, color: s.color }}>
-                                <Icon size={12} />
-                              </div>
-                            </div>
-                            <h4 className="text-xs sm:text-sm font-bold text-white mb-1 leading-snug">{s.title}</h4>
-                            <p className="text-[11px] sm:text-xs text-white/65 font-light mb-2 line-clamp-3 sm:line-clamp-none leading-relaxed">{s.desc}</p>
-                          </div>
-                          <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-[10px] sm:text-[11px] font-mono">
-                            <span className="text-white/40">RESULT</span>
-                            <span className="text-emerald-400 font-bold">✓ {s.metric}</span>
-                          </div>
-                        </TiltCard>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-
-                <TiltCard className="p-3.5 sm:p-4 rounded-2xl border border-white/15 bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)]">
-                  <div className="flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
-                    <div className="max-w-xl">
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[9px] font-mono text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-1">
-                        <ShieldCheck size={11} className="text-[#EC89B5]" />
-                        <span>STAFF PRODUCTIVITY GUARANTEE</span>
-                      </div>
-                      <h3 className="text-sm sm:text-base font-bold text-white mb-1">
-                        Give your staff their time back. Not their patience.
-                      </h3>
-                      <p className="text-xs text-white/65 leading-relaxed">
-                        No more running across the salon floor or clinical operatory to grab the desk phone. Your team delivers 100% undistracted care to the clients and patients right in front of them.
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-4 sm:gap-6 shrink-0 border-t md:border-t-0 md:border-l border-white/10 pt-2 md:pt-0 md:pl-6 text-center">
-                      <div>
-                        <span className="text-[9px] font-mono text-white/40 block">REVENUE ROI</span>
-                        <span className="text-base sm:text-xl font-bold font-mono text-emerald-400">3.8x</span>
-                        <span className="text-[9px] text-white/50 font-mono block">Average boost</span>
-                      </div>
-                      <div>
-                        <span className="text-[9px] font-mono text-white/40 block">MISSED CALLS</span>
-                        <span className="text-base sm:text-xl font-bold font-mono text-white">0</span>
-                        <span className="text-[9px] text-emerald-400 font-mono block">100% Captured</span>
-                      </div>
-                      <div>
-                        <span className="text-[9px] font-mono text-white/40 block">RETENTION</span>
-                        <span className="text-base sm:text-xl font-bold font-mono text-[#EC89B5]">94.6%</span>
-                        <span className="text-[9px] text-white/50 font-mono block">Top tier clinic</span>
-                      </div>
-                    </div>
-                  </div>
-                </TiltCard>
-              </motion.div>
-            )}
-
-            {/* === STAGE 06: FINANCIAL RECOVERY ENGINE (ROI SLIDER) === */}
-            {stageIndex === 5 && (
-              <motion.div
-                key="stage-06"
-                custom={direction}
-                variants={PLANET_EMERGENCE_TRANSITION}
-                initial="initial"
-                animate="animate"
-                exit="exit"
                 className="w-full max-w-4xl relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-4 sm:p-7 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl max-h-[calc(100dvh-13.5rem)] sm:max-h-[calc(100dvh-12.5rem)] overflow-y-auto overscroll-contain scrollbar-none">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-4 sm:p-7 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
                   <div className="flex items-center justify-between pb-3 mb-4 sm:mb-5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
                     <span className="text-[#EC89B5] font-semibold">AIVA APPARATUS // UNIT 06</span>
                     <span className="text-white/40">VALUE SIMULATOR</span>
@@ -1022,7 +932,7 @@ export default function AivaCinematicCardStage({
                           step="10"
                           value={weeklyCalls}
                           onChange={(e) => setWeeklyCalls(Number(e.target.value))}
-                          className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#E65C8E]"
+                          className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#E65C8E] touch-pan-x"
                         />
                       </div>
 
@@ -1038,7 +948,7 @@ export default function AivaCinematicCardStage({
                           step="100"
                           value={averageTicket}
                           onChange={(e) => setAverageTicket(Number(e.target.value))}
-                          className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-emerald-400"
+                          className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-emerald-400 touch-pan-x"
                         />
                       </div>
 
@@ -1062,80 +972,62 @@ export default function AivaCinematicCardStage({
               </motion.div>
             )}
 
-            {/* === STAGE 07: ENTERPRISE GOVERNANCE MATRIX === */}
-            {stageIndex === 6 && (
+            {/* === STAGE 06: ENTERPRISE GOVERNANCE MATRIX (SINGLE CARD, NO BOTTOM BUTTONS) === */}
+            {stageIndex === 5 && (
               <motion.div
-                key="stage-07"
+                key="stage-06"
                 custom={direction}
                 variants={PLANET_EMERGENCE_TRANSITION}
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="w-full max-w-5xl relative max-h-[calc(100dvh-13.5rem)] sm:max-h-[calc(100dvh-12.5rem)] overflow-y-auto overscroll-contain scrollbar-none"
+                className="w-full max-w-4xl mx-auto relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5 mb-3.5 sm:mb-4">
-                  {GOVERNANCE_PILLARS.map((p, idx) => {
-                    const Icon = p.icon;
-                    return (
-                      <motion.div
-                        key={p.title}
-                        initial={{
-                          opacity: 0,
-                          scale: 0.45,
-                          x: (1.5 - idx) * 45,
-                          y: 20,
-                        }}
-                        animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
-                        transition={{
-                          duration: 0.72,
-                          delay: 0.08 + idx * 0.055,
-                          ease: [0.16, 1, 0.3, 1],
-                        }}
-                        className="flex"
-                      >
-                        <TiltCard className="w-full p-3 sm:p-4 rounded-2xl border border-white/15 bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl flex flex-col justify-between shadow-[0_12px_40px_rgba(0,0,0,0.85)]">
-                          <div>
-                            <div className="flex items-center justify-between pb-2 mb-2 sm:mb-3 border-b border-white/[0.06] text-[9px] sm:text-[10px] font-mono text-white/40">
-                              <span>UNIT 07.{idx + 1}</span>
-                              <div className="w-5 sm:w-6 h-5 sm:h-6 rounded-md flex items-center justify-center border border-white/10" style={{ background: `${p.color}15`, color: p.color }}>
-                                <Icon size={12} />
-                              </div>
-                            </div>
-                            <h4 className="text-xs sm:text-sm font-bold text-white mb-1">{p.title}</h4>
-                            <p className="text-[11px] sm:text-xs text-white/65 font-light mb-2 line-clamp-3 sm:line-clamp-none leading-relaxed">{p.desc}</p>
-                          </div>
-                          <div className="pt-2 border-t border-white/[0.06] text-[9px] sm:text-[10px] font-mono text-emerald-400">
-                            ✓ {p.telemetry}
-                          </div>
-                        </TiltCard>
-                      </motion.div>
-                    );
-                  })}
-                </div>
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-6 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
+                  <div className="flex items-center justify-between pb-2 mb-2.5 sm:mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+                    <span className="text-[#EC89B5] font-semibold">ENTERPRISE PROTOCOLS // ZERO-RISK</span>
+                    <span className="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-semibold">
+                      SOC2 & HIPAA READY
+                    </span>
+                  </div>
 
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3">
-                  <button
-                    onClick={onOpenBookDemo}
-                    className="w-full sm:w-auto h-10 sm:h-11 px-5 sm:px-6 rounded-xl font-semibold text-xs text-white inline-flex items-center justify-center gap-2 transition-all cursor-pointer hover:brightness-110 active:scale-95 shadow-[0_4px_20px_rgba(230,92,142,0.4)]"
-                    style={{
-                      background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
-                    }}
-                  >
-                    <span>Deploy Aiva On Your Clinic Line</span>
-                    <ArrowRight size={14} />
-                  </button>
-                  <button
-                    onClick={onOpenTestCall}
-                    className="w-full sm:w-auto h-10 sm:h-11 px-4 sm:px-5 rounded-xl font-medium text-xs text-white/80 hover:text-white bg-white/5 border border-white/10 hover:border-white/20 transition-all cursor-pointer inline-flex items-center justify-center"
-                  >
-                    <span>Hear Live Audio Demo</span>
-                  </button>
-                </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                    {GOVERNANCE_PILLARS.map((p) => {
+                      const Icon = p.icon;
+                      return (
+                        <div
+                          key={p.title}
+                          className="p-2.5 sm:p-3.5 rounded-xl bg-white/[0.025] border border-white/10 flex items-start gap-2.5 sm:gap-3"
+                        >
+                          <div
+                            className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center border border-white/10 shrink-0 mt-0.5"
+                            style={{ background: `${p.color}18`, color: p.color }}
+                          >
+                            <Icon size={14} />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center justify-between gap-2 mb-0.5">
+                              <h4 className="text-xs sm:text-sm font-bold text-white leading-snug">{p.title}</h4>
+                            </div>
+                            <p className="text-[10.5px] sm:text-xs text-white/70 font-light leading-snug mb-1.5">
+                              {p.desc}
+                            </p>
+                            <span className="text-[9.5px] sm:text-[10px] font-mono text-emerald-400 font-semibold">
+                              ✓ {p.telemetry}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </TiltCard>
               </motion.div>
             )}
 
-          </AnimatePresence>
+              </AnimatePresence>
+            </div>
+          </div>
         </div>
 
         {/* Stage Controller (Active Theory Floating Capsule) */}
@@ -1200,9 +1092,9 @@ export default function AivaCinematicCardStage({
               <button
                 onClick={() => {
                   setIsPlayingTour(false);
-                  changeStage(Math.min(6, stageIndex + 1));
+                  changeStage(Math.min(5, stageIndex + 1));
                 }}
-                disabled={stageIndex === 6}
+                disabled={stageIndex === 5}
                 className="p-1 text-white/50 hover:text-white disabled:opacity-20 transition-colors cursor-pointer"
               >
                 <ChevronDown size={13} />
