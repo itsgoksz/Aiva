@@ -131,17 +131,23 @@ export default function AivaDemoModal({ isOpen, onClose }: AivaDemoModalProps) {
         </button>
 
         {/* Modal Header */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-2xl bg-[#A66B8E]/20 border border-[#A66B8E]/40 flex items-center justify-center text-[#EC89B5]">
-            <PhoneCall size={20} />
+        <div className="mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-mono tracking-widest uppercase text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
+            INTERACTIVE TRIAL // LIVE TEST CALL SIMULATOR
           </div>
-          <div>
-            <h3 className="text-lg font-bold font-display text-white">
-              Aiva Front-Desk Receptionist Simulator
-            </h3>
-            <p className="text-xs text-neutral-400">
-              Test how Aiva answers, verifies schedule availability, and logs CRM tickets for Bangalore businesses
-            </p>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#A66B8E]/20 border border-[#A66B8E]/40 flex items-center justify-center text-[#EC89B5] shrink-0">
+              <PhoneCall size={20} />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold font-display text-white">
+                Trial Test Call Simulator
+              </h3>
+              <p className="text-xs text-neutral-400">
+                Experience how Aiva answers inbound calls in &lt;1s, verifies slots, and logs confirmed bookings.
+              </p>
+            </div>
           </div>
         </div>
 

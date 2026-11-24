@@ -13,7 +13,9 @@ import {
 } from "lucide-react";
 
 interface AivaHeroSectionProps {
-  onOpenDemo: () => void;
+  onOpenBookDemo?: () => void;
+  onOpenTestCall?: () => void;
+  onOpenDemo?: () => void;
 }
 
 const CALL_SCENARIOS = [
@@ -61,7 +63,9 @@ const CALL_SCENARIOS = [
   }
 ];
 
-export default function AivaHeroSection({ onOpenDemo }: AivaHeroSectionProps) {
+export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpenDemo }: AivaHeroSectionProps) {
+  const handleBookDemo = onOpenBookDemo || onOpenDemo || (() => {});
+  const handleTestCall = onOpenTestCall || onOpenDemo || (() => {});
   const [scenarioIndex, setScenarioIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [currentLine, setCurrentLine] = useState(0);
@@ -159,26 +163,35 @@ export default function AivaHeroSection({ onOpenDemo }: AivaHeroSectionProps) {
               </p>
 
               {/* CTAs */}
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-10">
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 mb-10">
                 <button
-                  onClick={onOpenDemo}
-                  className="group px-8 py-4 rounded-xl font-semibold text-base sm:text-lg transition-colors duration-200 hover:bg-[#B882A2] active:opacity-90 w-full sm:w-auto text-white flex items-center justify-center gap-2 cursor-pointer"
+                  onClick={handleBookDemo}
+                  className="group px-7 py-4 rounded-xl font-semibold text-base sm:text-lg transition-colors duration-200 hover:bg-[#B882A2] active:opacity-90 w-full sm:w-auto text-white flex items-center justify-center gap-2.5 cursor-pointer shadow-lg"
                   style={{
                     backgroundColor: "#A66B8E",
                     boxShadow: "0 10px 30px rgba(166, 107, 142, 0.35)",
                   }}
                 >
+                  <Calendar size={18} />
+                  <span>Book a Demo</span>
+                </button>
+
+                <button
+                  onClick={handleTestCall}
+                  className="px-6 py-4 rounded-xl font-medium text-base transition-all duration-200 hover:bg-white/[0.08] active:opacity-90 w-full sm:w-auto text-white/90 hover:text-white border border-[#E65C8E]/30 hover:border-[#E65C8E]/60 flex items-center justify-center gap-2.5 cursor-pointer"
+                  style={{ background: "rgba(230, 92, 142, 0.08)" }}
+                >
+                  <PhoneCall size={18} className="text-[#EC89B5]" />
                   <span>Hear a Live Test Call</span>
-                  <ChevronRight size={18} className="transition-transform duration-200 group-hover:translate-x-1" />
                 </button>
 
                 <a
                   href="#dashboard-preview"
-                  className="px-7 py-4 rounded-xl font-medium text-base transition-colors duration-200 hover:bg-white/[0.08] active:opacity-90 w-full sm:w-auto text-white/90 hover:text-white border border-white/10 hover:border-white/20 flex items-center justify-center gap-2"
+                  className="px-5 py-4 rounded-xl font-medium text-base transition-colors duration-200 hover:bg-white/[0.08] active:opacity-90 w-full sm:w-auto text-white/60 hover:text-white border border-white/10 hover:border-white/20 flex items-center justify-center gap-2"
                   style={{ background: "rgba(255, 255, 255, 0.03)" }}
                 >
                   <LayoutDashboard size={18} className="text-[#ECA9B7]" />
-                  <span>View Dashboard Preview</span>
+                  <span>Dashboard</span>
                 </a>
               </div>
 

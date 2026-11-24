@@ -9,7 +9,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
-import { ArrowLeft, Calendar, LogIn, LayoutDashboard } from "lucide-react";
+import { ArrowLeft, Calendar, LogIn, LayoutDashboard, PhoneCall } from "lucide-react";
 import { useAuth } from "../../auth/AuthProvider";
 import { isAivaSubdomain } from "../../../lib/subdomain";
 import AivaHeroSection from "./aiva/components/AivaHeroSection";
@@ -20,10 +20,12 @@ import AivaRoiCalculatorSection from "./aiva/components/AivaRoiCalculatorSection
 import AivaEnterpriseSecuritySection from "./aiva/components/AivaEnterpriseSecuritySection";
 import AivaFinalCTASection from "./aiva/components/AivaFinalCTASection";
 import AivaDemoModal from "./aiva/components/AivaDemoModal";
+import AivaBookDemoModal from "./aiva/components/AivaBookDemoModal";
 import AivaFooter from "./aiva/components/AivaFooter";
 
 export default function AivaProductPage() {
-  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
+  const [isBookDemoOpen, setIsBookDemoOpen] = useState(false);
+  const [isTestCallOpen, setIsTestCallOpen] = useState(false);
   const location = useLocation();
   // Only trigger the enter world animation if arriving from Namma Universe navigation
   const [showEnterTransition, setShowEnterTransition] = useState(() => {
@@ -43,8 +45,11 @@ export default function AivaProductPage() {
     document.documentElement.style.setProperty("--color-bg-secondary", "#0E070C");
     document.documentElement.style.setProperty("--color-bg-tertiary", "#140C11");
 
-    if (window.location.hash === "#demo") {
-      setIsDemoModalOpen(true);
+    if (window.location.hash === "#demo" || window.location.hash === "#book-demo") {
+      setIsBookDemoOpen(true);
+      window.history.replaceState(null, "", window.location.pathname);
+    } else if (window.location.hash === "#test-call" || window.location.hash === "#simulator") {
+      setIsTestCallOpen(true);
       window.history.replaceState(null, "", window.location.pathname);
     }
 
@@ -231,7 +236,16 @@ export default function AivaProductPage() {
             )}
 
             <button
-              onClick={() => setIsDemoModalOpen(true)}
+              onClick={() => setIsTestCallOpen(true)}
+              className="hidden md:flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-mono text-white/80 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer border border-[#E65C8E]/30"
+              style={{ background: "rgba(230, 92, 142, 0.08)" }}
+            >
+              <PhoneCall size={13} className="text-[#EC89B5]" />
+              <span>Test Call</span>
+            </button>
+
+            <button
+              onClick={() => setIsBookDemoOpen(true)}
               className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-white transition-colors duration-200 cursor-pointer flex items-center gap-1.5 hover:bg-[#B882A2] active:opacity-90"
               style={{ backgroundColor: "#A66B8E", boxShadow: "0 4px 14px rgba(166, 107, 142, 0.35)" }}
             >
@@ -243,17 +257,24 @@ export default function AivaProductPage() {
 
         {/* Master Product Sections */}
         <main>
-          <AivaHeroSection onOpenDemo={() => setIsDemoModalOpen(true)} />
+          <AivaHeroSection 
+            onOpenBookDemo={() => setIsBookDemoOpen(true)}
+            onOpenTestCall={() => setIsTestCallOpen(true)}
+          />
           <AivaProblemSection />
           <AivaDashboardPreviewSection />
           <AivaAutonomousLoopSection />
           <AivaRoiCalculatorSection />
           <AivaEnterpriseSecuritySection />
-          <AivaFinalCTASection onOpenDemo={() => setIsDemoModalOpen(true)} />
+          <AivaFinalCTASection 
+            onOpenBookDemo={() => setIsBookDemoOpen(true)}
+            onOpenTestCall={() => setIsTestCallOpen(true)}
+          />
         </main>
 
         <AivaFooter />
-        <AivaDemoModal isOpen={isDemoModalOpen} onClose={() => setIsDemoModalOpen(false)} />
+        <AivaBookDemoModal isOpen={isBookDemoOpen} onClose={() => setIsBookDemoOpen(false)} />
+        <AivaDemoModal isOpen={isTestCallOpen} onClose={() => setIsTestCallOpen(false)} />
       </div>
     </div>
   );

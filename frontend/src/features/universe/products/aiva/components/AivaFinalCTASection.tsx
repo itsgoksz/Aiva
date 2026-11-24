@@ -1,13 +1,17 @@
-import { ArrowRight, PhoneCall } from "lucide-react";
+import { ArrowRight, PhoneCall, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 import { isAivaSubdomain, getUniverseUrl } from "../../../../../lib/subdomain";
 
 interface AivaFinalCTASectionProps {
-  onOpenDemo: () => void;
+  onOpenBookDemo?: () => void;
+  onOpenTestCall?: () => void;
+  onOpenDemo?: () => void;
 }
 
-export default function AivaFinalCTASection({ onOpenDemo }: AivaFinalCTASectionProps) {
+export default function AivaFinalCTASection({ onOpenBookDemo, onOpenTestCall, onOpenDemo }: AivaFinalCTASectionProps) {
   const isSubdomain = isAivaSubdomain();
+  const handleBookDemo = onOpenBookDemo || onOpenDemo || (() => {});
+  const handleTestCall = onOpenTestCall || onOpenDemo || (() => {});
   return (
     <section 
       className="py-32 relative overflow-hidden" 
@@ -44,17 +48,27 @@ export default function AivaFinalCTASection({ onOpenDemo }: AivaFinalCTASectionP
           Give your front desk an extra set of hands and make sure every single caller gets booked.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5">
           <button
-            onClick={onOpenDemo}
-            className="group w-full sm:w-auto px-9 py-4 rounded-xl font-semibold text-base sm:text-lg text-white transition-all duration-200 hover:bg-[#B882A2] active:opacity-90 flex items-center justify-center gap-2 cursor-pointer"
+            onClick={handleBookDemo}
+            className="group w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-base sm:text-lg text-white transition-all duration-200 hover:bg-[#B882A2] active:opacity-90 flex items-center justify-center gap-2.5 cursor-pointer shadow-lg"
             style={{
               backgroundColor: "#A66B8E",
               boxShadow: "0 10px 30px rgba(166, 107, 142, 0.35)",
             }}
           >
-            <span>Try a Live Test Call</span>
+            <Calendar size={18} />
+            <span>Book a Demo</span>
             <ArrowRight size={18} className="transition-transform duration-200 group-hover:translate-x-1" />
+          </button>
+
+          <button
+            onClick={handleTestCall}
+            className="group w-full sm:w-auto px-7 py-4 rounded-xl font-medium text-base text-white/90 hover:text-white transition-all duration-200 hover:bg-white/[0.08] active:opacity-90 flex items-center justify-center gap-2.5 cursor-pointer border border-[#E65C8E]/30 hover:border-[#E65C8E]/60"
+            style={{ background: "rgba(230, 92, 142, 0.08)" }}
+          >
+            <PhoneCall size={18} className="text-[#EC89B5]" />
+            <span>Try a Live Test Call</span>
           </button>
 
           {isSubdomain ? (
