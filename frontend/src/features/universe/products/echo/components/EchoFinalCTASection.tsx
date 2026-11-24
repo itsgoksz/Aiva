@@ -6,7 +6,7 @@ interface EchoFinalCTASectionProps {
 
 export default function EchoFinalCTASection({ onOpenDemo }: EchoFinalCTASectionProps) {
   return (
-    <section className="py-32 relative overflow-hidden" style={{ backgroundColor: 'var(--color-bg-primary)' }}>
+    <section className="bg-transparent py-32 relative overflow-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-[150px] pointer-events-none opacity-20" style={{ background: 'var(--color-accent)' }}></div>
       
       <div className="container mx-auto px-6 relative z-10 text-center">

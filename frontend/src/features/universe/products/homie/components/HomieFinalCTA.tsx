@@ -7,7 +7,7 @@ interface HomieFinalCTAProps {
 
 export default function HomieFinalCTA({ onOpenDemo }: HomieFinalCTAProps) {
   return (
-    <section className="py-32 relative overflow-hidden" style={{ backgroundColor: 'var(--color-bg-primary)' }}>
+    <section className="bg-transparent py-32 relative overflow-hidden">
       {/* Dynamic Background */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] aspect-square rounded-full blur-[160px] opacity-20" style={{ backgroundColor: 'var(--color-accent)' }}></div>

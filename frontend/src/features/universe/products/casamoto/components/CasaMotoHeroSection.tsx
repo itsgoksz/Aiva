@@ -32,7 +32,7 @@ export default function CasaMotoHeroSection({ onOpenDemo }: CasaMotoHeroSectionP
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-28 pb-20 overflow-hidden" style={{ backgroundColor: "var(--color-bg-primary)" }}>
+    <section className="bg-transparent relative min-h-screen flex items-center justify-center pt-28 pb-20 overflow-hidden">
       {/* Background Gradients & Ambient Glow */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
         <div 

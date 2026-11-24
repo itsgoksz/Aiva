@@ -34,7 +34,7 @@ const ARCHITECTURE_BLOCKS = [
 
 export default function WelloraArchitecture() {
   return (
-    <section className="py-24 relative overflow-hidden bg-[#060C08] border-t border-white/[0.04]">
+    <section className="py-24 relative overflow-hidden bg-transparent border-t border-white/[0.04]">
       <div className="container relative z-10 px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/20 bg-emerald-950/20 mb-4 text-[11px] font-mono uppercase tracking-wider text-emerald-300">

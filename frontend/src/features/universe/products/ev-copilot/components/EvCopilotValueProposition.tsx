@@ -33,7 +33,7 @@ const propositions = [
 
 export default function EvCopilotValueProposition() {
   return (
-    <section className="py-32 relative overflow-hidden" style={{ backgroundColor: 'var(--color-bg-primary)' }}>
+    <section className="bg-transparent py-32 relative overflow-hidden">
       <div className="container px-4 sm:px-6 lg:px-8 mx-auto">
         <div className="max-w-3xl mx-auto text-center mb-20">
           <motion.h2 

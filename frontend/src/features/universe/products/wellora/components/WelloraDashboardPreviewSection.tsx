@@ -61,7 +61,7 @@ export default function WelloraDashboardPreviewSection() {
   };
 
   return (
-    <section id="experience" className="py-24 relative overflow-hidden bg-[#060C08] border-t border-white/[0.04]">
+    <section id="experience" className="py-24 relative overflow-hidden bg-transparent border-t border-white/[0.04]">
       {/* Background Glow */}
       <div 
         className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full blur-[160px] opacity-15 pointer-events-none"

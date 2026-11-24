@@ -3,7 +3,7 @@ import { Plane } from "lucide-react";
 
 export default function AirportDigitalTwinFooter() {
   return (
-    <footer className="py-14 border-t border-white/[0.06] bg-[#03060E]">
+    <footer className="py-14 border-t border-white/[0.06] bg-transparent">
       <div className="container mx-auto px-6 max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           

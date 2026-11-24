@@ -26,7 +26,7 @@ const problems = [
 
 export default function EchoProblemSection() {
   return (
-    <section className="py-32 relative" style={{ backgroundColor: 'var(--color-bg-secondary)' }}>
+    <section className="bg-transparent py-32 relative">
       <div className="container mx-auto px-6 max-w-5xl">
         <div className="text-center mb-20">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">

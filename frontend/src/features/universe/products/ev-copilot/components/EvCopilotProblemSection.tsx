@@ -27,7 +27,7 @@ const EV_PAIN_POINTS = [
 
 export default function EvCopilotProblemSection() {
   return (
-    <section className="py-24 relative overflow-hidden bg-[#070913] border-t border-white/[0.04]">
+    <section className="py-24 relative overflow-hidden bg-transparent border-t border-white/[0.04]">
       {/* Background glow */}
       <div 
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] rounded-full blur-[160px] opacity-15 pointer-events-none"

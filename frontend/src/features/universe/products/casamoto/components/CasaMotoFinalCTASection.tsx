@@ -8,12 +8,9 @@ interface CasaMotoFinalCTASectionProps {
 export default function CasaMotoFinalCTASection({ onOpenDemo }: CasaMotoFinalCTASectionProps) {
   return (
     <section 
-      className="py-32 relative overflow-hidden" 
-      style={{ 
-        backgroundColor: "var(--color-bg-primary)",
-        borderTop: "1px solid rgba(255, 255, 255, 0.04)"
-      }}
-    >
+ className="bg-transparent py-32 relative overflow-hidden" 
+ style={{ borderTop: "1px solid rgba(255, 255, 255, 0.04)" }}
+ >
       {/* High-fidelity ambient radial glow */}
       <div 
         className="absolute inset-0 pointer-events-none"

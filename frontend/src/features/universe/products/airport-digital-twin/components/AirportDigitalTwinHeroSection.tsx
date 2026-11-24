@@ -99,7 +99,7 @@ export default function AirportDigitalTwinHeroSection({ onOpenDemo }: AirportDig
   const altitudeFt = simMode === 'touchdown' ? 'Touchdown Ground' : selectedFlight.altitude;
 
   return (
-    <section className="relative min-h-[92vh] flex items-center justify-center pt-28 pb-20 overflow-hidden bg-[#050811]">
+    <section className="relative min-h-[92vh] flex items-center justify-center pt-28 pb-20 overflow-hidden bg-transparent">
       {/* Aerospace Radar Atmosphere */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div 

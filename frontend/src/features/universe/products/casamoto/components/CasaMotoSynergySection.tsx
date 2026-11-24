@@ -2,7 +2,7 @@
 
 export default function CasaMotoSynergySection() {
   return (
-    <section className="py-28 relative overflow-hidden" style={{ backgroundColor: "var(--color-bg-primary)" }}>
+    <section className="bg-transparent py-28 relative overflow-hidden">
       {/* Background radial glow */}
       <div 
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[500px] rounded-full blur-[220px] pointer-events-none opacity-15"

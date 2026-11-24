@@ -3,7 +3,7 @@ import { UserCircle, BrainCircuit, Bot } from 'lucide-react';
 
 export default function HomieSolutionSection() {
   return (
-    <section className="py-32 relative overflow-hidden" style={{ backgroundColor: 'var(--color-bg-primary)' }}>
+    <section className="bg-transparent py-32 relative overflow-hidden">
       <div className="container mx-auto px-6 max-w-5xl relative z-10">
         <div className="text-center mb-20">
           <div className="inline-flex items-center justify-center px-4 py-2 rounded-full mb-6 border border-[var(--color-border)]" style={{ background: 'var(--color-bg-tertiary)' }}>

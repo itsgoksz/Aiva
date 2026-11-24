@@ -40,7 +40,7 @@ export default function CasaMotoRideRadarSection() {
   }, []);
 
   return (
-    <section className="py-28 relative overflow-hidden" style={{ backgroundColor: "var(--color-bg-secondary)" }}>
+    <section className="bg-transparent py-28 relative overflow-hidden">
       {/* Background radial radar ambient */}
       <div 
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-[200px] pointer-events-none opacity-10"

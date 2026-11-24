@@ -27,7 +27,7 @@ const PAIN_POINTS = [
 
 export default function WelloraProblemSection() {
   return (
-    <section className="py-24 relative overflow-hidden bg-[#060C08] border-t border-white/[0.04]">
+    <section className="py-24 relative overflow-hidden bg-transparent border-t border-white/[0.04]">
       {/* Subtle organic gradient */}
       <div 
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] rounded-full blur-[160px] opacity-10 pointer-events-none"

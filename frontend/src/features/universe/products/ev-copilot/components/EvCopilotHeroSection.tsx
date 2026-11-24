@@ -60,7 +60,7 @@ export default function EvCopilotHeroSection({ onOpenDemo }: EvCopilotHeroSectio
   const [isPreconditioning, setIsPreconditioning] = useState(true);
 
   return (
-    <section className="relative min-h-[92vh] flex items-center justify-center pt-28 pb-20 overflow-hidden bg-[#070913]">
+    <section className="relative min-h-[92vh] flex items-center justify-center pt-28 pb-20 overflow-hidden bg-transparent">
       {/* Cyber Cockpit Background Atmosphere */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div 

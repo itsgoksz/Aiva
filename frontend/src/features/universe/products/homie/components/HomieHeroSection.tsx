@@ -7,7 +7,7 @@ interface HomieHeroSectionProps {
 
 export default function HomieHeroSection({ onOpenDemo }: HomieHeroSectionProps) {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden" style={{ backgroundColor: 'var(--color-bg-primary)' }}>
+    <section className="bg-transparent relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
       {/* Background gradients */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full blur-[120px] opacity-20" style={{ background: 'var(--color-accent)' }}></div>

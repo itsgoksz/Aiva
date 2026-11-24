@@ -1,6 +1,6 @@
 export default function WelloraFooter() {
   return (
-    <footer className="py-12 border-t border-[var(--color-border)]" style={{ backgroundColor: 'var(--color-bg-secondary)' }}>
+    <footer className="bg-transparent py-12 border-t border-[var(--color-border)]">
       <div className="container mx-auto px-6 max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2">

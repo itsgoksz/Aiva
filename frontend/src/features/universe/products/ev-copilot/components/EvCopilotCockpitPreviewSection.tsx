@@ -44,7 +44,7 @@ export default function EvCopilotCockpitPreviewSection() {
   ];
 
   return (
-    <section className="py-24 relative overflow-hidden bg-[#070913] border-t border-white/[0.04]">
+    <section className="py-24 relative overflow-hidden bg-transparent border-t border-white/[0.04]">
       {/* Background glow */}
       <div 
         className="absolute top-1/3 left-1/4 w-[600px] h-[400px] rounded-full blur-[180px] opacity-15 pointer-events-none"

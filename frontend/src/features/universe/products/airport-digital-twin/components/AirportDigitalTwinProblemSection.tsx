@@ -12,7 +12,7 @@ export default function AirportDigitalTwinProblemSection() {
   const [activeTab, setActiveTab] = useState<'legacy' | 'twin'>('twin');
 
   return (
-    <section className="relative py-28 bg-[#050811] text-white overflow-hidden border-t border-white/[0.04]">
+    <section className="relative py-28 bg-transparent text-white overflow-hidden border-t border-white/[0.04]">
       {/* Background Subtle Radar Glow */}
       <div className="absolute inset-0 pointer-events-none">
         <div 

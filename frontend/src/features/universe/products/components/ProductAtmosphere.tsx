@@ -41,7 +41,7 @@ export default function ProductAtmosphere({
   accentColor,
   secondaryAccent,
   bgBaseColor = '#0A0508',
-  starCount = 220,
+  starCount = 280,
 }: ProductAtmosphereProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const secondary = secondaryAccent || accentColor;
@@ -59,15 +59,15 @@ export default function ProductAtmosphere({
     let stars: Star[] = [];
 
     const initStars = (w: number, h: number) => {
-      // Responsive star count: ~140 on mobile, ~220 on desktop
+      // Responsive star count: ~180 on mobile, ~280 on desktop
       const count = w < 768 ? Math.round(starCount * 0.65) : starCount;
       const arr: Star[] = [];
       for (let i = 0; i < count; i++) {
         const radius = Math.random() < 0.85 
-          ? 0.5 + Math.random() * 0.8 
-          : 1.3 + Math.random() * 0.7; // 15% are slightly larger glowing stars
+          ? 0.6 + Math.random() * 0.85 
+          : 1.4 + Math.random() * 0.8; // 15% are slightly larger glowing stars
         
-        const baseAlpha = 0.2 + Math.random() * 0.55;
+        const baseAlpha = 0.25 + Math.random() * 0.60;
         arr.push({
           x: Math.random() * w,
           y: Math.random() * h,
@@ -76,7 +76,7 @@ export default function ProductAtmosphere({
           alpha: baseAlpha,
           twinkleSpeed: 0.8 + Math.random() * 2.2,
           twinkleOffset: Math.random() * Math.PI * 2,
-          isTinted: Math.random() < 0.25, // 25% are subtly tinted with the product's color
+          isTinted: Math.random() < 0.30, // 30% are subtly tinted with the product's color
           driftSpeed: 0.04 + Math.random() * 0.08,
         });
       }
@@ -205,7 +205,7 @@ export default function ProductAtmosphere({
       <canvas 
         ref={canvasRef} 
         className="absolute inset-0 z-[1] pointer-events-none"
-        style={{ opacity: 0.85 }}
+        style={{ opacity: 1.0 }}
       />
 
       {/* ── 3. Fine Dot-Matrix Grid Texture ── */}

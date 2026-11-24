@@ -20,7 +20,7 @@ export default function AivaFooter() {
   };
 
   return (
-    <footer className="py-14 border-t border-white/[0.06]" style={{ backgroundColor: "#0E070C" }}>
+    <footer className="bg-transparent py-14 border-t border-white/[0.06]">
       <div className="container mx-auto px-6 max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-3">

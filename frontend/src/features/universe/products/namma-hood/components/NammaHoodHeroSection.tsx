@@ -76,7 +76,7 @@ export default function NammaHoodHeroSection({ onOpenDemo }: NammaHoodHeroSectio
   };
 
   return (
-    <section className="relative min-h-[92vh] flex items-center justify-center pt-28 pb-20 overflow-hidden bg-[#060807]">
+    <section className="relative min-h-[92vh] flex items-center justify-center pt-28 pb-20 overflow-hidden bg-transparent">
       {/* Background Urban Night Gradients */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div 

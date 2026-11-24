@@ -89,7 +89,7 @@ export default function AirportDigitalTwinArchitectureSection() {
   const activeStep = ARCHITECTURE_STEPS[activeStepIndex];
 
   return (
-    <section className="relative py-28 bg-[#050811] text-white overflow-hidden border-t border-white/[0.04]">
+    <section className="relative py-28 bg-transparent text-white overflow-hidden border-t border-white/[0.04]">
       {/* Background Subtle Grid & Lighting */}
       <div className="absolute inset-0 pointer-events-none">
         <div 

@@ -3,7 +3,7 @@ import { Monitor, Smartphone, Volume2 } from 'lucide-react';
 
 export default function EchoInterfaces() {
   return (
-    <section className="py-32 relative overflow-hidden" style={{ backgroundColor: 'var(--color-bg-secondary)' }}>
+    <section className="bg-transparent py-32 relative overflow-hidden">
       <div className="container mx-auto px-6 max-w-6xl relative z-10">
         <div className="text-center mb-20">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">

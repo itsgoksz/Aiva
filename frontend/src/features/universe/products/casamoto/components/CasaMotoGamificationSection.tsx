@@ -37,7 +37,7 @@ const BADGES = [
 
 export default function CasaMotoGamificationSection() {
   return (
-    <section className="py-28 relative overflow-hidden" style={{ backgroundColor: "var(--color-bg-secondary)" }}>
+    <section className="bg-transparent py-28 relative overflow-hidden">
       <div className="container mx-auto px-6 max-w-6xl relative z-10">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase text-[#FF6B00] border border-[#FF6B00]/20 bg-[#FF6B00]/5 mb-4 font-mono">

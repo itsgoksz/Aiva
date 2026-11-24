@@ -99,7 +99,7 @@ export default function CasaMotoGarageSection() {
   };
 
   return (
-    <section id="garage-demo" className="py-28 relative overflow-hidden" style={{ backgroundColor: "var(--color-bg-primary)" }}>
+    <section id="garage-demo" className="bg-transparent py-28 relative overflow-hidden">
       {/* Decorative ambient lighting */}
       <div 
         className="absolute top-1/4 right-0 w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none opacity-10"

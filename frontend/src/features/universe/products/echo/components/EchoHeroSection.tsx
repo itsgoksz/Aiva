@@ -7,7 +7,7 @@ interface EchoHeroSectionProps {
 
 export default function EchoHeroSection({ onOpenDemo }: EchoHeroSectionProps) {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden" style={{ backgroundColor: 'var(--color-bg-primary)' }}>
+    <section className="bg-transparent relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
       {/* Background gradients */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full blur-[120px]" style={{ background: 'var(--color-accent-light)' }} />

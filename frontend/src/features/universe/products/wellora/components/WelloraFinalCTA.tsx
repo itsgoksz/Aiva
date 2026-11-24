@@ -6,7 +6,7 @@ interface WelloraFinalCTAProps {
 
 export default function WelloraFinalCTA({ onOpenDemo }: WelloraFinalCTAProps) {
   return (
-    <section className="py-28 relative overflow-hidden bg-[#060C08] border-t border-white/[0.04]">
+    <section className="py-28 relative overflow-hidden bg-transparent border-t border-white/[0.04]">
       {/* Background Radial Glow */}
       <div 
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] rounded-full blur-[160px] opacity-20 pointer-events-none"
