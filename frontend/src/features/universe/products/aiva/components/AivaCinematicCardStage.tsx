@@ -41,86 +41,70 @@ import AivaSolarSystemBackground from "./AivaSolarSystemBackground";
 const PROBLEMS = [
   {
     icon: PhoneMissed,
-    category: "FRONT-DESK BOTTLENECK",
-    stat: "32%",
-    statLabel: "Inbound calls missed",
-    title: "Unanswered calls during the daily rush.",
-    description: "When staff is occupied with in-person clients, calls ring out. Most callers hang up within 8 seconds and immediately book with competitors.",
-    solution: "Aiva answers in under 240ms with warm hospitality, handles unlimited concurrent callers, and locks bookings directly into your calendar.",
-    tags: ["< 240ms Pick-up", "Zero Busy Tones", "100% Capture"]
+    category: "PEAK RUSH",
+    stat: "32% Missed",
+    title: "Unanswered calls during peak hours",
+    description: "Busy staff miss ringing phones—callers hang up in 8s and book competitors.",
+    solution: "Picks up in under 1 second and handles unlimited callers at once.",
   },
   {
     icon: Clock,
-    category: "AFTER-HOURS CAPTURE",
-    stat: "₹1.4L+",
-    statLabel: "Lost bookings/mo",
-    title: "Losing high-value bookings after doors close.",
-    description: "Clients attempt to book late at night or on weekends when clinic doors are locked and nobody is at the front desk to answer.",
-    solution: "Operates 24/7/365 with zero overtime costs, locking calendar slots and sending instant WhatsApp confirmations while you sleep.",
-    tags: ["24/7/365 Always-On", "Instant WhatsApp Slips", "Zero Overtime"]
+    category: "AFTER HOURS",
+    stat: "₹1.4L+/mo Lost",
+    title: "Lost bookings after closing time",
+    description: "Late-night and weekend callers hit locked doors with no one to book.",
+    solution: "Books appointments 24/7 and sends instant WhatsApp confirmations.",
   },
   {
     icon: Users,
-    category: "FRONT-DESK BOTTLENECK",
-    stat: "14 hrs",
-    statLabel: "Lost Weekly",
-    title: "Front desk staff constantly interrupted by calls.",
-    description: "In-person consultations are repeatedly derailed by routine questions on pricing, timings, and directions.",
-    solution: "Handles 100% of routine inquiries and appointment bookings autonomously, letting your team focus on premium in-person client care.",
-    tags: ["Zero Desk Distraction", "100% In-Person Focus", "Calmer Lobby Atmosphere"]
+    category: "DESK FOCUS",
+    stat: "14 hrs/wk Lost",
+    title: "Front desk constantly interrupted",
+    description: "In-person guests wait while staff answer routine pricing & direction calls.",
+    solution: "Handles every routine call so your team stays 100% focused on guests.",
   },
   {
     icon: MessageSquareOff,
-    category: "CLIENT RETENTION",
-    stat: "1 in 3",
-    statLabel: "Cold Churn",
-    title: "Treating loyal regulars like first-time strangers.",
-    description: "Returning VIP clients are forced to re-explain their treatment history and doctor preferences on every call.",
-    solution: "Instantly recognizes caller ID, greets regulars by name, recalls past doctor notes, and delivers warm VIP concierge care.",
-    tags: ["Instant VIP Recall", "Specialist Preference Sync", "Automated Client Memory"]
+    category: "VIP MEMORY",
+    stat: "1 in 3 Churn",
+    title: "Treating regulars like strangers",
+    description: "Returning clients must re-explain past treatments and doctor preferences.",
+    solution: "Recognizes regulars by number, recalls preferences, and greets by name.",
   }
 ];
 
 const WORKFLOW_STEPS = [
   {
     step: "01",
-    phase: "AUDIO INGESTION",
-    title: "Answers on Ring 1 in Fluent Voice",
+    title: "Answers on Ring One",
     metric: "240ms",
     icon: PhoneCall,
     color: "#E65C8E",
-    desc: "Aiva answers instantly with warm, natural hospitality. Effortlessly navigates interruptions and everyday conversational speech.",
-    telemetry: "Live Voice Stream • Sub-300ms Speech"
+    desc: "Greets callers in a warm, natural human voice with zero hold music.",
   },
   {
     step: "02",
-    phase: "SCHEDULE ENGINE",
-    title: "Checks Operatory & Doctor Buffer",
+    title: "Checks Real Availability",
     metric: "0 Clashes",
     icon: CalendarCheck,
     color: "#A66B8E",
-    desc: "Cross-checks real-time doctor availability across Google Calendar & Practo. Enforces 15-minute sanitization prep buffers.",
-    telemetry: "Calendar Defense • 15 Min Buffer Locked"
+    desc: "Syncs live with Google Calendar & Practo, keeping 15-min prep buffers.",
   },
   {
     step: "03",
-    phase: "DISPATCH AUTOMATION",
-    title: "Dispatches WhatsApp Slip & Map",
+    title: "Sends WhatsApp Slip",
     metric: "3.4s",
     icon: MessageSquare,
     color: "#34D399",
-    desc: "Dispatches official branded WhatsApp slip with specialist doctor name, appointment time, Google Maps pin, and UPI link.",
-    telemetry: "WhatsApp API • Verified Green Badge"
+    desc: "Dispatches booking details, doctor name, map pin, and UPI link automatically.",
   },
   {
     step: "04",
-    phase: "EXECUTIVE DOSSIER",
-    title: "Saves Client Dossier & VIP Notes",
+    title: "Updates Client Memory",
     metric: "100%",
     icon: Database,
     color: "#EC89B5",
-    desc: "Logs treatment type, preferred specialist, and call audio replay directly to your dashboard. Remembers repeat clients.",
-    telemetry: "Client Memory • Automated History Sync"
+    desc: "Logs visit history, preferred doctor, and call summary straight to your CRM.",
   }
 ];
 
@@ -266,9 +250,11 @@ function TiltCard({ children, className = "", style = {} }: TiltCardProps) {
   );
 }
 
-// ─── UNIFORM SCROLL BOUNDS FOR 6 SINGLE-SCREEN CARDS ─────────
-const MOBILE_STAGE_WEIGHTS = [1, 1, 1, 1, 1, 1];
-const DESKTOP_STAGE_WEIGHTS = [1, 1, 1, 1, 1, 1];
+// ─── CALIBRATED SCROLL BOUNDS FOR BALANCED SECTION PACING ─────
+// Accounts for entry/exit sticky visibility on sections 01 and 06 so every section
+// has equal, accurate on-screen reading time during continuous scrolling.
+const MOBILE_STAGE_WEIGHTS = [0.85, 1.12, 1.05, 1.12, 0.98, 0.88];
+const DESKTOP_STAGE_WEIGHTS = [0.85, 1.1, 1.05, 1.1, 1.0, 0.85];
 
 function buildNormalizedBounds(weights: number[]) {
   const total = weights.reduce((a, b) => a + b, 0);
@@ -292,16 +278,14 @@ function mapProgressToStage(latest: number, isMobile: boolean) {
     const { start, end } = bounds[i];
     if (clamped >= start && (clamped < end || i === bounds.length - 1)) {
       const frac = Math.max(0, Math.min(1, (clamped - start) / (end - start)));
-      // Hold at top card (panProgress = 0) until 28% so entering Section 2, 5, 7 always starts at the top card
-      const panProgress = frac <= 0.28 ? 0 : frac >= 0.80 ? 1 : (frac - 0.28) / 0.52;
-      // Camera holds on Planet i during reading & card pan, then flies to Planet i+1 (80% -> 100%)
+      // Camera holds steadily on Planet i during reading, then flies to Planet i+1 (76% -> 100%)
       let floatStage = i;
-      if (i < bounds.length - 1 && frac > 0.80) {
-        const t = (frac - 0.80) / 0.20;
+      if (i < bounds.length - 1 && frac > 0.76) {
+        const t = (frac - 0.76) / 0.24;
         const eased = t * t * (3 - 2 * t);
         floatStage = i + eased;
       }
-      return { stageIndex: i, panProgress, floatStage };
+      return { stageIndex: i, panProgress: 0, floatStage };
     }
   }
   return { stageIndex: 0, panProgress: 0, floatStage: 0 };
@@ -456,7 +440,7 @@ export default function AivaCinematicCardStage(
   const STAGE_METADATA = [
     { num: "01", short: "LOOP", name: "28s Autonomous Loop", title: "From Inquiry to Confirmed Booking" },
     { num: "02", short: "LOGIC", name: "4-Quadrant Resolution", title: "Every Missed Call is Revenue Lost" },
-    { num: "03", short: "MATRIX", name: "Capability Parity", title: "Traditional Front Desk vs Aiva Teammate" },
+    { num: "03", short: "MATRIX", name: "Capability Parity", title: "Traditional Front Desk vs Aiva" },
     { num: "04", short: "DECK", name: "Telemetry Console", title: "Real-Time Clinic Management Deck" },
     { num: "05", short: "ROI", name: "Financial Recovery", title: "Live Missed-Call Cost & Revenue Engine" },
     { num: "06", short: "SHIELD", name: "Enterprise Governance", title: "Strict Compliance & Zero Risk Protocol" },
@@ -468,11 +452,11 @@ export default function AivaCinematicCardStage(
   return (
     <section 
       ref={containerRef}
-      className="relative min-h-[660vh] md:min-h-[720vh] bg-transparent"
+      className="relative min-h-[680vh] md:min-h-[700vh] bg-transparent"
     >
-      {/* Sticky Cinematic Theater (Full remaining viewport below navbar, dvh resilient) */}
+      {/* Sticky Cinematic Theater (Positioned cleanly below navbar with generous header breathing room) */}
       <div 
-        className="sticky top-14 sm:top-16 h-[calc(100dvh-3.5rem)] sm:h-[calc(100dvh-4rem)] flex flex-col justify-between overflow-x-hidden overflow-y-hidden px-3 sm:px-6 z-20 relative"
+        className="sticky top-[70px] sm:top-[76px] h-[calc(100dvh-4.375rem)] sm:h-[calc(100dvh-4.75rem)] flex flex-col justify-between overflow-x-hidden overflow-y-hidden px-3 sm:px-6 z-20 relative"
       >
         {/* Realistic Namma Universe 3D Solar System & Planet-Flight Canvas */}
         <AivaSolarSystemBackground
@@ -481,10 +465,10 @@ export default function AivaCinematicCardStage(
           className="absolute inset-0 pointer-events-none z-0"
         />
         
-        {/* Stage Header: Apple-Style Balanced Centered Heading */}
-        <div className="max-w-2xl mx-auto w-full pt-4 sm:pt-6 pb-2 sm:pb-3 px-2 text-center select-none shrink-0 relative z-10">
+        {/* Stage Header: Clean Apple-Style Centered Display Heading (Zero Shadow Artifacts) */}
+        <div className="max-w-3xl mx-auto w-full pt-5 sm:pt-7 pb-3 sm:pb-4 px-2 text-center select-none shrink-0 relative z-10">
           <h2 
-            className="text-[22px] sm:text-3xl md:text-[38px] font-bold tracking-[-0.03em] leading-[1.14] text-balance bg-gradient-to-b from-white via-white to-white/75 bg-clip-text text-transparent drop-shadow-[0_4px_24px_rgba(0,0,0,0.85)]"
+            className="text-[24px] sm:text-[34px] md:text-[40px] font-bold tracking-[-0.03em] leading-[1.15] text-balance text-white"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
             {currentMeta.title}
@@ -518,7 +502,7 @@ export default function AivaCinematicCardStage(
             >
               <AnimatePresence mode="wait" custom={direction}>
             
-            {/* === STAGE 01: UNIFIED 28-SECOND AUTONOMOUS PIPELINE (FITS CARD 4 FOOTPRINT) === */}
+            {/* === STAGE 01: UNIFIED 28-SECOND BOOKING PIPELINE (FULL TEXT, CARD 4 FOOTPRINT) === */}
             {stageIndex === 0 && (
               <motion.div
                 key="stage-01"
@@ -530,85 +514,82 @@ export default function AivaCinematicCardStage(
                 className="w-full max-w-4xl mx-auto relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-5 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-6 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
                   {/* Top Apparatus Bar */}
-                  <div className="flex items-center justify-between pb-2 mb-2.5 sm:mb-3.5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+                  <div className="flex items-center justify-between gap-2 pb-2.5 mb-2.5 sm:mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
                     <span className="flex items-center gap-2 text-[#EC89B5] font-semibold">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
-                      AUTONOMOUS PIPELINE // 28S LOOP
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse shrink-0" />
+                      <span>28-SECOND BOOKING LOOP</span>
                     </span>
-                    <span className="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-semibold">
+                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-semibold whitespace-nowrap shrink-0">
                       28s END-TO-END
                     </span>
                   </div>
 
-                  {/* 4 Compact Steps: Horizontal rows on mobile (fits 1 screen), 2x2 grid on desktop */}
-                  <div className="space-y-1.5 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-3 mb-2.5 sm:mb-3.5">
+                  {/* 4 Crisp Timeline Steps Inside One Unified Card (Zero Truncation) */}
+                  <div className="space-y-2 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-3 mb-3 sm:mb-4">
                     {WORKFLOW_STEPS.map((s) => {
                       const Icon = s.icon;
                       return (
                         <div
                           key={s.step}
-                          className="p-2 sm:p-3 rounded-xl bg-white/[0.025] border border-white/10 flex sm:flex-col items-center sm:items-stretch justify-between gap-2.5 sm:gap-1.5"
+                          className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/[0.025] border border-white/10 hover:border-white/20 transition-colors"
                         >
-                          <div className="flex items-center sm:justify-between gap-2.5 min-w-0">
-                            <div className="flex items-center gap-2 min-w-0">
+                          <div className="flex items-start justify-between gap-2.5">
+                            <div className="flex items-start gap-2.5 min-w-0">
                               <div
-                                className="w-7 h-7 sm:w-6 sm:h-6 rounded-lg flex items-center justify-center border border-white/10 shrink-0"
-                                style={{ background: `${s.color}18`, color: s.color }}
+                                className="w-8 h-8 rounded-xl flex items-center justify-center border border-white/15 shrink-0 mt-0.5"
+                                style={{ background: `${s.color}20`, color: s.color }}
                               >
-                                <Icon size={13} />
+                                <Icon size={15} />
                               </div>
-                              <div className="min-w-0 sm:hidden">
-                                <h4 className="text-xs font-bold text-white leading-tight truncate">{s.title}</h4>
-                                <p className="text-[10.5px] text-white/60 leading-snug line-clamp-1">{s.desc}</p>
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-1.5 mb-0.5">
+                                  <span className="text-[9.5px] font-mono font-bold tracking-wider" style={{ color: s.color }}>
+                                    {s.step}
+                                  </span>
+                                  <h4 className="text-xs sm:text-sm font-bold text-white leading-snug">
+                                    {s.title}
+                                  </h4>
+                                </div>
+                                <p className="text-[11px] sm:text-xs text-white/70 leading-snug">
+                                  {s.desc}
+                                </p>
                               </div>
-                              <span className="hidden sm:inline text-[10px] font-mono tracking-wider text-white/50">
-                                STEP {s.step} · {s.phase}
-                              </span>
                             </div>
-                            <span className="hidden sm:inline px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 text-[10px] font-mono font-bold shrink-0">
-                              ✓ {s.metric}
+                            <span className="px-2 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 text-[10px] font-mono font-bold whitespace-nowrap shrink-0">
+                              {s.metric}
                             </span>
-                          </div>
-
-                          <span className="sm:hidden px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 text-[10px] font-mono font-bold shrink-0">
-                            {s.metric}
-                          </span>
-
-                          <div className="hidden sm:block">
-                            <h4 className="text-sm font-bold text-white mb-0.5 leading-snug">{s.title}</h4>
-                            <p className="text-xs text-white/70 font-light leading-relaxed">{s.desc}</p>
                           </div>
                         </div>
                       );
                     })}
                   </div>
 
-                  {/* Unified Staff Productivity Guarantee Footer */}
-                  <div className="pt-2.5 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
-                    <div className="max-w-md">
+                  {/* Bottom Guarantee Deck with Card-4 Style Metric Tiles */}
+                  <div className="pt-2.5 sm:pt-3 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+                    <div>
                       <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-mono text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-1">
                         <ShieldCheck size={10} className="text-[#EC89B5]" />
                         <span>STAFF PRODUCTIVITY GUARANTEE</span>
                       </div>
                       <p className="text-xs sm:text-sm font-semibold text-white leading-snug">
-                        Give your staff their time back. Not their patience.
+                        Give your staff their time back—zero desk phone interruptions.
                       </p>
                     </div>
 
-                    <div className="w-full sm:w-auto flex items-center justify-between sm:justify-end gap-4 shrink-0 border-t sm:border-t-0 sm:border-l border-white/10 pt-2 sm:pt-0 sm:pl-5 text-center">
-                      <div>
-                        <span className="text-[9px] font-mono text-white/40 block">ROI</span>
-                        <span className="text-sm sm:text-lg font-bold font-mono text-emerald-400">3.8x</span>
+                    <div className="w-full sm:w-auto grid grid-cols-3 gap-2 shrink-0">
+                      <div className="px-2.5 py-1.5 rounded-xl bg-white/[0.03] border border-white/10 text-center">
+                        <span className="text-[9px] font-mono text-white/45 block">ROI BOOST</span>
+                        <span className="text-sm sm:text-base font-bold font-mono text-emerald-400">3.8x</span>
                       </div>
-                      <div>
-                        <span className="text-[9px] font-mono text-white/40 block">MISSED</span>
-                        <span className="text-sm sm:text-lg font-bold font-mono text-white">0</span>
+                      <div className="px-2.5 py-1.5 rounded-xl bg-white/[0.03] border border-white/10 text-center">
+                        <span className="text-[9px] font-mono text-white/45 block">MISSED</span>
+                        <span className="text-sm sm:text-base font-bold font-mono text-white">0</span>
                       </div>
-                      <div>
-                        <span className="text-[9px] font-mono text-white/40 block">RETENTION</span>
-                        <span className="text-sm sm:text-lg font-bold font-mono text-[#EC89B5]">94.6%</span>
+                      <div className="px-2.5 py-1.5 rounded-xl bg-white/[0.03] border border-white/10 text-center">
+                        <span className="text-[9px] font-mono text-white/45 block">RETENTION</span>
+                        <span className="text-sm sm:text-base font-bold font-mono text-[#EC89B5]">94.6%</span>
                       </div>
                     </div>
                   </div>
@@ -616,7 +597,7 @@ export default function AivaCinematicCardStage(
               </motion.div>
             )}
 
-            {/* === STAGE 02: FRONT-DESK REALITY MATRIX (SINGLE CARD, FITS CARD 4 FOOTPRINT) === */}
+            {/* === STAGE 02: FRONT-DESK REALITY MATRIX (FULL TEXT, EYE-CATCHING, ZERO CUTOFFS) === */}
             {stageIndex === 1 && (
               <motion.div
                 key="stage-02"
@@ -629,10 +610,10 @@ export default function AivaCinematicCardStage(
                 style={{ transformStyle: "preserve-3d" }}
               >
                 <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-5 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
-                  <div className="flex items-center justify-between pb-2 mb-2.5 sm:mb-3.5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
-                    <span className="text-[#EC89B5] font-semibold">FRONT-DESK REALITY // 4-POINT AUDIT</span>
-                    <span className="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-semibold">
-                      100% CAPTURE
+                  <div className="flex items-center justify-between gap-2 pb-2.5 mb-2.5 sm:mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+                    <span className="text-[#EC89B5] font-semibold">FRONT-DESK REALITY</span>
+                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-semibold whitespace-nowrap shrink-0">
+                      100% CALL CAPTURE
                     </span>
                   </div>
 
@@ -642,29 +623,31 @@ export default function AivaCinematicCardStage(
                       return (
                         <div
                           key={p.title}
-                          className="p-2.5 sm:p-3.5 rounded-xl bg-white/[0.025] border border-white/10 flex flex-col justify-between"
+                          className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/[0.025] border border-white/10 flex flex-col justify-between"
                         >
-                          <div className="flex items-center justify-between gap-2 mb-1">
-                            <span className="flex items-center gap-1.5 text-[9.5px] font-mono text-[#EC89B5] font-semibold">
-                              <Icon size={11} />
-                              {p.category}
-                            </span>
-                            <span className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[9.5px] font-mono text-white/60 shrink-0">
-                              {p.stat} · {p.statLabel}
-                            </span>
+                          <div>
+                            <div className="flex items-center justify-between gap-2 mb-1">
+                              <span className="flex items-center gap-1.5 text-[9.5px] font-mono text-[#EC89B5] font-semibold whitespace-nowrap">
+                                <Icon size={11} />
+                                {p.category}
+                              </span>
+                              <span className="px-2 py-0.5 rounded-md bg-rose-500/10 border border-rose-500/25 text-[9.5px] font-mono text-rose-300 font-semibold whitespace-nowrap shrink-0">
+                                {p.stat}
+                              </span>
+                            </div>
+
+                            <h4 className="text-xs sm:text-sm font-bold text-white leading-snug mb-1.5">
+                              {p.title}
+                            </h4>
                           </div>
 
-                          <h4 className="text-xs sm:text-sm font-bold text-white leading-snug mb-1.5">
-                            {p.title}
-                          </h4>
-
-                          <div className="space-y-1 text-[10.5px] sm:text-[11px] leading-snug">
-                            <p className="text-white/55 line-clamp-1 sm:line-clamp-2">
-                              <span className="text-red-400 font-mono mr-1">✕</span>
+                          <div className="space-y-1 text-[10.5px] sm:text-[11.5px] leading-snug">
+                            <p className="text-white/60">
+                              <span className="text-rose-400 font-mono font-bold mr-1">✕</span>
                               {p.description}
                             </p>
-                            <p className="text-white/90 line-clamp-1 sm:line-clamp-2">
-                              <span className="text-emerald-400 font-mono mr-1">✓</span>
+                            <p className="text-white/95 font-medium">
+                              <span className="text-emerald-400 font-mono font-bold mr-1">✓</span>
                               {p.solution}
                             </p>
                           </div>
@@ -676,7 +659,7 @@ export default function AivaCinematicCardStage(
               </motion.div>
             )}
 
-            {/* === STAGE 03: CAPABILITY PARITY MATRIX (ZERO HORIZONTAL SCROLL ON MOBILE) === */}
+            {/* === STAGE 03: FRIENDLY, NON-TECHNICAL COMPARISON (ZERO HORIZONTAL SCROLL) === */}
             {stageIndex === 2 && (
               <motion.div
                 key="stage-03"
@@ -689,31 +672,30 @@ export default function AivaCinematicCardStage(
                 style={{ transformStyle: "preserve-3d" }}
               >
                 <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-6 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
-                  <div className="flex items-center justify-between pb-2 mb-2.5 sm:mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
-                    <span className="text-[#EC89B5] font-semibold">SYSTEM COMPARISON</span>
-                    <span className="text-white/40">100+ Live Deployments</span>
+                  <div className="flex items-center justify-between gap-2 pb-2.5 mb-2.5 sm:mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+                    <span className="text-[#EC89B5] font-semibold">WHY CLINICS SWITCH</span>
+                    <span className="text-white/50 whitespace-nowrap">100+ Active Businesses</span>
                   </div>
 
-                  {/* Mobile View: Zero Horizontal Scroll — Clean 5-Row Split Cards */}
-                  <div className="sm:hidden space-y-1.5">
+                  {/* Mobile View: Crisp Client-Friendly Cards (Zero Truncation, Zero Horizontal Scroll) */}
+                  <div className="sm:hidden space-y-2">
                     {[
-                      { cap: "Hours of Operation", old: "10 AM – 8 PM only", aiva: "✓ 24/7/365 without overtime" },
-                      { cap: "Simultaneous Calls", old: "1 caller (busy tone)", aiva: "✓ Unlimited concurrent lines" },
-                      { cap: "Calendar & Buffer Sync", old: "Manual entry / message", aiva: "✓ Direct slot & buffer lock" },
-                      { cap: "WhatsApp & UPI Slip", old: "Manual / no routing", aiva: "✓ Instant slip in 3.4s" },
-                      { cap: "Cost Structure", old: "₹35k–₹55k/mo + PF/ESI", aiva: "✓ Predictable flat monthly plan" },
+                      { cap: "Availability", old: "Closes at 8 PM & Sundays", aiva: "✓ Open 24/7, all 365 days" },
+                      { cap: "Busy Rush Hours", old: "1 caller at a time, rest wait", aiva: "✓ Unlimited calls at once" },
+                      { cap: "Appointment Booking", old: "Manual notes & slow callbacks", aiva: "✓ Books live in your calendar" },
+                      { cap: "Client Confirmations", old: "Only if front desk remembers", aiva: "✓ WhatsApp slip in 3 seconds" },
+                      { cap: "Monthly Cost", old: "₹35k–₹55k/mo + overtime", aiva: "✓ Simple flat monthly plan" },
                     ].map((row) => (
                       <div
                         key={row.cap}
-                        className="p-2 rounded-xl bg-white/[0.025] border border-white/10"
+                        className="p-2.5 rounded-xl bg-white/[0.025] border border-white/10"
                       >
-                        <div className="text-[11px] font-bold text-white mb-1">{row.cap}</div>
+                        <div className="text-[11px] font-bold text-white mb-1.5">{row.cap}</div>
                         <div className="grid grid-cols-2 gap-2 text-[10px] leading-snug">
-                          <div className="text-white/50 truncate">
-                            <span className="text-white/30 font-mono mr-1">OLD:</span>
+                          <div className="px-2 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/55">
                             {row.old}
                           </div>
-                          <div className="text-emerald-400 font-semibold truncate text-right">
+                          <div className="px-2 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/25 text-emerald-300 font-semibold">
                             {row.aiva}
                           </div>
                         </div>
@@ -721,47 +703,47 @@ export default function AivaCinematicCardStage(
                     ))}
                   </div>
 
-                  {/* Desktop View: Full 4-Column Comparison Table */}
+                  {/* Desktop View: Clear Non-Technical Comparison Table */}
                   <div className="hidden sm:block">
                     <table className="w-full text-left text-xs sm:text-sm">
                       <thead>
-                        <tr className="border-b border-white/10 text-white/40 font-mono text-[10px] sm:text-[11px]">
-                          <th className="pb-3 font-normal">CORE CAPABILITY</th>
+                        <tr className="border-b border-white/10 text-white/45 font-mono text-[10px] sm:text-[11px]">
+                          <th className="pb-3 font-normal">WHAT MATTERS MOST</th>
                           <th className="pb-3 font-normal">HUMAN FRONT DESK</th>
-                          <th className="pb-3 font-normal">TRADITIONAL CALL CENTER</th>
-                          <th className="pb-3 font-semibold text-[#EC89B5]">AIVA VOICE AI</th>
+                          <th className="pb-3 font-normal">CALL CENTER</th>
+                          <th className="pb-3 px-3 font-semibold text-[#EC89B5] bg-emerald-500/[0.06] rounded-t-lg">WITH AIVA</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-white/[0.06]">
                         <tr>
-                          <td className="py-3 font-medium text-white">Hours of Operation</td>
+                          <td className="py-3 font-medium text-white">Availability</td>
                           <td className="py-3 text-white/60">10:00 AM – 8:00 PM only</td>
                           <td className="py-3 text-white/60">24/7 (Expensive add-on)</td>
-                          <td className="py-3 text-emerald-400 font-bold">✓ 24/7/365 without overtime</td>
+                          <td className="py-3 px-3 text-emerald-400 font-bold bg-emerald-500/[0.06]">✓ Open 24/7, all 365 days</td>
                         </tr>
                         <tr>
-                          <td className="py-3 font-medium text-white">Simultaneous Call Capacity</td>
-                          <td className="py-3 text-white/60">1 caller (others get busy tone)</td>
-                          <td className="py-3 text-white/60">Long wait & hold queues</td>
-                          <td className="py-3 text-emerald-400 font-bold">✓ Unlimited concurrent lines</td>
+                          <td className="py-3 font-medium text-white">Busy Rush Hours</td>
+                          <td className="py-3 text-white/60">1 caller at a time, rest wait</td>
+                          <td className="py-3 text-white/60">Long hold queues</td>
+                          <td className="py-3 px-3 text-emerald-400 font-bold bg-emerald-500/[0.06]">✓ Answers unlimited calls at once</td>
                         </tr>
                         <tr>
-                          <td className="py-3 font-medium text-white">Direct Calendar & Buffer Sync</td>
-                          <td className="py-3 text-white/60">Manual paper/CRM entry</td>
-                          <td className="py-3 text-white/60">Takes message, can't lock slots</td>
-                          <td className="py-3 text-emerald-400 font-bold">✓ Direct slot & operatory lock</td>
+                          <td className="py-3 font-medium text-white">Appointment Booking</td>
+                          <td className="py-3 text-white/60">Manual paper or CRM notes</td>
+                          <td className="py-3 text-white/60">Takes messages, slow callbacks</td>
+                          <td className="py-3 px-3 text-emerald-400 font-bold bg-emerald-500/[0.06]">✓ Books straight into your calendar</td>
                         </tr>
                         <tr>
-                          <td className="py-3 font-medium text-white">WhatsApp Confirmation & UPI</td>
+                          <td className="py-3 font-medium text-white">Client Confirmations</td>
                           <td className="py-3 text-white/60">Only if staff remembers</td>
-                          <td className="py-3 text-white/60">No text / WhatsApp routing</td>
-                          <td className="py-3 text-emerald-400 font-bold">✓ Instant WhatsApp slip in 3.4s</td>
+                          <td className="py-3 text-white/60">No WhatsApp map or slip</td>
+                          <td className="py-3 px-3 text-emerald-400 font-bold bg-emerald-500/[0.06]">✓ Sends WhatsApp slip in 3 seconds</td>
                         </tr>
                         <tr>
-                          <td className="py-3 font-medium text-white">Cost Structure</td>
-                          <td className="py-3 text-white/60">₹35,000 – ₹55,000/mo + PF/ESI</td>
-                          <td className="py-3 text-white/60">Per-minute charges + setup fee</td>
-                          <td className="py-3 text-emerald-400 font-bold">✓ Predictable flat monthly plan</td>
+                          <td className="py-3 font-medium text-white">Monthly Cost</td>
+                          <td className="py-3 text-white/60">₹35,000 – ₹55,000/mo + overtime</td>
+                          <td className="py-3 text-white/60">Per-minute fees + setup cost</td>
+                          <td className="py-3 px-3 text-emerald-400 font-bold bg-emerald-500/[0.06] rounded-b-lg">✓ Simple flat monthly plan</td>
                         </tr>
                       </tbody>
                     </table>
