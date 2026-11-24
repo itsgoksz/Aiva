@@ -13,15 +13,10 @@ import { ArrowLeft, Calendar, LogIn, LayoutDashboard, PhoneCall } from "lucide-r
 import { useAuth } from "../../auth/AuthProvider";
 import { isAivaSubdomain } from "../../../lib/subdomain";
 import AivaHeroSection from "./aiva/components/AivaHeroSection";
-import AivaProblemSection from "./aiva/components/AivaProblemSection";
-import AivaDashboardPreviewSection from "./aiva/components/AivaDashboardPreviewSection";
-import AivaAutonomousLoopSection from "./aiva/components/AivaAutonomousLoopSection";
-import AivaRoiCalculatorSection from "./aiva/components/AivaRoiCalculatorSection";
-import AivaEnterpriseSecuritySection from "./aiva/components/AivaEnterpriseSecuritySection";
+import AivaCinematicCardStage from "./aiva/components/AivaCinematicCardStage";
 import AivaFinalCTASection from "./aiva/components/AivaFinalCTASection";
 import AivaDemoModal from "./aiva/components/AivaDemoModal";
 import AivaBookDemoModal from "./aiva/components/AivaBookDemoModal";
-import AivaSpatialDeckNav from "./aiva/components/AivaSpatialDeckNav";
 import AivaFooter from "./aiva/components/AivaFooter";
 import ProductAtmosphere from "./components/ProductAtmosphere";
 
@@ -272,18 +267,16 @@ export default function AivaProductPage() {
             onOpenBookDemo={() => setIsBookDemoOpen(true)}
             onOpenTestCall={() => setIsTestCallOpen(true)}
           />
-          <AivaProblemSection />
-          <AivaDashboardPreviewSection />
-          <AivaAutonomousLoopSection />
-          <AivaRoiCalculatorSection />
-          <AivaEnterpriseSecuritySection />
+          <AivaCinematicCardStage 
+            onOpenBookDemo={() => setIsBookDemoOpen(true)}
+            onOpenTestCall={() => setIsTestCallOpen(true)}
+          />
           <AivaFinalCTASection 
             onOpenBookDemo={() => setIsBookDemoOpen(true)}
             onOpenTestCall={() => setIsTestCallOpen(true)}
           />
         </main>
 
-        <AivaSpatialDeckNav />
         <AivaFooter />
         <AivaBookDemoModal isOpen={isBookDemoOpen} onClose={() => setIsBookDemoOpen(false)} />
         <AivaDemoModal isOpen={isTestCallOpen} onClose={() => setIsTestCallOpen(false)} />

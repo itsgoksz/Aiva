@@ -105,9 +105,9 @@ export default function AivaProblemSection() {
         </div>
 
         {/* Transformation Bridge 01 -> 04 */}
-        <AivaCardMorphBridge 
-          variant="split-1-to-4" 
-          label="CARD METAMORPHOSIS // 01 ➔ 04 [FRACTURE INTO 4 LOGIC QUADRANTS]" 
+        <AivaCardMorphBridge
+          variant="split-1-to-4"
+          label="CARD METAMORPHOSIS // 01 ➔ 04 [FRACTURE INTO 4 LOGIC QUADRANTS]"
         />
 
         {/* 4 Premium, Horizontally-Aligned Product Cards (Apple Morph Outward Bloom) */}
@@ -240,9 +240,9 @@ export default function AivaProblemSection() {
         </div>
 
         {/* Transformation Bridge 04 -> 01 */}
-        <AivaCardMorphBridge 
-          variant="merge-4-to-1" 
-          label="CARD METAMORPHOSIS // 04 ➔ 01 [CONVERGE INTO UNIFIED MATRIX]" 
+        <AivaCardMorphBridge
+          variant="merge-4-to-1"
+          label="CARD METAMORPHOSIS // 04 ➔ 01 [CONVERGE INTO UNIFIED MATRIX]"
         />
 
         {/* Clean Minimalist Comparison Table (Morph Expansion from 4 Cards) */}
