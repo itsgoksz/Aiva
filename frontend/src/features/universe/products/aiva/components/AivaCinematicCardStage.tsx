@@ -38,6 +38,7 @@ import {
   Calendar,
   Lock
 } from "lucide-react";
+import AivaSolarSystemBackground from "./AivaSolarSystemBackground";
 
 // --- STATIC STAGE REPOSITORY & DATA STRUCTURES ---
 
@@ -203,22 +204,20 @@ const GOVERNANCE_PILLARS = [
   }
 ];
 
-// ─── NAMMA UNIVERSE CELESTIAL CAMERA TRANSITIONS ─────────────
-// Exact 3D orbital camera flight matching Namma Universe's planet-to-planet transitions:
-// - Initial Zoom: Camera zooms in from deep space into the first card.
-// - Forward Sweep: Outgoing card glides away along an orbital arc (leftward & back),
-//   while the incoming card swoops into focus from the forward orbital curve.
-// - Backward Sweep: Reverses direction smoothly when scrolling back up.
-const NAMMA_UNIVERSE_TRANSITION = {
+// ─── NAMMA UNIVERSE PLANET-EMERGENCE TRANSITIONS ───────────────
+// Cards literally appear out of their individual glowing planet:
+// - Entering: expands radially from the glowing planet core in deep Z-space
+//   (scale 0.08 -> 1.0) as the camera finishes its orbital flight to that planet.
+// - Exiting: condenses smoothly back into space as the camera sweeps to the next orbit.
+const PLANET_EMERGENCE_TRANSITION = {
   initial: (direction: number) => ({
     opacity: 0,
-    x: direction === 0 ? 0 : direction > 0 ? 240 : -240,
-    y: direction === 0 ? 50 : 0,
-    z: direction === 0 ? -650 : -250,
-    scale: direction === 0 ? 0.38 : 0.84,
-    rotateY: direction === 0 ? 0 : direction > 0 ? -16 : 16,
-    rotateX: direction === 0 ? -8 : 0,
-    filter: "blur(14px)",
+    x: 0,
+    y: direction >= 0 ? 18 : -18,
+    z: -700,
+    scale: 0.08,
+    rotateX: direction >= 0 ? 10 : -10,
+    filter: "blur(16px) brightness(1.8)",
   }),
   animate: {
     opacity: 1,
@@ -226,28 +225,37 @@ const NAMMA_UNIVERSE_TRANSITION = {
     y: 0,
     z: 0,
     scale: 1,
-    rotateY: 0,
     rotateX: 0,
-    filter: "blur(0px)",
+    filter: "blur(0px) brightness(1)",
     transition: {
-      duration: 0.9,
-      ease: [0.16, 1, 0.3, 1], // Exact smooth lerp curve matching Namma Universe camera
+      duration: 0.85,
+      ease: [0.16, 1, 0.3, 1],
     },
   },
   exit: (direction: number) => ({
     opacity: 0,
-    x: direction > 0 ? -240 : 240,
-    y: 0,
-    z: -250,
-    scale: 0.84,
-    rotateY: direction > 0 ? 16 : -16,
-    filter: "blur(14px)",
+    x: 0,
+    y: direction >= 0 ? -14 : 14,
+    z: -550,
+    scale: 0.14,
+    rotateX: direction >= 0 ? -6 : 6,
+    filter: "blur(14px) brightness(1.4)",
     transition: {
-      duration: 0.75,
-      ease: [0.16, 1, 0.3, 1],
+      duration: 0.42,
+      ease: [0.4, 0, 1, 1],
     },
   }),
 };
+
+const STAGE_PLANET_COLORS = [
+  "#E65C8E", // 01: Aiva Pink
+  "#A66B8E", // 02: Logic Violet
+  "#38BDF8", // 03: Parity Cyan
+  "#34D399", // 04: Telemetry Emerald
+  "#F472B6", // 05: 28s Loop Rose
+  "#FBBF24", // 06: ROI Amber Gold
+  "#FB7185", // 07: Governance Crimson
+];
 
 // ─── 3D INTERACTIVE TILT CONTAINER ───────────────────────────
 
@@ -319,8 +327,9 @@ export default function AivaCinematicCardStage({
 }: AivaCinematicCardStageProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Active Stage Index (0 to 6)
+  // Active Stage Index (0 to 6) + Continuous Float Index for Namma Universe Camera Flight
   const [stageIndex, setStageIndex] = useState(0);
+  const floatStageRef = useRef<number>(0);
   // Direction: 0 = initial zoom from deep space, 1 = forward orbit, -1 = backward orbit
   const [direction, setDirection] = useState(0);
   const prevStageRef = useRef(0);
@@ -343,12 +352,21 @@ export default function AivaCinematicCardStage({
   const recoveredBookings = Math.round(missedCallsMonthly * 0.65);
   const recoveredRevenueMonthly = Math.round(recoveredBookings * averageTicket);
 
-  // Change Stage with Directional Camera Orbit
+  // Change Stage with Directional Camera Orbit + Synced Scroll Target
   const changeStage = (newIndex: number) => {
-    if (newIndex === stageIndex) return;
-    setDirection(newIndex > stageIndex ? 1 : -1);
-    prevStageRef.current = newIndex;
-    setStageIndex(newIndex);
+    const clamped = Math.max(0, Math.min(6, newIndex));
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const containerTop = window.scrollY + rect.top;
+      const scrollable = Math.max(1, containerRef.current.offsetHeight - window.innerHeight);
+      const targetScroll = containerTop + scrollable * ((clamped + 0.5) / 7);
+      window.scrollTo({ top: targetScroll, behavior: "smooth" });
+    }
+    if (clamped === stageIndex) return;
+    setDirection(clamped > stageIndex ? 1 : -1);
+    prevStageRef.current = clamped;
+    floatStageRef.current = clamped;
+    setStageIndex(clamped);
   };
 
   // Auto-advance audio dialogue in Stage 01
@@ -370,13 +388,18 @@ export default function AivaCinematicCardStage({
 
     const timer = setInterval(() => {
       setDirection(1);
-      setStageIndex((prev) => (prev + 1) % 7);
+      setStageIndex((prev) => {
+        const next = (prev + 1) % 7;
+        prevStageRef.current = next;
+        floatStageRef.current = next;
+        return next;
+      });
     }, 5500);
 
     return () => clearInterval(timer);
   }, [isPlayingTour]);
 
-  // Scroll Sync: Track container scroll to map to stage index with camera direction
+  // Scroll Sync: Continuous Namma Universe Plateau Curve (0.0 -> 6.0)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
@@ -385,38 +408,32 @@ export default function AivaCinematicCardStage({
   useEffect(() => {
     return scrollYProgress.on("change", (latest) => {
       if (isPlayingTour) return;
-      const calculatedIndex = Math.min(6, Math.floor(latest * 7));
-      if (calculatedIndex !== prevStageRef.current) {
-        setDirection(calculatedIndex > prevStageRef.current ? 1 : -1);
-        prevStageRef.current = calculatedIndex;
-        setStageIndex(calculatedIndex);
+      // Map latest [0..1] across 7 modules with Namma Universe plateau snapping:
+      // Holds camera steady on Planet i while reading, smoothly flies between planets near segment boundaries
+      const raw = Math.max(0, Math.min(6.9999, latest * 7));
+      const baseIdx = Math.floor(raw);
+      const frac = raw - baseIdx;
+
+      let snappedFloat = baseIdx;
+      if (baseIdx < 6) {
+        if (frac < 0.72) {
+          snappedFloat = baseIdx;
+        } else {
+          const t = (frac - 0.72) / 0.28;
+          const eased = t * t * (3 - 2 * t);
+          snappedFloat = baseIdx + eased;
+        }
+      }
+      floatStageRef.current = snappedFloat;
+
+      const targetIndex = Math.min(6, Math.max(0, baseIdx));
+      if (targetIndex !== prevStageRef.current) {
+        setDirection(targetIndex > prevStageRef.current ? 1 : -1);
+        prevStageRef.current = targetIndex;
+        setStageIndex(targetIndex);
       }
     });
   }, [scrollYProgress, isPlayingTour]);
-
-  // Touch Gesture Handlers for Mobile Scrolling Smoothness
-  const touchStartY = useRef<number>(0);
-  const touchStartX = useRef<number>(0);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartY.current = e.touches[0].clientY;
-    touchStartX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const deltaY = e.changedTouches[0].clientY - touchStartY.current;
-    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
-    
-    if (Math.abs(deltaY) > 45 && Math.abs(deltaY) > Math.abs(deltaX)) {
-      if (deltaY < 0 && stageIndex < 6) {
-        setIsPlayingTour(false);
-        changeStage(stageIndex + 1);
-      } else if (deltaY > 0 && stageIndex > 0) {
-        setIsPlayingTour(false);
-        changeStage(stageIndex - 1);
-      }
-    }
-  };
 
   const STAGE_METADATA = [
     { num: "01", short: "CORE", name: "Live Audio Ingest", title: "Answers on Ring One in Fluent Voice", badge: "AUTONOMOUS INGESTION" },
@@ -429,39 +446,56 @@ export default function AivaCinematicCardStage({
   ];
 
   const currentMeta = STAGE_METADATA[stageIndex];
+  const activePlanetColor = STAGE_PLANET_COLORS[stageIndex] || "#E65C8E";
 
   return (
     <section 
       ref={containerRef}
-      className="relative min-h-[240vh] md:min-h-[460vh] bg-transparent"
+      className="relative min-h-[480vh] md:min-h-[520vh] bg-transparent"
     >
-      {/* Sticky Cinematic Theater (Anchored in Viewport, dvh resilient) */}
+      {/* Sticky Cinematic Theater (Full remaining viewport below navbar, dvh resilient) */}
       <div 
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        className="sticky top-14 sm:top-18 h-[calc(100dvh-4.5rem)] sm:h-[88vh] flex flex-col justify-between overflow-hidden px-3 sm:px-6 z-20"
+        className="sticky top-14 sm:top-16 h-[calc(100dvh-3.5rem)] sm:h-[calc(100dvh-4rem)] flex flex-col justify-between overflow-x-hidden overflow-y-hidden px-3 sm:px-6 z-20 relative"
       >
+        {/* Realistic Namma Universe 3D Solar System & Planet-Flight Canvas */}
+        <AivaSolarSystemBackground
+          stageIndex={stageIndex}
+          floatStageRef={floatStageRef}
+          className="absolute inset-0 pointer-events-none z-0"
+        />
         
         {/* Stage Header: Active Theory Style High-Altitude Narrative Ribbon */}
-        <div className="max-w-5xl mx-auto w-full pt-1 sm:pt-3 text-center select-none shrink-0">
-          <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono tracking-widest uppercase text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-1.5 sm:mb-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
+        <div className="max-w-5xl mx-auto w-full pt-1.5 sm:pt-2.5 text-center select-none shrink-0 relative z-10">
+          <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono tracking-widest uppercase text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-1 sm:mb-1.5 backdrop-blur-md">
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: activePlanetColor }} />
             <span>MODULE {currentMeta.num} // {currentMeta.badge}</span>
           </div>
 
           <h2 
-            className="text-base sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-tight line-clamp-1"
+            className="text-base sm:text-2xl md:text-[28px] font-extrabold text-white tracking-tight leading-tight line-clamp-1"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
             {currentMeta.title}
           </h2>
         </div>
 
-        {/* Central Morphing Stage (3D Orbital Camera Perspectives) */}
+        {/* Central Morphing Stage (min-h-0 prevents flexbox clipping over bottom dock) */}
         <div 
-          className="flex-1 max-w-5xl mx-auto w-full flex items-center justify-center my-auto py-2 sm:py-3 overflow-hidden"
+          className="flex-1 min-h-0 max-w-5xl mx-auto w-full flex items-center justify-center py-1.5 sm:py-2 relative z-10"
           style={{ perspective: "1400px" }}
         >
+          {/* Planetary Emergence Aura Pulse: glows from the planet's center as card blooms out */}
+          <motion.div
+            key={`aura-${stageIndex}`}
+            initial={{ opacity: 0.75, scale: 0.15 }}
+            animate={{ opacity: 0.12, scale: 1.15 }}
+            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+            className="pointer-events-none absolute w-[320px] h-[320px] sm:w-[460px] sm:h-[460px] rounded-full blur-[70px] z-0"
+            style={{
+              background: `radial-gradient(circle, ${activePlanetColor}66 0%, transparent 70%)`,
+            }}
+          />
+
           <AnimatePresence mode="wait" custom={direction}>
             
             {/* === STAGE 01: HERO AUDIO DEMO CARD === */}
@@ -469,16 +503,16 @@ export default function AivaCinematicCardStage({
               <motion.div
                 key="stage-01"
                 custom={direction}
-                variants={NAMMA_UNIVERSE_TRANSITION}
+                variants={PLANET_EMERGENCE_TRANSITION}
                 initial="initial"
                 animate="animate"
                 exit="exit"
                 className="w-full max-w-xl mx-auto relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-4 sm:p-7 shadow-[0_0_80px_rgba(230,92,142,0.22)] bg-gradient-to-b from-[#180A15]/90 via-[#0E050D]/90 to-[#120710]/90 backdrop-blur-2xl">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-5 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
                   {/* Chassis Ribbon */}
-                  <div className="flex items-center justify-between pb-3 mb-3 sm:mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+                  <div className="flex items-center justify-between pb-2.5 mb-2.5 sm:mb-3 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
                     <span className="flex items-center gap-2 text-[#EC89B5] font-semibold">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
                       AIVA APPARATUS // UNIT 01
@@ -489,11 +523,11 @@ export default function AivaCinematicCardStage({
                   </div>
 
                   {/* Scenarios Switcher */}
-                  <div className="flex items-center justify-between gap-2 mb-3 sm:mb-4 pb-2.5 border-b border-white/[0.06]">
-                    <span className="font-mono text-xs uppercase tracking-wider text-[#EC89B5] font-bold">
+                  <div className="flex items-center justify-between gap-2 mb-2.5 sm:mb-3 pb-2 border-b border-white/[0.06]">
+                    <span className="font-mono text-[11px] sm:text-xs uppercase tracking-wider text-[#EC89B5] font-bold shrink-0">
                       AIVA LIVE CALL DEMO
                     </span>
-                    <div className="flex items-center gap-1 bg-black/40 p-1 rounded-xl border border-white/5 overflow-x-auto">
+                    <div className="flex items-center gap-1 bg-black/40 p-1 rounded-xl border border-white/5 overflow-x-auto scrollbar-none">
                       {CALL_SCENARIOS.map((sc, idx) => (
                         <button
                           key={sc.id}
@@ -502,7 +536,7 @@ export default function AivaCinematicCardStage({
                             setCurrentLine(0);
                             setIsPlayingAudio(true);
                           }}
-                          className={`px-2.5 py-1 text-[10px] font-medium rounded-lg transition-all cursor-pointer whitespace-nowrap ${
+                          className={`px-2 py-1 text-[10px] font-medium rounded-lg transition-all cursor-pointer whitespace-nowrap ${
                             scenarioIdx === idx
                               ? "bg-[#A66B8E] text-white font-semibold shadow-sm"
                               : "text-white/40 hover:text-white"
@@ -515,10 +549,10 @@ export default function AivaCinematicCardStage({
                   </div>
 
                   {/* Caller Bar */}
-                  <div className="p-3 sm:p-3.5 rounded-2xl bg-white/[0.02] border border-white/10 flex items-center justify-between mb-3 sm:mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-[#A66B8E]/20 text-[#EC89B5] flex items-center justify-center font-bold">
-                        <PhoneCall size={15} className="animate-pulse" />
+                  <div className="p-2.5 sm:p-3 rounded-2xl bg-white/[0.02] border border-white/10 flex items-center justify-between mb-2.5 sm:mb-3">
+                    <div className="flex items-center gap-2.5 sm:gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-[#A66B8E]/20 text-[#EC89B5] flex items-center justify-center font-bold">
+                        <PhoneCall size={14} className="animate-pulse" />
                       </div>
                       <div>
                         <div className="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
@@ -535,20 +569,20 @@ export default function AivaCinematicCardStage({
                         setCurrentLine(0);
                         setIsPlayingAudio(true);
                       }}
-                      className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/50 hover:text-white transition-colors cursor-pointer"
+                      className="p-1.5 sm:p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/50 hover:text-white transition-colors cursor-pointer"
                     >
                       <RotateCcw size={13} />
                     </button>
                   </div>
 
                   {/* Dialogue Feed */}
-                  <div className="space-y-2.5 min-h-[120px] max-h-[170px] overflow-y-auto pr-1 scrollbar-none mb-3 sm:mb-4">
+                  <div className="space-y-1.5 sm:space-y-2 min-h-[110px] max-h-[225px] sm:max-h-[250px] overflow-y-auto overscroll-contain pr-1 scrollbar-none mb-2.5 sm:mb-3">
                     {activeScenario.dialogue.slice(0, currentLine + 1).map((msg, i) => (
                       <motion.div
                         key={i}
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className={`flex gap-2.5 items-start ${
+                        className={`flex gap-2 items-start ${
                           msg.speaker === "aiva" ? "flex-row" : "flex-row-reverse"
                         }`}
                       >
@@ -557,10 +591,10 @@ export default function AivaCinematicCardStage({
                         }`}>
                           {msg.speaker === "aiva" ? "A" : <User size={11} />}
                         </div>
-                        <div className={`p-2.5 sm:p-3 rounded-2xl text-xs max-w-[85%] leading-relaxed ${
+                        <div className={`p-2 sm:p-2.5 rounded-2xl text-[11px] sm:text-xs max-w-[85%] leading-snug ${
                           msg.speaker === "aiva"
                             ? "bg-[#A66B8E]/15 border border-[#A66B8E]/30 text-white"
-                            : "bg-white/5 border border-white/10 text-white/80"
+                            : "bg-white/5 border border-white/10 text-white/85"
                         }`}>
                           {msg.text}
                         </div>
@@ -569,9 +603,9 @@ export default function AivaCinematicCardStage({
                   </div>
 
                   {/* Booking Confirmation Output */}
-                  <div className="p-3 rounded-xl border border-emerald-500/30 bg-emerald-950/20 flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle2 size={15} className="text-emerald-400 shrink-0" />
+                  <div className="p-2.5 rounded-xl border border-emerald-500/30 bg-emerald-950/35 flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
                       <span className="text-white font-medium truncate">Appointment Booked: {activeScenario.service}</span>
                     </div>
                     <span className="font-mono text-emerald-400 font-bold shrink-0 ml-2">{activeScenario.revenue}</span>
@@ -585,66 +619,85 @@ export default function AivaCinematicCardStage({
               <motion.div
                 key="stage-02"
                 custom={direction}
-                variants={NAMMA_UNIVERSE_TRANSITION}
+                variants={PLANET_EMERGENCE_TRANSITION}
                 initial="initial"
                 animate="animate"
                 exit="exit"
                 className="w-full max-w-5xl relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <div className="grid sm:grid-cols-2 gap-3 sm:gap-4 max-h-[64vh] overflow-y-auto sm:overflow-visible pr-1 sm:pr-0 scrollbar-none">
-                  {PROBLEMS.map((p) => {
+                <div className="grid sm:grid-cols-2 gap-2.5 sm:gap-3.5 max-h-[calc(100dvh-13.5rem)] sm:max-h-[calc(100dvh-12.5rem)] overflow-y-auto overscroll-contain pr-0.5 scrollbar-none">
+                  {PROBLEMS.map((p, idx) => {
                     const Icon = p.icon;
+                    const isLeft = idx % 2 === 0;
+                    const isTop = idx < 2;
                     return (
-                      <TiltCard 
+                      <motion.div
                         key={p.title}
-                        className="rounded-2xl border border-white/15 p-4 sm:p-5 shadow-[0_0_50px_rgba(230,92,142,0.2)] bg-gradient-to-b from-[#180A15]/90 to-[#0E050D]/90 backdrop-blur-2xl flex flex-col justify-between"
+                        initial={{
+                          opacity: 0,
+                          scale: 0.45,
+                          x: isLeft ? 50 : -50,
+                          y: isTop ? 35 : -35,
+                        }}
+                        animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+                        transition={{
+                          duration: 0.72,
+                          delay: 0.08 + idx * 0.055,
+                          ease: [0.16, 1, 0.3, 1],
+                        }}
+                        className="flex"
                       >
-                        <div>
-                          {/* Header Ribbon */}
-                          <div className="flex items-center justify-between pb-2 mb-2 sm:mb-3 border-b border-white/[0.08] text-[10px] font-mono">
-                            <span className="flex items-center gap-1.5 text-[#EC89B5] font-semibold">
-                              <Icon size={12} />
-                              {p.category}
-                            </span>
-                            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/50">
-                              {p.stat} · {p.statLabel}
-                            </span>
+                        <TiltCard 
+                          className="w-full rounded-2xl border border-white/15 p-3 sm:p-4 shadow-[0_12px_40px_rgba(0,0,0,0.85)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl flex flex-col justify-between"
+                        >
+                          <div>
+                            {/* Header Ribbon */}
+                            <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-white/[0.08] text-[10px] font-mono">
+                              <span className="flex items-center gap-1.5 text-[#EC89B5] font-semibold">
+                                <Icon size={12} />
+                                {p.category}
+                              </span>
+                              <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/55">
+                                {p.stat} · {p.statLabel}
+                              </span>
+                            </div>
+
+                            {/* Equal-height Title for horizontal alignment across left & right cards */}
+                            <h4 className="text-[13px] sm:text-[15px] font-bold text-white tracking-tight mb-2 leading-snug sm:min-h-[2.45rem] flex items-center">
+                              {p.title}
+                            </h4>
+
+                            {/* Friction vs Advantage Blocks (uniform heights for equal alignment) */}
+                            <div className="space-y-1.5 mb-2.5">
+                              <div className="p-2 rounded-xl bg-[#180A0E] border border-red-500/25 text-[11px] text-white/80 sm:min-h-[64px] flex flex-col justify-center">
+                                <span className="font-mono text-[9px] text-red-400 uppercase font-semibold flex items-center gap-1 mb-0.5">
+                                  <span>✕</span> THE FRICTION · WITHOUT AIVA
+                                </span>
+                                <p className="line-clamp-2 leading-snug text-white/80">{p.description}</p>
+                              </div>
+                              <div className="p-2 rounded-xl bg-[#160812] border border-[#E65C8E]/30 text-[11px] text-white/95 sm:min-h-[64px] flex flex-col justify-center">
+                                <span className="font-mono text-[9px] text-[#ECA9B7] uppercase font-semibold flex items-center gap-1 mb-0.5">
+                                  <span>✓</span> THE AIVA ADVANTAGE
+                                </span>
+                                <p className="line-clamp-2 leading-snug text-white/95">{p.solution}</p>
+                              </div>
+                            </div>
                           </div>
 
-                          <h4 className="text-sm sm:text-base font-bold text-white tracking-tight mb-2">
-                            {p.title}
-                          </h4>
-
-                          {/* Friction vs Advantage Blocks */}
-                          <div className="space-y-2 mb-3">
-                            <div className="p-2.5 rounded-xl bg-red-950/20 border border-red-500/20 text-xs text-white/70">
-                              <span className="font-mono text-[10px] text-red-400 uppercase font-semibold flex items-center gap-1 mb-0.5">
-                                <span>✕</span> THE FRICTION · WITHOUT AIVA
+                          {/* Bottom Feature Tags */}
+                          <div className="pt-1.5 border-t border-white/[0.06] flex items-center gap-1.5 flex-wrap">
+                            {p.tags.map((tag) => (
+                              <span 
+                                key={tag}
+                                className="px-2 py-0.5 rounded-md bg-white/[0.04] border border-white/10 text-[9.5px] font-mono text-white/75 whitespace-nowrap"
+                              >
+                                {tag}
                               </span>
-                              <p className="line-clamp-2 leading-relaxed text-white/70">{p.description}</p>
-                            </div>
-                            <div className="p-2.5 rounded-xl bg-[#E65C8E]/10 border border-[#E65C8E]/25 text-xs text-white/90">
-                              <span className="font-mono text-[10px] text-[#ECA9B7] uppercase font-semibold flex items-center gap-1 mb-0.5">
-                                <span>✓</span> THE AIVA ADVANTAGE
-                              </span>
-                              <p className="line-clamp-2 leading-relaxed text-white/90">{p.solution}</p>
-                            </div>
+                            ))}
                           </div>
-                        </div>
-
-                        {/* Bottom Feature Tags */}
-                        <div className="pt-2 border-t border-white/[0.06] flex items-center gap-1.5 flex-wrap">
-                          {p.tags.map((tag) => (
-                            <span 
-                              key={tag}
-                              className="px-2 py-0.5 rounded-md bg-white/[0.03] border border-white/10 text-[10px] font-mono text-white/60"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </TiltCard>
+                        </TiltCard>
+                      </motion.div>
                     );
                   })}
                 </div>
@@ -656,14 +709,14 @@ export default function AivaCinematicCardStage({
               <motion.div
                 key="stage-03"
                 custom={direction}
-                variants={NAMMA_UNIVERSE_TRANSITION}
+                variants={PLANET_EMERGENCE_TRANSITION}
                 initial="initial"
                 animate="animate"
                 exit="exit"
                 className="w-full max-w-4xl relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-5 sm:p-8 shadow-[0_0_80px_rgba(230,92,142,0.24)] bg-gradient-to-b from-[#180A15]/90 to-[#0E050D]/90 backdrop-blur-2xl">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-4 sm:p-7 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl max-h-[calc(100dvh-13.5rem)] sm:max-h-[calc(100dvh-12.5rem)] overflow-y-auto overscroll-contain scrollbar-none">
                   <div className="flex items-center justify-between pb-3 mb-4 sm:mb-5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
                     <span className="text-[#EC89B5] font-semibold">SYSTEM COMPARISON // UNIT 03</span>
                     <span className="text-white/40">Validated on 100+ Live Deployments</span>
@@ -722,40 +775,40 @@ export default function AivaCinematicCardStage({
               <motion.div
                 key="stage-04"
                 custom={direction}
-                variants={NAMMA_UNIVERSE_TRANSITION}
+                variants={PLANET_EMERGENCE_TRANSITION}
                 initial="initial"
                 animate="animate"
                 exit="exit"
                 className="w-full max-w-4xl relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-4 sm:p-7 shadow-[0_0_80px_rgba(230,92,142,0.24)] bg-gradient-to-b from-[#180A15]/90 to-[#0E050D]/90 backdrop-blur-2xl">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-5 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl max-h-[calc(100dvh-13.5rem)] sm:max-h-[calc(100dvh-12.5rem)] overflow-y-auto overscroll-contain scrollbar-none">
                   {/* Top 4 Metrics */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 mb-4 sm:mb-5">
-                    <div className="p-2.5 sm:p-3 rounded-xl bg-white/[0.02] border border-white/10">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 mb-3 sm:mb-4">
+                    <div className="p-2 sm:p-2.5 rounded-xl bg-white/[0.02] border border-white/10">
                       <span className="text-[9px] sm:text-[10px] font-mono text-white/40 block">CALLS TODAY</span>
-                      <span className="text-lg sm:text-2xl font-bold font-mono text-white">48</span>
+                      <span className="text-base sm:text-xl font-bold font-mono text-white">48</span>
                       <span className="text-[9px] sm:text-[10px] text-emerald-400 font-mono block">100% answered • 0 missed</span>
                     </div>
-                    <div className="p-2.5 sm:p-3 rounded-xl bg-white/[0.02] border border-white/10">
+                    <div className="p-2 sm:p-2.5 rounded-xl bg-white/[0.02] border border-white/10">
                       <span className="text-[9px] sm:text-[10px] font-mono text-white/40 block">BOOKED REVENUE</span>
-                      <span className="text-lg sm:text-2xl font-bold font-mono text-emerald-400">₹1,84,200</span>
+                      <span className="text-base sm:text-xl font-bold font-mono text-emerald-400">₹1,84,200</span>
                       <span className="text-[9px] sm:text-[10px] text-white/50 font-mono block">18 appointments</span>
                     </div>
-                    <div className="p-2.5 sm:p-3 rounded-xl bg-white/[0.02] border border-white/10">
+                    <div className="p-2 sm:p-2.5 rounded-xl bg-white/[0.02] border border-white/10">
                       <span className="text-[9px] sm:text-[10px] font-mono text-white/40 block">HOURS SAVED</span>
-                      <span className="text-lg sm:text-2xl font-bold font-mono text-white">36.5 hrs</span>
+                      <span className="text-base sm:text-xl font-bold font-mono text-white">36.5 hrs</span>
                       <span className="text-[9px] text-white/50 font-mono block">This week alone</span>
                     </div>
-                    <div className="p-2.5 sm:p-3 rounded-xl bg-white/[0.02] border border-white/10">
+                    <div className="p-2 sm:p-2.5 rounded-xl bg-white/[0.02] border border-white/10">
                       <span className="text-[9px] sm:text-[10px] font-mono text-white/40 block">FEEDBACK</span>
-                      <span className="text-lg sm:text-2xl font-bold font-mono text-pink-400">4.98/5</span>
+                      <span className="text-base sm:text-xl font-bold font-mono text-pink-400">4.98/5</span>
                       <span className="text-[9px] text-[#EC89B5] font-mono block">Positive caller ratings</span>
                     </div>
                   </div>
 
                   {/* Tab Selector */}
-                  <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-white/10">
+                  <div className="flex flex-wrap items-center justify-between gap-2 pb-2 mb-2.5 border-b border-white/10">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-mono font-bold text-white uppercase">Inbound Call Feed</span>
                       <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-pink-500/20 text-[#EC89B5] border border-pink-500/30">
@@ -765,19 +818,19 @@ export default function AivaCinematicCardStage({
                     <div className="flex items-center gap-1 bg-black/40 p-1 rounded-xl border border-white/5">
                       <button 
                         onClick={() => setDashTab("calls")} 
-                        className={`px-3 py-1 rounded-lg text-[10px] font-mono cursor-pointer transition-colors ${dashTab === "calls" ? "bg-[#E65C8E] text-white font-bold" : "text-white/40 hover:text-white"}`}
+                        className={`px-2.5 sm:px-3 py-1 rounded-lg text-[10px] font-mono cursor-pointer transition-colors ${dashTab === "calls" ? "bg-[#E65C8E] text-white font-bold" : "text-white/40 hover:text-white"}`}
                       >
                         Call Feed
                       </button>
                       <button 
                         onClick={() => setDashTab("schedule")} 
-                        className={`px-3 py-1 rounded-lg text-[10px] font-mono cursor-pointer transition-colors ${dashTab === "schedule" ? "bg-[#E65C8E] text-white font-bold" : "text-white/40 hover:text-white"}`}
+                        className={`px-2.5 sm:px-3 py-1 rounded-lg text-[10px] font-mono cursor-pointer transition-colors ${dashTab === "schedule" ? "bg-[#E65C8E] text-white font-bold" : "text-white/40 hover:text-white"}`}
                       >
                         Calendar
                       </button>
                       <button 
                         onClick={() => setDashTab("crm")} 
-                        className={`px-3 py-1 rounded-lg text-[10px] font-mono cursor-pointer transition-colors ${dashTab === "crm" ? "bg-[#E65C8E] text-white font-bold" : "text-white/40 hover:text-white"}`}
+                        className={`px-2.5 sm:px-3 py-1 rounded-lg text-[10px] font-mono cursor-pointer transition-colors ${dashTab === "crm" ? "bg-[#E65C8E] text-white font-bold" : "text-white/40 hover:text-white"}`}
                       >
                         Customer Notes
                       </button>
@@ -785,15 +838,15 @@ export default function AivaCinematicCardStage({
                   </div>
 
                   {/* Tab Feed Content */}
-                  <div className="space-y-2 text-xs max-h-[160px] overflow-y-auto pr-1 scrollbar-none">
-                    <div className="p-2.5 sm:p-3 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
+                  <div className="space-y-1.5 text-xs max-h-[240px] overflow-y-auto overscroll-contain pr-1 scrollbar-none">
+                    <div className="p-2 sm:p-2.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/10 text-white/70">01</span>
                           <span className="font-semibold text-white">Pooja Hegde +91 98450 23489</span>
                           <span className="text-white/40 text-[11px] font-mono hidden sm:inline">• HydraFacial & Skin Rejuvenation</span>
                         </div>
-                        <span className="text-white/50 text-[11px] font-mono block mt-1">
+                        <span className="text-white/50 text-[11px] font-mono block mt-0.5 leading-snug">
                           Summary: Requested weekend slot with Dr. Anjali. Offered Saturday 3:00 PM. Confirmed, WhatsApp slip sent.
                         </span>
                       </div>
@@ -805,14 +858,14 @@ export default function AivaCinematicCardStage({
                       </div>
                     </div>
 
-                    <div className="p-2.5 sm:p-3 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
+                    <div className="p-2 sm:p-2.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/10 text-white/70">02</span>
                           <span className="font-semibold text-white">Rahul Nair +91 99001 89012</span>
                           <span className="text-white/40 text-[11px] font-mono hidden sm:inline">• Consultation & Dental Scaling</span>
                         </div>
-                        <span className="text-white/50 text-[11px] font-mono block mt-1">
+                        <span className="text-white/50 text-[11px] font-mono block mt-0.5 leading-snug">
                           Summary: Returning regular client. Matched bi-weekly cadence with Dr. Varun. Booked Thursday 5:30 PM.
                         </span>
                       </div>
@@ -824,14 +877,14 @@ export default function AivaCinematicCardStage({
                       </div>
                     </div>
 
-                    <div className="p-2.5 sm:p-3 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
+                    <div className="p-2 sm:p-2.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/10 text-white/70">03</span>
                           <span className="font-semibold text-white">Claire Dubois +91 98860 34567</span>
                           <span className="text-white/40 text-[11px] font-mono hidden sm:inline">• Hair Extension Consultation</span>
                         </div>
-                        <span className="text-white/50 text-[11px] font-mono block mt-1">
+                        <span className="text-white/50 text-[11px] font-mono block mt-0.5 leading-snug">
                           Summary: Asked about tape-in extension pricing. Booked a 15-minute consultation with Priya Sharma.
                         </span>
                       </div>
@@ -852,53 +905,70 @@ export default function AivaCinematicCardStage({
               <motion.div
                 key="stage-05"
                 custom={direction}
-                variants={NAMMA_UNIVERSE_TRANSITION}
+                variants={PLANET_EMERGENCE_TRANSITION}
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="w-full max-w-5xl relative"
+                className="w-full max-w-5xl relative max-h-[calc(100dvh-13.5rem)] sm:max-h-[calc(100dvh-12.5rem)] overflow-y-auto overscroll-contain scrollbar-none"
                 style={{ transformStyle: "preserve-3d" }}
               >
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5 mb-3 sm:mb-4">
-                  {WORKFLOW_STEPS.map((s) => {
+                  {WORKFLOW_STEPS.map((s, idx) => {
                     const Icon = s.icon;
                     return (
-                      <TiltCard key={s.step} className="p-3 sm:p-4 rounded-2xl border border-white/15 bg-gradient-to-b from-[#180A15]/90 to-[#0E050D]/90 backdrop-blur-2xl flex flex-col justify-between shadow-[0_0_40px_rgba(230,92,142,0.18)]">
-                        <div>
-                          <div className="flex items-center justify-between pb-2 mb-2 sm:mb-3 border-b border-white/[0.06] text-[9px] sm:text-[10px] font-mono text-white/40">
-                            <span>STEP {s.step} // {s.phase}</span>
-                            <div className="w-5 sm:w-6 h-5 sm:h-6 rounded-md flex items-center justify-center border border-white/10" style={{ background: `${s.color}15`, color: s.color }}>
-                              <Icon size={12} />
+                      <motion.div
+                        key={s.step}
+                        initial={{
+                          opacity: 0,
+                          scale: 0.45,
+                          x: (1.5 - idx) * 45,
+                          y: 20,
+                        }}
+                        animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+                        transition={{
+                          duration: 0.72,
+                          delay: 0.08 + idx * 0.055,
+                          ease: [0.16, 1, 0.3, 1],
+                        }}
+                        className="flex"
+                      >
+                        <TiltCard className="w-full p-3 sm:p-4 rounded-2xl border border-white/15 bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl flex flex-col justify-between shadow-[0_12px_40px_rgba(0,0,0,0.85)]">
+                          <div>
+                            <div className="flex items-center justify-between pb-2 mb-2 sm:mb-2.5 border-b border-white/[0.06] text-[9px] sm:text-[10px] font-mono text-white/40">
+                              <span>STEP {s.step} // {s.phase}</span>
+                              <div className="w-5 sm:w-6 h-5 sm:h-6 rounded-md flex items-center justify-center border border-white/10" style={{ background: `${s.color}15`, color: s.color }}>
+                                <Icon size={12} />
+                              </div>
                             </div>
+                            <h4 className="text-xs sm:text-sm font-bold text-white mb-1 leading-snug">{s.title}</h4>
+                            <p className="text-[11px] sm:text-xs text-white/65 font-light mb-2 line-clamp-3 sm:line-clamp-none leading-relaxed">{s.desc}</p>
                           </div>
-                          <h4 className="text-xs sm:text-sm font-bold text-white mb-1 leading-snug">{s.title}</h4>
-                          <p className="text-[11px] sm:text-xs text-white/60 font-light mb-2.5 line-clamp-3 sm:line-clamp-none leading-relaxed">{s.desc}</p>
-                        </div>
-                        <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-[10px] sm:text-[11px] font-mono">
-                          <span className="text-white/40">RESULT</span>
-                          <span className="text-emerald-400 font-bold">✓ {s.metric}</span>
-                        </div>
-                      </TiltCard>
+                          <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-[10px] sm:text-[11px] font-mono">
+                            <span className="text-white/40">RESULT</span>
+                            <span className="text-emerald-400 font-bold">✓ {s.metric}</span>
+                          </div>
+                        </TiltCard>
+                      </motion.div>
                     );
                   })}
                 </div>
 
-                <TiltCard className="p-4 sm:p-5 rounded-2xl border border-white/15 bg-gradient-to-b from-[#180A15]/95 to-[#0E050D]/95 backdrop-blur-2xl shadow-[0_0_50px_rgba(230,92,142,0.22)]">
+                <TiltCard className="p-3.5 sm:p-4 rounded-2xl border border-white/15 bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)]">
                   <div className="flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
                     <div className="max-w-xl">
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[9px] font-mono text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-1.5">
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[9px] font-mono text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-1">
                         <ShieldCheck size={11} className="text-[#EC89B5]" />
                         <span>STAFF PRODUCTIVITY GUARANTEE</span>
                       </div>
-                      <h3 className="text-sm sm:text-lg font-bold text-white mb-1">
+                      <h3 className="text-sm sm:text-base font-bold text-white mb-1">
                         Give your staff their time back. Not their patience.
                       </h3>
-                      <p className="text-xs text-white/60 leading-relaxed">
+                      <p className="text-xs text-white/65 leading-relaxed">
                         No more running across the salon floor or clinical operatory to grab the desk phone. Your team delivers 100% undistracted care to the clients and patients right in front of them.
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-4 sm:gap-6 shrink-0 border-t md:border-t-0 md:border-l border-white/10 pt-2.5 md:pt-0 md:pl-6 text-center">
+                    <div className="flex items-center gap-4 sm:gap-6 shrink-0 border-t md:border-t-0 md:border-l border-white/10 pt-2 md:pt-0 md:pl-6 text-center">
                       <div>
                         <span className="text-[9px] font-mono text-white/40 block">REVENUE ROI</span>
                         <span className="text-base sm:text-xl font-bold font-mono text-emerald-400">3.8x</span>
@@ -925,14 +995,14 @@ export default function AivaCinematicCardStage({
               <motion.div
                 key="stage-06"
                 custom={direction}
-                variants={NAMMA_UNIVERSE_TRANSITION}
+                variants={PLANET_EMERGENCE_TRANSITION}
                 initial="initial"
                 animate="animate"
                 exit="exit"
                 className="w-full max-w-4xl relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-5 sm:p-8 shadow-[0_0_80px_rgba(230,92,142,0.24)] bg-gradient-to-b from-[#180A15]/90 to-[#0E050D]/90 backdrop-blur-2xl">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-4 sm:p-7 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl max-h-[calc(100dvh-13.5rem)] sm:max-h-[calc(100dvh-12.5rem)] overflow-y-auto overscroll-contain scrollbar-none">
                   <div className="flex items-center justify-between pb-3 mb-4 sm:mb-5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
                     <span className="text-[#EC89B5] font-semibold">AIVA APPARATUS // UNIT 06</span>
                     <span className="text-white/40">VALUE SIMULATOR</span>
@@ -997,32 +1067,49 @@ export default function AivaCinematicCardStage({
               <motion.div
                 key="stage-07"
                 custom={direction}
-                variants={NAMMA_UNIVERSE_TRANSITION}
+                variants={PLANET_EMERGENCE_TRANSITION}
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="w-full max-w-5xl relative"
+                className="w-full max-w-5xl relative max-h-[calc(100dvh-13.5rem)] sm:max-h-[calc(100dvh-12.5rem)] overflow-y-auto overscroll-contain scrollbar-none"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5 mb-4 sm:mb-5">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5 mb-3.5 sm:mb-4">
                   {GOVERNANCE_PILLARS.map((p, idx) => {
                     const Icon = p.icon;
                     return (
-                      <TiltCard key={p.title} className="p-3 sm:p-4 rounded-2xl border border-white/15 bg-gradient-to-b from-[#180A15]/90 to-[#0E050D]/90 backdrop-blur-2xl flex flex-col justify-between shadow-[0_0_40px_rgba(230,92,142,0.18)]">
-                        <div>
-                          <div className="flex items-center justify-between pb-2 mb-2 sm:mb-3 border-b border-white/[0.06] text-[9px] sm:text-[10px] font-mono text-white/40">
-                            <span>UNIT 07.{idx + 1}</span>
-                            <div className="w-5 sm:w-6 h-5 sm:h-6 rounded-md flex items-center justify-center border border-white/10" style={{ background: `${p.color}15`, color: p.color }}>
-                              <Icon size={12} />
+                      <motion.div
+                        key={p.title}
+                        initial={{
+                          opacity: 0,
+                          scale: 0.45,
+                          x: (1.5 - idx) * 45,
+                          y: 20,
+                        }}
+                        animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+                        transition={{
+                          duration: 0.72,
+                          delay: 0.08 + idx * 0.055,
+                          ease: [0.16, 1, 0.3, 1],
+                        }}
+                        className="flex"
+                      >
+                        <TiltCard className="w-full p-3 sm:p-4 rounded-2xl border border-white/15 bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl flex flex-col justify-between shadow-[0_12px_40px_rgba(0,0,0,0.85)]">
+                          <div>
+                            <div className="flex items-center justify-between pb-2 mb-2 sm:mb-3 border-b border-white/[0.06] text-[9px] sm:text-[10px] font-mono text-white/40">
+                              <span>UNIT 07.{idx + 1}</span>
+                              <div className="w-5 sm:w-6 h-5 sm:h-6 rounded-md flex items-center justify-center border border-white/10" style={{ background: `${p.color}15`, color: p.color }}>
+                                <Icon size={12} />
+                              </div>
                             </div>
+                            <h4 className="text-xs sm:text-sm font-bold text-white mb-1">{p.title}</h4>
+                            <p className="text-[11px] sm:text-xs text-white/65 font-light mb-2 line-clamp-3 sm:line-clamp-none leading-relaxed">{p.desc}</p>
                           </div>
-                          <h4 className="text-xs sm:text-sm font-bold text-white mb-1">{p.title}</h4>
-                          <p className="text-[11px] sm:text-xs text-white/60 font-light mb-2 line-clamp-3 sm:line-clamp-none leading-relaxed">{p.desc}</p>
-                        </div>
-                        <div className="pt-2 border-t border-white/[0.06] text-[9px] sm:text-[10px] font-mono text-emerald-400">
-                          ✓ {p.telemetry}
-                        </div>
-                      </TiltCard>
+                          <div className="pt-2 border-t border-white/[0.06] text-[9px] sm:text-[10px] font-mono text-emerald-400">
+                            ✓ {p.telemetry}
+                          </div>
+                        </TiltCard>
+                      </motion.div>
                     );
                   })}
                 </div>
@@ -1052,7 +1139,7 @@ export default function AivaCinematicCardStage({
         </div>
 
         {/* Stage Controller (Active Theory Floating Capsule) */}
-        <div className="max-w-xl mx-auto w-full pb-1 sm:pb-3 flex items-center justify-center shrink-0">
+        <div className="max-w-xl mx-auto w-full pb-2 sm:pb-3 flex items-center justify-center shrink-0 relative z-30">
           <div className="flex items-center gap-1 sm:gap-2 p-1.5 sm:p-2 rounded-full bg-[#0D050C]/95 border border-white/15 shadow-[0_12px_45px_rgba(0,0,0,0.85),0_0_20px_rgba(230,92,142,0.25)] backdrop-blur-2xl">
             
             {/* Play/Pause Auto Tour */}
