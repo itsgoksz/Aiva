@@ -123,33 +123,48 @@ export default function ProductWorlds({ activeProductIndexRef }: { activeProduct
     }, 280);
   };
 
-  // Mathematically perfect tracker that calculates exact float index based on card centers
+  // High-performance tracker that calculates exact float index based on card centers
+  // Throttled to scroll/resize with viewport culling to prevent layout thrashing in other sections
   useEffect(() => {
-    let animationFrameId: number;
+    let ticking = false;
     
     const updateIndex = () => {
       if (!containerRef.current || !activeProductIndexRef) return;
-      
-      const cards = containerRef.current.children;
-      if (cards.length < worlds.length) {
-        animationFrameId = requestAnimationFrame(updateIndex);
+
+      const container = containerRef.current;
+      const containerRect = container.getBoundingClientRect();
+      const vh = window.innerHeight;
+
+      // Early exit if the product container is far above or below the viewport
+      // (e.g. user is in Philosophy, Singularity, or Constellation sections)
+      if (containerRect.top > vh * 1.2) {
+        if (activeProductIndexRef.current !== null) {
+          activeProductIndexRef.current = null;
+        }
         return;
       }
-
-      const centerY = window.innerHeight / 2;
-      const centers: number[] = [];
+      if (containerRect.bottom < -vh * 0.5) {
+        if (activeProductIndexRef.current !== null) {
+          activeProductIndexRef.current = null;
+        }
+        return;
+      }
       
-      // Get the absolute center of each card
+      const cards = container.children;
+      if (cards.length < worlds.length) return;
+
+      const centerY = vh / 2;
+      const centers: number[] = [];
+      let firstCardTop = 0;
+      let lastCardBottom = 0;
+      
+      // Get the absolute center of each card in a single pass
       for (let i = 0; i < worlds.length; i++) {
         const rect = cards[i].getBoundingClientRect();
         centers.push(rect.top + rect.height / 2);
+        if (i === 0) firstCardTop = rect.top;
+        if (i === worlds.length - 1) lastCardBottom = rect.bottom;
       }
-      
-      // Check if we are totally above or below the container
-      const firstCardTop = cards[0].getBoundingClientRect().top;
-      const lastCardBottom = cards[worlds.length - 1].getBoundingClientRect().bottom;
-      
-      const vh = window.innerHeight;
       
       if (firstCardTop > vh * 0.5) {
         // Entering from the top
@@ -212,12 +227,28 @@ export default function ProductWorlds({ activeProductIndexRef }: { activeProduct
           }
         }
       }
-      
-      animationFrameId = requestAnimationFrame(updateIndex);
+    };
+
+    const handleUpdate = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(() => {
+          updateIndex();
+          ticking = false;
+        });
+      }
     };
     
+    // Initial run
     updateIndex();
-    return () => cancelAnimationFrame(animationFrameId);
+
+    window.addEventListener('scroll', handleUpdate, { passive: true });
+    window.addEventListener('resize', handleUpdate, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleUpdate);
+      window.removeEventListener('resize', handleUpdate);
+    };
   }, [activeProductIndexRef]);
 
   return (

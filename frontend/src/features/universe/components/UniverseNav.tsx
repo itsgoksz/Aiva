@@ -145,11 +145,14 @@ export default function UniverseNav() {
     }
   };
 
-  // ScrollSpy listener
+  // ScrollSpy listener (throttled to rAF)
   useEffect(() => {
-    const handleScroll = () => {
+    let ticking = false;
+
+    const checkScroll = () => {
       const y = window.scrollY;
-      setHasScrolled(y > 80);
+      const scrolled = y > 80;
+      setHasScrolled(prev => (prev !== scrolled ? scrolled : prev));
 
       const philosophyEl = document.getElementById('philosophy');
       const productsEl = document.getElementById('products');
@@ -158,19 +161,28 @@ export default function UniverseNav() {
       const vh = window.innerHeight;
       const mid = y + vh * 0.45;
 
+      let nextSection = 'singularity';
       if (constellationEl && constellationEl.offsetTop <= mid) {
-        setActiveSection('constellation');
+        nextSection = 'constellation';
       } else if (productsEl && productsEl.offsetTop <= mid) {
-        setActiveSection('products');
+        nextSection = 'products';
       } else if (philosophyEl && philosophyEl.offsetTop <= mid) {
-        setActiveSection('philosophy');
-      } else {
-        setActiveSection('singularity');
+        nextSection = 'philosophy';
+      }
+
+      setActiveSection(prev => (prev !== nextSection ? nextSection : prev));
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(checkScroll);
       }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
+    checkScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 

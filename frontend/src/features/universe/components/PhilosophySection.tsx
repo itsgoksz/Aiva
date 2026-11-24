@@ -58,10 +58,11 @@ export default function PhilosophySection() {
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top top',
-          end: `+=${slides.length * 150}%`, // Give it more scroll time for the cinematic scale
-          scrub: true, // Tied instantly to scroll 1:1, no lag or 'auto-scroll' feeling
+          end: () => `+=${window.innerWidth < 768 ? slides.length * 90 : slides.length * 120}%`, // Responsive scroll distance
+          scrub: 0.6, // Smooth inertial lerp (eliminates stepped mousewheel lag on Windows and Android)
           pin: true,
-          anticipatePin: 1
+          anticipatePin: 1,
+          fastScrollEnd: true,
         },
       });
 
@@ -74,25 +75,25 @@ export default function PhilosophySection() {
         const startTime = i * 3;
         
         if (isFirst) {
-          // First slide: already visible. Stays for a bit, then gets sucked forward
+          // First slide: already visible. Stays for a bit, then flies forward into camera
+          // Using autoAlpha toggles visibility:hidden when 0 to completely purge from rendering tree
           tl.to(slide, { 
-            opacity: 0, 
-            scale: 4.0, 
+            autoAlpha: 0, 
+            scale: 1.4, 
             duration: 1.5,
             ease: 'power2.in'
           }, startTime + 1.0);
         } else {
-          // Deep focus pull: emerges from the abyss. 
-          // Removed `filter: blur()` because it causes massive scroll lag on Windows hardware!
+          // Emerges gracefully with autoAlpha
           tl.fromTo(
             slide,
             { 
-              opacity: 0, 
-              scale: 0.2, 
+              autoAlpha: 0, 
+              scale: 0.7, 
               y: 20 
             },
             { 
-              opacity: 1, 
+              autoAlpha: 1, 
               scale: 1.0, 
               y: 0, 
               duration: 1.5,
@@ -102,17 +103,17 @@ export default function PhilosophySection() {
           );
           
           if (!isLast) {
-            // Flies past the camera into the void
+            // Flies past camera smoothly without giant texture blowups
             tl.to(slide, { 
-              opacity: 0, 
-              scale: 4.0, 
+              autoAlpha: 0, 
+              scale: 1.4, 
               duration: 1.5,
               ease: 'power2.in'
             }, startTime + 2.0); 
           } else {
             // The final statement lands and slowly breathes
             tl.to(slide, { 
-              scale: 1.05, 
+              scale: 1.04, 
               duration: 2.0, 
               ease: 'none' 
             }, startTime + 1.5);
@@ -164,7 +165,13 @@ export default function PhilosophySection() {
             justifyContent: 'center',
             padding: '2rem',
             opacity: i === 0 ? 1 : 0,
+            visibility: i === 0 ? 'visible' : 'hidden',
             transformOrigin: 'center center',
+            willChange: 'transform, opacity',
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
+            transform: 'translateZ(0)',
+            pointerEvents: 'none',
           }}
         >
           <h2
@@ -178,7 +185,7 @@ export default function PhilosophySection() {
               letterSpacing: '-0.04em',
               whiteSpace: 'pre-line',
               maxWidth: '1200px',
-              textShadow: '0 0 80px rgba(255, 255, 255, 0.1)', // Subtle glow
+              textShadow: '0 2px 20px rgba(0, 0, 0, 0.7)', // Clean, hardware-accelerated contrast shadow
             }}
           >
             {slide.text}
@@ -194,6 +201,7 @@ export default function PhilosophySection() {
                 marginTop: '2rem',
                 maxWidth: '800px',
                 letterSpacing: '0.02em',
+                textShadow: '0 2px 10px rgba(0, 0, 0, 0.5)',
               }}
             >
               {slide.sub}

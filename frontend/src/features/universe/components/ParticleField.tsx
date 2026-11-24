@@ -13,9 +13,37 @@ import type { MutableRefObject } from 'react';
 import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 
-// ─── Constants ───────────────────────────────────────────────
+// ─── Constants & Scratch Objects ─────────────────────────────
 
-const PARTICLE_COUNT = 180000; // Colossal particle count to achieve extreme density during the volumetric burst
+const isMobileOrLowEnd = typeof window !== 'undefined' && (
+  window.innerWidth < 768 ||
+  (typeof navigator !== 'undefined' && (navigator as any).hardwareConcurrency && (navigator as any).hardwareConcurrency <= 4)
+);
+
+// Adaptive particle count: cuts vertex/fragment workload by 50-75% on low-end/integrated GPUs while preserving density
+const PARTICLE_COUNT = isMobileOrLowEnd ? 48000 : 96000;
+
+// Reusable scratch objects to guarantee ZERO per-frame garbage collection
+const _scratchMouseVec = new THREE.Vector3();
+const _scratchRayOrigin = new THREE.Vector3();
+const _scratchRayDir = new THREE.Vector3();
+const _scratchRayTarget = new THREE.Vector3();
+const _scratchLocalRayDir = new THREE.Vector3();
+
+const _camTargetPos = new THREE.Vector3();
+const _camTargetLook = new THREE.Vector3();
+const _camPos0 = new THREE.Vector3();
+const _camPos1 = new THREE.Vector3();
+const _camEuler = new THREE.Euler(0, 0, 0, 'XYZ');
+const _camOffset = new THREE.Vector3();
+const _camPanOffset = new THREE.Vector3();
+
+const _cursorMouseVec = new THREE.Vector3();
+const _cursorRayDir = new THREE.Vector3();
+const _cursorShipPos = new THREE.Vector3();
+const _cursorVelocity = new THREE.Vector3();
+
+const _activePlanetPos = new THREE.Vector3();
 
 // Solar System Planets: 8 planets to maintain the full visual scale of the universe
 // We assign specific ones to our products below
@@ -538,23 +566,23 @@ function Particles({ progressRef, mouseRef, activeProductIndexRef }: ParticlesPr
       smoothMouse.current.x += (mouseRef.current.x - smoothMouse.current.x) * (1 - Math.exp(-4 * delta));
       smoothMouse.current.y += (mouseRef.current.y - smoothMouse.current.y) * (1 - Math.exp(-4 * delta));
       
-      // Perfect 3D Raycasting: Convert mouse coordinates to a true 3D ray in the group's local space
-      const mouseVec = new THREE.Vector3(smoothMouse.current.x, -smoothMouse.current.y, 0.5);
-      mouseVec.unproject(camera);
+      // Perfect 3D Raycasting: Convert mouse coordinates to a true 3D ray in the group's local space (Zero GC)
+      _scratchMouseVec.set(smoothMouse.current.x, -smoothMouse.current.y, 0.5);
+      _scratchMouseVec.unproject(camera);
       
-      const rayOrigin = camera.position.clone();
-      const rayDir = mouseVec.sub(camera.position).normalize();
+      _scratchRayOrigin.copy(camera.position);
+      _scratchRayDir.copy(_scratchMouseVec).sub(camera.position).normalize();
       
       // Convert to local space of the particle group to match vertex coordinates
-      groupRef.current.worldToLocal(rayOrigin);
+      groupRef.current.worldToLocal(_scratchRayOrigin);
       
-      const rayTarget = camera.position.clone().add(rayDir);
-      groupRef.current.worldToLocal(rayTarget);
+      _scratchRayTarget.copy(camera.position).add(_scratchRayDir);
+      groupRef.current.worldToLocal(_scratchRayTarget);
       
-      const localRayDir = rayTarget.sub(rayOrigin).normalize();
+      _scratchLocalRayDir.copy(_scratchRayTarget).sub(_scratchRayOrigin).normalize();
       
-      materialRef.current.uniforms.uRayOrigin.value.copy(rayOrigin);
-      materialRef.current.uniforms.uRayDir.value.copy(localRayDir);
+      materialRef.current.uniforms.uRayOrigin.value.copy(_scratchRayOrigin);
+      materialRef.current.uniforms.uRayDir.value.copy(_scratchLocalRayDir);
     }
 
     // Apply parallax to the entire group
@@ -670,13 +698,13 @@ function ActivePlanet({ activeProductIndexRef }: { activeProductIndexRef?: React
     const p0 = PRODUCT_NODES[productToPlanetMap[idx]];
     
     const angle0 = p0.startAngle + clock.elapsedTime * p0.speed;
-    const pos0 = new THREE.Vector3(
+    _activePlanetPos.set(
       Math.cos(angle0) * p0.radius,
       Math.sin(angle0) * p0.radius * 0.15,
       Math.sin(angle0) * p0.radius
     );
     
-    meshRef.current.position.copy(pos0);
+    meshRef.current.position.copy(_activePlanetPos);
     // Slowly rotate the planet for a majestic feel
     meshRef.current.rotation.y += 0.002;
     meshRef.current.rotation.x += 0.001;
@@ -838,8 +866,8 @@ function CameraController({ progressRef, activeProductIndexRef, mouseRef }: Came
     
     const baseZ = initialZoom.current - scrollForward;
     
-    let targetPos = new THREE.Vector3(0, 0, baseZ);
-    let targetLook = new THREE.Vector3(0, 0, 0);
+    _camTargetPos.set(0, 0, baseZ);
+    _camTargetLook.set(0, 0, 0);
 
     if (activeProductIndexRef && activeProductIndexRef.current !== null) {
       const idx = activeProductIndexRef.current;
@@ -850,7 +878,7 @@ function CameraController({ progressRef, activeProductIndexRef, mouseRef }: Came
         
         const p0 = PRODUCT_NODES[productToPlanetMap[0]];
         const angle0 = p0.startAngle + clock.elapsedTime * p0.speed;
-        const pos0 = new THREE.Vector3(
+        _camPos0.set(
           Math.cos(angle0) * p0.radius,
           Math.sin(angle0) * p0.radius * 0.15,
           Math.sin(angle0) * p0.radius
@@ -860,15 +888,14 @@ function CameraController({ progressRef, activeProductIndexRef, mouseRef }: Came
         const rx = -smoothMouse.current.y * 0.15 + (extraScrollRot * 0.02) + sharedState.entryTilt;
         const ry = smoothMouse.current.x * 0.15 + (extraScrollRot * 0.05);
         const rz = smoothProgress.current * 0.5 + (Date.now() % 100000) * 0.00005;
-        const euler = new THREE.Euler(rx, ry, rz, 'XYZ');
+        _camEuler.set(rx, ry, rz, 'XYZ');
         
-        pos0.applyEuler(euler);
+        _camPos0.applyEuler(_camEuler);
         
-        const planetLook = pos0.clone();
-        const planetPos = pos0.clone().add(new THREE.Vector3(0, 0.02, 0.4));
+        _camTargetLook.lerp(_camPos0, t);
         
-        targetLook.lerp(planetLook, t);
-        targetPos.lerp(planetPos, t);
+        _camPos1.copy(_camPos0).add(_camOffset.set(0, 0.02, 0.4));
+        _camTargetPos.lerp(_camPos1, t);
 
       } else if (idx > productToPlanetMap.length - 1) {
         // Interpolate between last planet and solar system (zooming out)
@@ -877,7 +904,7 @@ function CameraController({ progressRef, activeProductIndexRef, mouseRef }: Came
         const lastIdx = productToPlanetMap.length - 1;
         const p1 = PRODUCT_NODES[productToPlanetMap[lastIdx]];
         const angle1 = p1.startAngle + clock.elapsedTime * p1.speed;
-        const pos1 = new THREE.Vector3(
+        _camPos1.set(
           Math.cos(angle1) * p1.radius,
           Math.sin(angle1) * p1.radius * 0.15,
           Math.sin(angle1) * p1.radius
@@ -887,15 +914,14 @@ function CameraController({ progressRef, activeProductIndexRef, mouseRef }: Came
         const rx = -smoothMouse.current.y * 0.15 + (extraScrollRot * 0.02) + sharedState.entryTilt;
         const ry = smoothMouse.current.x * 0.15 + (extraScrollRot * 0.05);
         const rz = smoothProgress.current * 0.5 + (Date.now() % 100000) * 0.00005;
-        const euler = new THREE.Euler(rx, ry, rz, 'XYZ');
+        _camEuler.set(rx, ry, rz, 'XYZ');
         
-        pos1.applyEuler(euler);
+        _camPos1.applyEuler(_camEuler);
         
-        const planetLook = pos1.clone();
-        const planetPos = pos1.clone().add(new THREE.Vector3(0, 0.02, 0.15));
+        _camTargetLook.lerp(_camPos1, t);
         
-        targetLook.lerp(planetLook, t);
-        targetPos.lerp(planetPos, t);
+        _camPos0.copy(_camPos1).add(_camOffset.set(0, 0.02, 0.15));
+        _camTargetPos.lerp(_camPos0, t);
         
       } else {
         // Normal interpolation between planets
@@ -907,29 +933,29 @@ function CameraController({ progressRef, activeProductIndexRef, mouseRef }: Came
         const p1 = PRODUCT_NODES[productToPlanetMap[index1]];
         
         const angle0 = p0.startAngle + clock.elapsedTime * p0.speed;
-        const pos0 = new THREE.Vector3(
+        _camPos0.set(
           Math.cos(angle0) * p0.radius,
           Math.sin(angle0) * p0.radius * 0.15,
           Math.sin(angle0) * p0.radius
         );
         
         const angle1 = p1.startAngle + clock.elapsedTime * p1.speed;
-        const pos1 = new THREE.Vector3(
+        _camPos1.set(
           Math.cos(angle1) * p1.radius,
           Math.sin(angle1) * p1.radius * 0.15,
           Math.sin(angle1) * p1.radius
         );
         
-        const pos = new THREE.Vector3().lerpVectors(pos0, pos1, t);
+        _camPos0.lerp(_camPos1, t);
         const extraScrollRot = Math.max(0, (scrollY / vh) - 4.0);
         const rx = -smoothMouse.current.y * 0.15 + (extraScrollRot * 0.02) + sharedState.entryTilt;
         const ry = smoothMouse.current.x * 0.15 + (extraScrollRot * 0.05);
         const rz = smoothProgress.current * 0.5 + (Date.now() % 100000) * 0.00005;
         
-        const euler = new THREE.Euler(rx, ry, rz, 'XYZ');
-        pos.applyEuler(euler);
-        targetLook.copy(pos);
-        targetPos.copy(pos).add(new THREE.Vector3(0, 0.02, 0.4));
+        _camEuler.set(rx, ry, rz, 'XYZ');
+        _camPos0.applyEuler(_camEuler);
+        _camTargetLook.copy(_camPos0);
+        _camTargetPos.copy(_camPos0).add(_camOffset.set(0, 0.02, 0.4));
       }
 
       // Smoothly interpolate the pan offset to prevent glitchy jumps when opening products
@@ -944,15 +970,15 @@ function CameraController({ progressRef, activeProductIndexRef, mouseRef }: Came
       sharedState.currentPan += (targetPan - sharedState.currentPan) * (1 - Math.exp(-5.0 * delta));
       
       if (sharedState.currentPan > 0.001) {
-        const panOffset = new THREE.Vector3(sharedState.currentPan, 0, 0);
-        targetLook.add(panOffset);
-        targetPos.add(panOffset);
+        _camPanOffset.set(sharedState.currentPan, 0, 0);
+        _camTargetLook.add(_camPanOffset);
+        _camTargetPos.add(_camPanOffset);
       }
     }
 
     if (isFirstFrame.current && sharedState.spawnZoomedIn) {
-      smoothTarget.current.copy(targetPos);
-      smoothLookAt.current.copy(targetLook);
+      smoothTarget.current.copy(_camTargetPos);
+      smoothLookAt.current.copy(_camTargetLook);
     } else {
       const isTrackingPlanet = activeProductIndexRef && activeProductIndexRef.current !== null;
       const speed = sharedState.isZoomingInto ? 6.0 : (isTrackingPlanet ? 6.0 : 3.0);
@@ -965,19 +991,19 @@ function CameraController({ progressRef, activeProductIndexRef, mouseRef }: Came
         // Smooth sine-based shake instead of jittery random
         const time = Date.now() * 0.05;
         perspectiveCamera.rotation.z += Math.sin(time * 0.5) * 0.1;
-        targetPos.x += Math.sin(time) * 1.5;
-        targetPos.y += Math.cos(time * 0.8) * 1.5;
+        _camTargetPos.x += Math.sin(time) * 1.5;
+        _camTargetPos.y += Math.cos(time * 0.8) * 1.5;
         
-        smoothTarget.current.lerp(targetPos, 1 - Math.exp(-10.0 * delta));
-        smoothLookAt.current.lerp(targetLook, 1 - Math.exp(-10.0 * delta));
+        smoothTarget.current.lerp(_camTargetPos, 1 - Math.exp(-10.0 * delta));
+        smoothLookAt.current.lerp(_camTargetLook, 1 - Math.exp(-10.0 * delta));
       } else {
         if (perspectiveCamera.fov !== 65) {
           perspectiveCamera.fov = 65;
           perspectiveCamera.updateProjectionMatrix();
           perspectiveCamera.rotation.z = 0;
         }
-        smoothTarget.current.lerp(targetPos, 1 - Math.exp(-speed * delta));
-        smoothLookAt.current.lerp(targetLook, 1 - Math.exp(-(speed + 1.0) * delta));
+        smoothTarget.current.lerp(_camTargetPos, 1 - Math.exp(-speed * delta));
+        smoothLookAt.current.lerp(_camTargetLook, 1 - Math.exp(-(speed + 1.0) * delta));
       }
     }
     
@@ -1005,27 +1031,27 @@ function SpaceshipCursorModel({ mouseRef }: { mouseRef: React.MutableRefObject<{
   useFrame((state, delta) => {
     if (!shipRef.current) return;
     
-    // Unproject to find world position at a fixed distance from the camera
-    const mouseVec = new THREE.Vector3(mouseRef.current.x, -mouseRef.current.y, 0.5);
-    mouseVec.unproject(camera);
+    // Unproject to find world position at a fixed distance from the camera (Zero GC)
+    _cursorMouseVec.set(mouseRef.current.x, -mouseRef.current.y, 0.5);
+    _cursorMouseVec.unproject(camera);
     
-    const rayDir = mouseVec.sub(camera.position).normalize();
+    _cursorRayDir.copy(_cursorMouseVec).sub(camera.position).normalize();
     
     // Place ship 10 units in front of the camera perfectly on the interaction ray
-    const shipPos = camera.position.clone().add(rayDir.multiplyScalar(10.0));
+    _cursorShipPos.copy(camera.position).add(_cursorRayDir.multiplyScalar(10.0));
     
     // Smooth lerp for a floating, trailing follow effect
-    shipRef.current.position.lerp(shipPos, 1 - Math.exp(-12 * delta));
+    shipRef.current.position.lerp(_cursorShipPos, 1 - Math.exp(-12 * delta));
     
     // Calculate velocity for banking/tilting
-    const velocity = shipRef.current.position.clone().sub(prevPos.current);
+    _cursorVelocity.copy(shipRef.current.position).sub(prevPos.current);
     prevPos.current.copy(shipRef.current.position);
     
     // Always perfectly face the camera like a 2D cursor sprite
     shipRef.current.lookAt(camera.position);
     
     // Add a subtle 2D roll based on horizontal movement for a dynamic flying feel
-    const targetRoll = -velocity.x * 2.0;
+    const targetRoll = -_cursorVelocity.x * 2.0;
     shipRef.current.rotation.z = THREE.MathUtils.lerp(shipRef.current.rotation.z, targetRoll, 0.1);
   });
 
@@ -1187,7 +1213,7 @@ export default function ParticleField({ progressRef, activeProductIndexRef, clas
       
       <Canvas
         camera={{ position: [0, 0, 20], fov: 65, near: 0.1, far: 150 }}
-        dpr={[1, 2]}
+        dpr={isMobileOrLowEnd ? [1, 1.25] : [1, 1.5]}
         gl={{
           antialias: false,
           alpha: true,
