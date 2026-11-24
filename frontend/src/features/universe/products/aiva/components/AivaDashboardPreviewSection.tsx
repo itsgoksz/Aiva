@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import AivaCardMorphBridge from "./AivaCardMorphBridge";
 import { 
   Phone, 
   CheckCircle2, 
@@ -79,7 +80,7 @@ export default function AivaDashboardPreviewSection() {
   const [activeTab, setActiveTab] = useState<"calls" | "schedule" | "crm">("calls");
 
   return (
-    <section id="dashboard-preview" className="py-28 relative overflow-hidden bg-transparent">
+    <section id="dashboard-preview" className="pt-10 pb-16 sm:pt-14 sm:pb-20 relative overflow-hidden bg-transparent">
       {/* Background ambient lighting — Smooth radial gradient (Zero GPU blur-box clipping) */}
       <div 
         className="absolute top-1/4 -left-[10%] w-[650px] h-[650px] pointer-events-none opacity-35"
@@ -173,6 +174,12 @@ export default function AivaDashboardPreviewSection() {
           </div>
         </div>
 
+        {/* Transformation Bridge 01 -> 01 */}
+        <AivaCardMorphBridge 
+          variant="bus-1-to-1" 
+          label="CARD METAMORPHOSIS // 01 ➔ 01 [MORPH INTO TELEMETRY CONSOLE]" 
+        />
+
         {/* Top Metric Cards (Cascade from Top Edge) */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8">
           <motion.div 
@@ -252,6 +259,17 @@ export default function AivaDashboardPreviewSection() {
             transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
             className="rounded-2xl border border-white/10 p-4 sm:p-8 shadow-2xl bg-[#120810]/80 backdrop-blur-xl"
           >
+            {/* Unified Architecture Chassis Ribbon */}
+            <div className="flex items-center justify-between pb-3.5 mb-5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+              <span className="flex items-center gap-2 text-[#EC89B5] font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
+                AIVA APPARATUS // UNIT 04
+              </span>
+              <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
+                EXECUTIVE TELEMETRY CONSOLE
+              </span>
+            </div>
+
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-white/[0.08]">
               <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 <span>Inbound Call Feed</span>
@@ -311,6 +329,17 @@ export default function AivaDashboardPreviewSection() {
             transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
             className="rounded-2xl border border-white/10 p-4 sm:p-8 shadow-2xl bg-[#120810]/80 backdrop-blur-xl"
           >
+            {/* Unified Architecture Chassis Ribbon */}
+            <div className="flex items-center justify-between pb-3.5 mb-5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+              <span className="flex items-center gap-2 text-[#EC89B5] font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
+                AIVA APPARATUS // UNIT 04
+              </span>
+              <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
+                EXECUTIVE TELEMETRY CONSOLE
+              </span>
+            </div>
+
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-white/[0.08]">
               <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 <span>Today's Appointment Schedule</span>
@@ -360,6 +389,17 @@ export default function AivaDashboardPreviewSection() {
             transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
             className="rounded-2xl border border-white/10 p-4 sm:p-8 shadow-2xl bg-[#120810]/80 backdrop-blur-xl"
           >
+            {/* Unified Architecture Chassis Ribbon */}
+            <div className="flex items-center justify-between pb-3.5 mb-5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+              <span className="flex items-center gap-2 text-[#EC89B5] font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
+                AIVA APPARATUS // UNIT 04
+              </span>
+              <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
+                EXECUTIVE TELEMETRY CONSOLE
+              </span>
+            </div>
+
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-white/[0.08]">
               <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 <span>Customer Preferences & History</span>

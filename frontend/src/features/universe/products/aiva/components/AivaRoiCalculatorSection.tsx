@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import AivaCardMorphBridge from "./AivaCardMorphBridge";
 
 export default function AivaRoiCalculatorSection() {
   const [weeklyCalls, setWeeklyCalls] = useState(120);
@@ -12,7 +13,7 @@ export default function AivaRoiCalculatorSection() {
   const hoursSavedMonthly = Math.round((monthlyCalls * 2.5) / 60);
 
   return (
-    <section className="py-28 relative overflow-hidden bg-transparent">
+    <section className="pt-10 pb-16 sm:pt-14 sm:pb-20 relative overflow-hidden bg-transparent">
       <div 
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] sm:w-[700px] h-[400px] sm:h-[500px] rounded-full pointer-events-none opacity-30 sm:opacity-20"
         style={{ 
@@ -40,6 +41,12 @@ export default function AivaRoiCalculatorSection() {
           </p>
         </div>
 
+        {/* Transformation Bridge 04 -> 01 */}
+        <AivaCardMorphBridge 
+          variant="merge-4-to-1" 
+          label="CARD METAMORPHOSIS // 04 ➔ 01 [CONSOLIDATE INTO REVENUE ENGINE]" 
+        />
+
         {/* The Calculator Box (Apple Morph Entry) */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.90, y: 40 }}
@@ -52,6 +59,17 @@ export default function AivaRoiCalculatorSection() {
             boxShadow: "0 30px 100px -20px rgba(0, 0, 0, 0.9), 0 0 50px rgba(166, 107, 142, 0.15)",
           }}
         >
+          {/* Unified Architecture Chassis Ribbon */}
+          <div className="flex items-center justify-between pb-3.5 mb-6 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+            <span className="flex items-center gap-2 text-[#EC89B5] font-semibold">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
+              AIVA APPARATUS // UNIT 06
+            </span>
+            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
+              FINANCIAL RECOVERY ENGINE
+            </span>
+          </div>
+
           <div className="grid lg:grid-cols-12 gap-8 items-center">
             {/* Sliders */}
             <div className="lg:col-span-7 space-y-6 sm:space-y-8">

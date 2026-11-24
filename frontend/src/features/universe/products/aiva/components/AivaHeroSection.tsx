@@ -229,6 +229,17 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
                   boxShadow: "0 30px 100px -20px rgba(0, 0, 0, 0.85), 0 0 50px -10px rgba(166, 107, 142, 0.2)",
                 }}
               >
+                {/* Unified Architecture Chassis Ribbon */}
+                <div className="flex items-center justify-between pb-3.5 mb-5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+                  <span className="flex items-center gap-2 text-[#EC89B5] font-semibold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
+                    AIVA APPARATUS // UNIT 01
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
+                    LIVE AUDIO INGESTION CORE
+                  </span>
+                </div>
+
                 {/* Header: Status & Scenario Switcher */}
                 <div className="flex flex-wrap items-center justify-between gap-2.5 mb-5 pb-4 border-b border-white/[0.08]">
                   <div className="flex items-center gap-2">
@@ -374,6 +385,15 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
                     </div>
                   </motion.div>
                 )}
+
+                {/* Metamorphosis Conduit Exit Dock */}
+                <div className="mt-5 pt-3.5 border-t border-white/[0.08] flex items-center justify-between text-[10px] font-mono text-white/40">
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    AUTONOMOUS APPARATUS READY
+                  </span>
+                  <span className="text-[#EC89B5]">CONDUIT 01 ➔ 04 READY</span>
+                </div>
               </div>
             </motion.div>
           </div>

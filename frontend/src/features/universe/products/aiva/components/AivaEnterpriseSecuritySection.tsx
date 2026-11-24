@@ -7,6 +7,7 @@ import {
   Cpu
 } from "lucide-react";
 import { motion } from "framer-motion";
+import AivaCardMorphBridge from "./AivaCardMorphBridge";
 
 // Apple-style 4-card security bloom offsets
 const SECURITY_OFFSETS = [
@@ -82,7 +83,7 @@ const PILLARS: PillarItem[] = [
 
 export default function AivaEnterpriseSecuritySection() {
   return (
-    <section className="py-24 relative overflow-hidden bg-transparent">
+    <section className="pt-10 pb-16 sm:pt-14 sm:pb-20 relative overflow-hidden bg-transparent">
       {/* Subtle static ambient glow (Zero flicker) */}
       <div 
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] sm:w-[750px] h-[350px] sm:h-[450px] rounded-full pointer-events-none opacity-30 sm:opacity-15"
@@ -111,6 +112,12 @@ export default function AivaEnterpriseSecuritySection() {
             Aiva is engineered to represent Indian healthcare clinics and premium salons with warmth, clinical accuracy, and zero liability risk.
           </p>
         </div>
+
+        {/* Transformation Bridge 01 -> 04 */}
+        <AivaCardMorphBridge 
+          variant="split-1-to-4" 
+          label="CARD METAMORPHOSIS // 01 ➔ 04 [BLOOM INTO 4-PILLAR GOVERNANCE]" 
+        />
 
         {/* 4 Apple-Style Enterprise Cards (Solid obsidian with Apple directional bloom) */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -144,6 +151,17 @@ export default function AivaEnterpriseSecuritySection() {
                 }}
               >
                 <div>
+                  {/* Unified Architecture Chassis Ribbon */}
+                  <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+                    <span className="flex items-center gap-2 text-[#EC89B5] font-semibold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
+                      AIVA APPARATUS // UNIT 07.{idx + 1}
+                    </span>
+                    <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
+                      PILLAR {idx + 1}
+                    </span>
+                  </div>
+
                   {/* Top Bar */}
                   <div className="flex items-center justify-between pb-4 border-b border-white/[0.06] mb-5">
                     <span className="font-mono text-[10px] font-bold text-white/40 tracking-wider uppercase">

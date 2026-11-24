@@ -8,6 +8,7 @@ import {
   TrendingUp
 } from "lucide-react";
 import { motion } from "framer-motion";
+import AivaCardMorphBridge from "./AivaCardMorphBridge";
 
 // Apple-style directional fanning offsets
 // The 4 workflow stages fan out smoothly from the central axis
@@ -99,7 +100,7 @@ const STAGES: StageItem[] = [
 
 export default function AivaAutonomousLoopSection() {
   return (
-    <section className="py-24 relative overflow-hidden bg-transparent">
+    <section className="pt-10 pb-16 sm:pt-14 sm:pb-20 relative overflow-hidden bg-transparent">
       {/* Static subtle background glow (Zero repaint jitter) */}
       <div 
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] sm:w-[850px] h-[400px] sm:h-[550px] rounded-full pointer-events-none opacity-35 sm:opacity-20"
@@ -128,6 +129,12 @@ export default function AivaAutonomousLoopSection() {
             Here is the exact autonomous loop that runs inside Aiva every time a client dials your business number.
           </p>
         </div>
+
+        {/* Transformation Bridge 01 -> 04 */}
+        <AivaCardMorphBridge 
+          variant="split-1-to-4" 
+          label="CARD METAMORPHOSIS // 01 ➔ 04 [BRANCH INTO 4-STAGE PIPELINE]" 
+        />
 
         {/* 4 Apple-Style Process Cards (Solid obsidian with fluid bloom animation) */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
@@ -161,6 +168,17 @@ export default function AivaAutonomousLoopSection() {
                 }}
               >
                 <div>
+                  {/* Unified Architecture Chassis Ribbon */}
+                  <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+                    <span className="flex items-center gap-2 text-[#EC89B5] font-semibold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
+                      AIVA APPARATUS // UNIT 05.{idx + 1}
+                    </span>
+                    <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
+                      STEP {s.step}
+                    </span>
+                  </div>
+
                   {/* Top: Step indicator & Icon */}
                   <div className="flex items-center justify-between pb-4 border-b border-white/[0.06] mb-5">
                     <span className="font-mono text-[10px] font-bold text-white/40 tracking-widest uppercase">
@@ -226,6 +244,17 @@ export default function AivaAutonomousLoopSection() {
             boxShadow: "inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 30px 60px rgba(0, 0, 0, 0.7)"
           }}
         >
+          {/* Unified Architecture Chassis Ribbon */}
+          <div className="flex items-center justify-between pb-3.5 mb-6 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+            <span className="flex items-center gap-2 text-[#EC89B5] font-semibold">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
+              AIVA APPARATUS // UNIT 05.5
+            </span>
+            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
+              SLA ASSURANCE SLAB
+            </span>
+          </div>
+
           <div className="grid lg:grid-cols-12 gap-8 items-center relative z-10">
             <div className="lg:col-span-7 space-y-3 text-left">
               <span className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold tracking-widest uppercase text-[#ECA9B7] bg-[#E65C8E]/15 px-3 py-1 rounded-full border border-[#E65C8E]/30">

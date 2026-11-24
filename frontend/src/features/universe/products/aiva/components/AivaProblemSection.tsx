@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import AivaCardMorphBridge from "./AivaCardMorphBridge";
 import { 
   PhoneMissed, 
   Clock, 
@@ -72,7 +73,7 @@ const PROBLEMS: ProblemItem[] = [
 
 export default function AivaProblemSection() {
   return (
-    <section className="py-24 relative overflow-hidden bg-transparent">
+    <section className="pt-10 pb-16 sm:pt-14 sm:pb-20 relative overflow-hidden bg-transparent">
       {/* Subtle, non-blurry static ambient illumination */}
       <div 
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] sm:w-[700px] h-[350px] sm:h-[500px] rounded-full pointer-events-none blur-[80px] sm:blur-none opacity-40 sm:opacity-20"
@@ -102,6 +103,12 @@ export default function AivaProblemSection() {
             They lose them because the desk phone rang while everyone was busy.
           </p>
         </div>
+
+        {/* Transformation Bridge 01 -> 04 */}
+        <AivaCardMorphBridge 
+          variant="split-1-to-4" 
+          label="CARD METAMORPHOSIS // 01 ➔ 04 [FRACTURE INTO 4 LOGIC QUADRANTS]" 
+        />
 
         {/* 4 Premium, Horizontally-Aligned Product Cards (Apple Morph Outward Bloom) */}
         <div className="grid md:grid-cols-2 gap-6 mb-16">
@@ -134,6 +141,17 @@ export default function AivaProblemSection() {
                   boxShadow: "0 24px 48px -18px rgba(0, 0, 0, 0.75)"
                 }}
               >
+                {/* Unified Architecture Chassis Ribbon */}
+                <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+                  <span className="flex items-center gap-2 text-[#EC89B5] font-semibold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
+                    AIVA APPARATUS // UNIT 02.{idx + 1}
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
+                    QUADRANT {idx + 1} GATE
+                  </span>
+                </div>
+
                 {/* Subtle top edge gradient highlight on hover */}
                 <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-[#E65C8E]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
@@ -216,6 +234,12 @@ export default function AivaProblemSection() {
           })}
         </div>
 
+        {/* Transformation Bridge 04 -> 01 */}
+        <AivaCardMorphBridge 
+          variant="merge-4-to-1" 
+          label="CARD METAMORPHOSIS // 04 ➔ 01 [CONVERGE INTO UNIFIED MATRIX]" 
+        />
+
         {/* Clean Minimalist Comparison Table (Morph Expansion from 4 Cards) */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.90, y: 40 }}
@@ -224,6 +248,17 @@ export default function AivaProblemSection() {
           transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
           className="rounded-3xl border border-white/10 p-6 sm:p-9 overflow-x-auto shadow-2xl bg-[#120810]/80 backdrop-blur-xl"
         >
+          {/* Unified Architecture Chassis Ribbon */}
+          <div className="flex items-center justify-between pb-4 mb-6 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+            <span className="flex items-center gap-2 text-[#EC89B5] font-semibold">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
+              AIVA APPARATUS // UNIT 03
+            </span>
+            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
+              UNIFIED CAPABILITY MATRIX
+            </span>
+          </div>
+
           <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-white/10 mb-6 gap-2">
             <div>
               <span className="text-[10px] font-mono uppercase tracking-widest text-[#ECA9B7] block mb-1">
