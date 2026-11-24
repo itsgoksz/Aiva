@@ -2,12 +2,12 @@
  * AivaCinematicCardStage — Cosmic Metamorphosis Theater (Active Theory Architecture)
  * 
  * Cinematic Features:
- * 1. Real 3D Celestial WebGL Planet (Matching Namma Universe Products Section):
- *    A living, glowing 3D planetary sphere with procedural GLSL noise, atmospheric rim corona,
- *    and dual concentric orbital rings that physically emerges out of the background.
- * 2. Translucent Obsidian Cosmic Glass: Real background stars and nebulae twinkle through the card face.
- * 3. Stardust Aura Emitters: Shimmering stardust constellations envelop active modules.
- * 4. Active Theory 3D Tilt Physics: Subtle perspective tilt with dynamic specular sheen.
+ * 1. Planetary Emergence Animation for Cards (Matching Namma Universe):
+ *    The card ITSELF emerges smoothly from deep within the background space
+ *    (starting at scale 0.42, soft blur, and subtle 3D planetary inclination, then gliding forward into full crystal clarity).
+ * 2. Pure Card Focus: No floating planet meshes—the card is the celestial centerpiece.
+ * 3. Atmospheric Planetary Corona: A soft, radiant planetary atmosphere blooms around each card.
+ * 4. 3D Interactive Tilt & Specular Ray: Tactile 3D perspective tracking with dynamic sheen.
  * 5. Mobile Smoothness & Touch Swipe: Responsive touch gestures and dynamic viewport sizing.
  */
 
@@ -35,7 +35,6 @@ import {
   Calendar,
   Lock
 } from "lucide-react";
-import Aiva3DPlanet from "./Aiva3DPlanet";
 
 // --- STATIC STAGE REPOSITORY & DATA STRUCTURES ---
 
@@ -201,14 +200,15 @@ const GOVERNANCE_PILLARS = [
   }
 ];
 
-// --- COSMIC STARDUST EMERGENCE & DISSOLUTION PHYSICS ---
-const COSMIC_STAR_TRANSITION = {
+// --- PLANETARY CARD EMERGENCE & DISSOLUTION PHYSICS ---
+// Mimics how planets emerge smoothly from deep within the background space in Namma Universe
+const PLANETARY_CARD_TRANSITION = {
   initial: { 
     opacity: 0, 
-    scale: 0.15, 
-    rotateX: -14, 
-    filter: "blur(18px)", 
-    y: 35 
+    scale: 0.42, 
+    rotateX: -10, 
+    filter: "blur(16px)", 
+    y: 40 
   },
   animate: { 
     opacity: 1, 
@@ -219,53 +219,35 @@ const COSMIC_STAR_TRANSITION = {
   },
   exit: { 
     opacity: 0, 
-    scale: 0.12, 
-    rotateX: 14, 
-    filter: "blur(22px)", 
-    y: -35 
+    scale: 0.38, 
+    rotateX: 10, 
+    filter: "blur(18px)", 
+    y: -40 
   },
   transition: { 
-    duration: 0.85, 
-    ease: [0.16, 1, 0.3, 1] 
+    duration: 0.95, 
+    ease: [0.16, 1, 0.3, 1] // Active Theory smooth celestial deceleration curve
   }
 };
 
-// Shimmering Celestial Stardust Halo Emitter
-function StardustAura() {
+// Radiant Planetary Atmosphere Corona (Expands softly behind each card)
+function PlanetaryAtmosphereAura() {
   return (
-    <div className="pointer-events-none absolute -inset-6 sm:-inset-10 z-0 overflow-visible">
+    <div className="pointer-events-none absolute -inset-8 sm:-inset-16 z-0 overflow-visible">
+      {/* Soft Spherical Atmospheric Nebula Halo */}
       <div 
-        className="absolute inset-4 rounded-3xl opacity-50 blur-2xl"
+        className="absolute inset-0 rounded-full opacity-60 blur-3xl transition-opacity duration-700"
         style={{
-          background: "radial-gradient(ellipse at 50% 50%, rgba(230,92,142,0.2) 0%, rgba(166,107,142,0.08) 45%, transparent 75%)"
+          background: "radial-gradient(circle at 50% 50%, rgba(230, 92, 142, 0.24) 0%, rgba(166, 107, 142, 0.12) 40%, transparent 72%)"
         }}
       />
-      {[...Array(20)].map((_, i) => {
-        const top = (i * 13 + 7) % 100;
-        const left = (i * 19 + 5) % 100;
-        const delay = (i * 0.22) % 2.5;
-        const isRose = i % 3 === 0;
-        const isEmerald = i % 5 === 0;
-        const size = (i % 3 === 0) ? 3 : 2;
-        return (
-          <div
-            key={i}
-            className={`absolute rounded-full animate-ping ${
-              isRose ? "bg-[#E65C8E]" : isEmerald ? "bg-emerald-400" : "bg-white"
-            }`}
-            style={{
-              top: `${top}%`,
-              left: `${left}%`,
-              width: `${size}px`,
-              height: `${size}px`,
-              animationDuration: `${2.2 + (i % 3) * 0.6}s`,
-              animationDelay: `${delay}s`,
-              boxShadow: isRose ? "0 0 10px #E65C8E" : isEmerald ? "0 0 8px #34D399" : "0 0 6px #FFFFFF",
-              opacity: 0.75,
-            }}
-          />
-        );
-      })}
+      {/* Subtle planetary orbital glow ring */}
+      <div 
+        className="absolute inset-4 sm:inset-6 rounded-3xl opacity-30 border border-[#E65C8E]/40"
+        style={{
+          boxShadow: "0 0 50px rgba(230, 92, 142, 0.25)"
+        }}
+      />
     </div>
   );
 }
@@ -448,7 +430,7 @@ export default function AivaCinematicCardStage({
       >
         
         {/* Stage Header: Active Theory Style High-Altitude Narrative Ribbon */}
-        <div className="max-w-6xl mx-auto w-full pt-1 sm:pt-3 text-center select-none shrink-0">
+        <div className="max-w-5xl mx-auto w-full pt-1 sm:pt-3 text-center select-none shrink-0">
           <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono tracking-widest uppercase text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-1 sm:mb-2">
             <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
             <span>MODULE {currentMeta.num} // {currentMeta.badge}</span>
@@ -462,445 +444,483 @@ export default function AivaCinematicCardStage({
           </h2>
         </div>
 
-        {/* Central Morphing Stage (3D Celestial Planet + Cosmic Glass Module) */}
-        <div className="flex-1 max-w-6xl mx-auto w-full flex flex-col lg:flex-row items-center justify-center gap-3 lg:gap-8 my-auto py-1 sm:py-3 overflow-hidden">
-          
-          {/* ── 1. The 3D Celestial Planet (Emerging Outside the Background) ── */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.6, y: 30 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full lg:w-[40%] flex flex-col items-center justify-center relative shrink-0"
-          >
-            <div className="w-[130px] h-[130px] sm:w-[190px] sm:h-[190px] lg:w-[360px] lg:h-[360px] relative">
-              <Aiva3DPlanet stageIndex={stageIndex} className="w-full h-full" />
-            </div>
+        {/* Central Morphing Stage (Card Emerging from Background like a Planet) */}
+        <div className="flex-1 max-w-5xl mx-auto w-full flex items-center justify-center my-auto py-2 sm:py-3 overflow-hidden">
+          <AnimatePresence mode="wait">
+            
+            {/* === STAGE 01: HERO AUDIO DEMO CARD === */}
+            {stageIndex === 0 && (
+              <motion.div
+                key="stage-01"
+                variants={PLANETARY_CARD_TRANSITION}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="w-full max-w-xl mx-auto relative"
+              >
+                <PlanetaryAtmosphereAura />
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-4 sm:p-7 shadow-[0_0_80px_rgba(230,92,142,0.24)] bg-gradient-to-b from-[#180A15]/90 via-[#0E050D]/90 to-[#120710]/90 backdrop-blur-2xl">
+                  {/* Chassis Ribbon */}
+                  <div className="flex items-center justify-between pb-3 mb-3 sm:mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+                    <span className="flex items-center gap-2 text-[#EC89B5] font-semibold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
+                      AIVA APPARATUS // UNIT 01
+                    </span>
+                    <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
+                      LIVE AUDIO INGESTION CORE
+                    </span>
+                  </div>
 
-            {/* Planetary Sector HUD Bar */}
-            <div className="hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-mono tracking-widest uppercase text-white/50 border border-white/10 bg-black/40 backdrop-blur-xl mt-1 lg:mt-3 shadow-lg">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-ping" />
-              <span>AIVA PLANETARY NODE // {currentMeta.short} ORBIT [{stageIndex + 1}/7]</span>
-            </div>
-          </motion.div>
-
-          {/* ── 2. Interactive Cosmic Module Card ── */}
-          <div className="w-full lg:w-[60%] flex items-center justify-center">
-            <AnimatePresence mode="wait">
-              
-              {/* === STAGE 01: HERO AUDIO DEMO CARD === */}
-              {stageIndex === 0 && (
-                <motion.div
-                  key="stage-01"
-                  variants={COSMIC_STAR_TRANSITION}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  className="w-full max-w-xl mx-auto relative"
-                >
-                  <StardustAura />
-                  <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-6 shadow-[0_0_60px_rgba(230,92,142,0.22)] bg-[#120710]/80 backdrop-blur-2xl">
-                    {/* Chassis Ribbon */}
-                    <div className="flex items-center justify-between pb-2.5 mb-2.5 sm:mb-3.5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
-                      <span className="flex items-center gap-2 text-[#EC89B5] font-semibold">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
-                        AIVA APPARATUS // UNIT 01
-                      </span>
-                      <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
-                        LIVE AUDIO INGESTION CORE
-                      </span>
-                    </div>
-
-                    {/* Scenarios Switcher */}
-                    <div className="flex items-center justify-between gap-2 mb-2.5 sm:mb-3.5 pb-2 border-b border-white/[0.06]">
-                      <span className="font-mono text-xs uppercase tracking-wider text-[#EC89B5] font-bold">
-                        AIVA LIVE CALL DEMO
-                      </span>
-                      <div className="flex items-center gap-1 bg-black/40 p-1 rounded-xl border border-white/5 overflow-x-auto">
-                        {CALL_SCENARIOS.map((sc, idx) => (
-                          <button
-                            key={sc.id}
-                            onClick={() => {
-                              setScenarioIdx(idx);
-                              setCurrentLine(0);
-                              setIsPlayingAudio(true);
-                            }}
-                            className={`px-2.5 py-1 text-[10px] font-medium rounded-lg transition-all cursor-pointer whitespace-nowrap ${
-                              scenarioIdx === idx
-                                ? "bg-[#A66B8E] text-white font-semibold shadow-sm"
-                                : "text-white/40 hover:text-white"
-                            }`}
-                          >
-                            {sc.title}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Caller Bar */}
-                    <div className="p-2.5 sm:p-3 rounded-2xl bg-white/[0.02] border border-white/10 flex items-center justify-between mb-2.5 sm:mb-3.5">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-xl bg-[#A66B8E]/20 text-[#EC89B5] flex items-center justify-center font-bold">
-                          <PhoneCall size={14} className="animate-pulse" />
-                        </div>
-                        <div>
-                          <div className="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
-                            <span>Caller: {activeScenario.caller}</span>
-                            <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
-                              SAVED CLIENT
-                            </span>
-                          </div>
-                          <div className="text-[10px] text-white/50 font-mono">Line 1 • Direct AI Phone Assistant</div>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => {
-                          setCurrentLine(0);
-                          setIsPlayingAudio(true);
-                        }}
-                        className="p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/50 hover:text-white transition-colors cursor-pointer"
-                      >
-                        <RotateCcw size={12} />
-                      </button>
-                    </div>
-
-                    {/* Dialogue Feed */}
-                    <div className="space-y-2 min-h-[100px] max-h-[140px] sm:max-h-[160px] overflow-y-auto pr-1 scrollbar-none mb-2.5 sm:mb-3.5">
-                      {activeScenario.dialogue.slice(0, currentLine + 1).map((msg, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ opacity: 0, y: 6 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className={`flex gap-2 items-start ${
-                            msg.speaker === "aiva" ? "flex-row" : "flex-row-reverse"
+                  {/* Scenarios Switcher */}
+                  <div className="flex items-center justify-between gap-2 mb-3 sm:mb-4 pb-2.5 border-b border-white/[0.06]">
+                    <span className="font-mono text-xs uppercase tracking-wider text-[#EC89B5] font-bold">
+                      AIVA LIVE CALL DEMO
+                    </span>
+                    <div className="flex items-center gap-1 bg-black/40 p-1 rounded-xl border border-white/5 overflow-x-auto">
+                      {CALL_SCENARIOS.map((sc, idx) => (
+                        <button
+                          key={sc.id}
+                          onClick={() => {
+                            setScenarioIdx(idx);
+                            setCurrentLine(0);
+                            setIsPlayingAudio(true);
+                          }}
+                          className={`px-2.5 py-1 text-[10px] font-medium rounded-lg transition-all cursor-pointer whitespace-nowrap ${
+                            scenarioIdx === idx
+                              ? "bg-[#A66B8E] text-white font-semibold shadow-sm"
+                              : "text-white/40 hover:text-white"
                           }`}
                         >
-                          <div className={`w-5 h-5 rounded-lg flex items-center justify-center shrink-0 text-[10px] font-bold ${
-                            msg.speaker === "aiva" ? "bg-[#A66B8E] text-white" : "bg-white/10 text-white/70"
-                          }`}>
-                            {msg.speaker === "aiva" ? "A" : <User size={10} />}
-                          </div>
-                          <div className={`p-2 sm:p-2.5 rounded-2xl text-[11px] sm:text-xs max-w-[85%] leading-relaxed ${
-                            msg.speaker === "aiva"
-                              ? "bg-[#A66B8E]/15 border border-[#A66B8E]/30 text-white"
-                              : "bg-white/5 border border-white/10 text-white/80"
-                          }`}>
-                            {msg.text}
-                          </div>
-                        </motion.div>
+                          {sc.title}
+                        </button>
                       ))}
                     </div>
-
-                    {/* Booking Confirmation Output */}
-                    <div className="p-2.5 rounded-xl border border-emerald-500/30 bg-emerald-950/20 flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
-                        <span className="text-white font-medium text-[11px] sm:text-xs truncate">Booked: {activeScenario.service}</span>
-                      </div>
-                      <span className="font-mono text-emerald-400 font-bold shrink-0 ml-2 text-xs">{activeScenario.revenue}</span>
-                    </div>
-                  </TiltCard>
-                </motion.div>
-              )}
-
-              {/* === STAGE 02: 4-QUADRANT PROBLEM RESOLUTION CARDS === */}
-              {stageIndex === 1 && (
-                <motion.div
-                  key="stage-02"
-                  variants={COSMIC_STAR_TRANSITION}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  className="w-full max-w-xl relative"
-                >
-                  <StardustAura />
-                  <div className="grid sm:grid-cols-2 gap-2 sm:gap-2.5 max-h-[55vh] sm:max-h-[62vh] overflow-y-auto pr-1 scrollbar-none">
-                    {PROBLEMS.map((p) => {
-                      const Icon = p.icon;
-                      return (
-                        <TiltCard 
-                          key={p.title}
-                          className="rounded-2xl border border-white/15 p-3 sm:p-4 shadow-[0_0_35px_rgba(230,92,142,0.18)] bg-[#120710]/80 backdrop-blur-2xl flex flex-col justify-between"
-                        >
-                          <div>
-                            <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-white/[0.08] text-[9px] font-mono">
-                              <span className="flex items-center gap-1.5 text-[#EC89B5] font-semibold">
-                                <Icon size={11} />
-                                {p.category}
-                              </span>
-                              <span className="px-1.5 py-0.2 rounded bg-white/5 border border-white/10 text-white/50">
-                                {p.stat}
-                              </span>
-                            </div>
-
-                            <h4 className="text-xs sm:text-sm font-bold text-white tracking-tight mb-2 leading-snug">
-                              {p.title}
-                            </h4>
-
-                            <div className="space-y-1.5 mb-2">
-                              <div className="p-2 rounded-xl bg-red-950/20 border border-red-500/20 text-[10px] sm:text-[11px] text-white/70">
-                                <span className="font-mono text-[9px] text-red-400 uppercase font-semibold flex items-center gap-1 mb-0.5">
-                                  <span>✕</span> WITHOUT AIVA
-                                </span>
-                                <p className="line-clamp-2 leading-relaxed">{p.description}</p>
-                              </div>
-                              <div className="p-2 rounded-xl bg-[#E65C8E]/10 border border-[#E65C8E]/25 text-[10px] sm:text-[11px] text-white/90">
-                                <span className="font-mono text-[9px] text-[#ECA9B7] uppercase font-semibold flex items-center gap-1 mb-0.5">
-                                  <span>✓</span> THE AIVA FIX
-                                </span>
-                                <p className="line-clamp-2 leading-relaxed">{p.solution}</p>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="pt-1.5 border-t border-white/[0.06] flex items-center gap-1 flex-wrap">
-                            {p.tags.slice(0, 2).map((tag) => (
-                              <span 
-                                key={tag}
-                                className="px-1.5 py-0.5 rounded bg-white/[0.03] border border-white/10 text-[9px] font-mono text-white/60"
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        </TiltCard>
-                      );
-                    })}
-                  </div>
-                </motion.div>
-              )}
-
-              {/* === STAGE 03: CAPABILITY PARITY MATRIX (COMPARISON TABLE) === */}
-              {stageIndex === 2 && (
-                <motion.div
-                  key="stage-03"
-                  variants={COSMIC_STAR_TRANSITION}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  className="w-full max-w-xl relative"
-                >
-                  <StardustAura />
-                  <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-6 shadow-[0_0_60px_rgba(230,92,142,0.22)] bg-[#120710]/80 backdrop-blur-2xl">
-                    <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
-                      <span className="text-[#EC89B5] font-semibold">SYSTEM COMPARISON // UNIT 03</span>
-                      <span className="text-white/40">100+ Live Clinics</span>
-                    </div>
-
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left text-[11px] sm:text-xs min-w-[420px]">
-                        <thead>
-                          <tr className="border-b border-white/10 text-white/40 font-mono text-[9px] sm:text-[10px]">
-                            <th className="pb-2 font-normal">CAPABILITY</th>
-                            <th className="pb-2 font-normal">FRONT DESK</th>
-                            <th className="pb-2 font-semibold text-[#EC89B5]">AIVA VOICE AI</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-white/[0.06]">
-                          <tr>
-                            <td className="py-2 font-medium text-white">Hours</td>
-                            <td className="py-2 text-white/60">10 AM – 8 PM only</td>
-                            <td className="py-2 text-emerald-400 font-bold">✓ 24/7/365 Always On</td>
-                          </tr>
-                          <tr>
-                            <td className="py-2 font-medium text-white">Concurrency</td>
-                            <td className="py-2 text-white/60">1 caller (others busy)</td>
-                            <td className="py-2 text-emerald-400 font-bold">✓ Unlimited concurrent</td>
-                          </tr>
-                          <tr>
-                            <td className="py-2 font-medium text-white">Calendar Lock</td>
-                            <td className="py-2 text-white/60">Manual paper/CRM entry</td>
-                            <td className="py-2 text-emerald-400 font-bold">✓ Direct operatory lock</td>
-                          </tr>
-                          <tr>
-                            <td className="py-2 font-medium text-white">WhatsApp Slip</td>
-                            <td className="py-2 text-white/60">Only if remembered</td>
-                            <td className="py-2 text-emerald-400 font-bold">✓ Instant slip in 3.4s</td>
-                          </tr>
-                          <tr>
-                            <td className="py-2 font-medium text-white">Cost Structure</td>
-                            <td className="py-2 text-white/60">₹35k - ₹55k/mo + PF</td>
-                            <td className="py-2 text-emerald-400 font-bold">✓ Flat monthly plan</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </TiltCard>
-                </motion.div>
-              )}
-
-              {/* === STAGE 04: EXECUTIVE TELEMETRY CONSOLE (DASHBOARD) === */}
-              {stageIndex === 3 && (
-                <motion.div
-                  key="stage-04"
-                  variants={COSMIC_STAR_TRANSITION}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  className="w-full max-w-xl relative"
-                >
-                  <StardustAura />
-                  <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-5 shadow-[0_0_60px_rgba(230,92,142,0.22)] bg-[#120710]/80 backdrop-blur-2xl">
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
-                      <div className="p-2 rounded-xl bg-white/[0.02] border border-white/10">
-                        <span className="text-[9px] font-mono text-white/40 block">CALLS TODAY</span>
-                        <span className="text-base sm:text-xl font-bold font-mono text-white">48</span>
-                        <span className="text-[9px] text-emerald-400 font-mono block">100% captured</span>
-                      </div>
-                      <div className="p-2 rounded-xl bg-white/[0.02] border border-white/10">
-                        <span className="text-[9px] font-mono text-white/40 block">BOOKED REVENUE</span>
-                        <span className="text-base sm:text-xl font-bold font-mono text-emerald-400">₹1,84,200</span>
-                        <span className="text-[9px] text-white/50 font-mono block">18 bookings</span>
-                      </div>
-                      <div className="p-2 rounded-xl bg-white/[0.02] border border-white/10">
-                        <span className="text-[9px] font-mono text-white/40 block">HOURS SAVED</span>
-                        <span className="text-base sm:text-xl font-bold font-mono text-white">36.5 hrs</span>
-                        <span className="text-[9px] text-white/50 font-mono block">This week</span>
-                      </div>
-                      <div className="p-2 rounded-xl bg-white/[0.02] border border-white/10">
-                        <span className="text-[9px] font-mono text-white/40 block">FEEDBACK</span>
-                        <span className="text-base sm:text-xl font-bold font-mono text-pink-400">4.98/5</span>
-                        <span className="text-[9px] text-[#EC89B5] font-mono block">Positive score</span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
-                      <span className="text-[11px] font-mono font-bold text-white uppercase">Inbound Feed</span>
-                      <div className="flex items-center gap-1 bg-black/40 p-1 rounded-xl border border-white/5">
-                        <button 
-                          onClick={() => setDashTab("calls")} 
-                          className={`px-2 py-0.5 rounded text-[9px] font-mono cursor-pointer ${dashTab === "calls" ? "bg-[#E65C8E] text-white font-bold" : "text-white/40"}`}
-                        >
-                          Call Feed
-                        </button>
-                        <button 
-                          onClick={() => setDashTab("schedule")} 
-                          className={`px-2 py-0.5 rounded text-[9px] font-mono cursor-pointer ${dashTab === "schedule" ? "bg-[#E65C8E] text-white font-bold" : "text-white/40"}`}
-                        >
-                          Calendar
-                        </button>
-                        <button 
-                          onClick={() => setDashTab("crm")} 
-                          className={`px-2 py-0.5 rounded text-[9px] font-mono cursor-pointer ${dashTab === "crm" ? "bg-[#E65C8E] text-white font-bold" : "text-white/40"}`}
-                        >
-                          Memory
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="space-y-1.5 text-xs max-h-[140px] overflow-y-auto pr-1 scrollbar-none">
-                      <div className="p-2 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
-                        <div>
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-[9px] font-mono px-1 rounded bg-white/10 text-white/70">01</span>
-                            <span className="font-semibold text-white text-[11px]">Pooja Hegde +91 98450 23489</span>
-                          </div>
-                          <span className="text-white/50 text-[10px] font-mono block">
-                            Requested weekend slot with Dr. Anjali. Booked Sat 3:00 PM.
-                          </span>
-                        </div>
-                        <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 text-[9px] font-mono font-bold">
-                          BOOKED
-                        </span>
-                      </div>
-                      <div className="p-2 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
-                        <div>
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-[9px] font-mono px-1 rounded bg-white/10 text-white/70">02</span>
-                            <span className="font-semibold text-white text-[11px]">Rahul Nair +91 99001 89012</span>
-                          </div>
-                          <span className="text-white/50 text-[10px] font-mono block">
-                            Regular dental check-up with Dr. Varun. Booked Thu 5:30 PM.
-                          </span>
-                        </div>
-                        <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 text-[9px] font-mono font-bold">
-                          BOOKED
-                        </span>
-                      </div>
-                    </div>
-                  </TiltCard>
-                </motion.div>
-              )}
-
-              {/* === STAGE 05: 28-SECOND AUTONOMOUS LOOP === */}
-              {stageIndex === 4 && (
-                <motion.div
-                  key="stage-05"
-                  variants={COSMIC_STAR_TRANSITION}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  className="w-full max-w-xl relative"
-                >
-                  <StardustAura />
-                  <div className="grid grid-cols-2 gap-2 mb-2.5">
-                    {WORKFLOW_STEPS.map((s) => {
-                      const Icon = s.icon;
-                      return (
-                        <TiltCard key={s.step} className="p-2.5 rounded-2xl border border-white/15 bg-[#120710]/80 backdrop-blur-2xl flex flex-col justify-between shadow-[0_0_25px_rgba(230,92,142,0.15)]">
-                          <div>
-                            <div className="flex items-center justify-between pb-1 mb-1.5 border-b border-white/[0.06] text-[9px] font-mono text-white/40">
-                              <span>STEP {s.step}</span>
-                              <div className="w-5 h-5 rounded-md flex items-center justify-center border border-white/10" style={{ background: `${s.color}15`, color: s.color }}>
-                                <Icon size={11} />
-                              </div>
-                            </div>
-                            <h4 className="text-[11px] sm:text-xs font-bold text-white mb-0.5 leading-snug">{s.title}</h4>
-                            <p className="text-[10px] text-white/60 font-light mb-1 line-clamp-2 leading-relaxed">{s.desc}</p>
-                          </div>
-                          <div className="pt-1 border-t border-white/[0.06] flex items-center justify-between text-[9px] font-mono">
-                            <span className="text-white/40">RESULT</span>
-                            <span className="text-emerald-400 font-bold">✓ {s.metric}</span>
-                          </div>
-                        </TiltCard>
-                      );
-                    })}
                   </div>
 
-                  <TiltCard className="p-2.5 sm:p-3 rounded-2xl border border-white/15 bg-[#120710]/85 backdrop-blur-2xl shadow-[0_0_30px_rgba(230,92,142,0.18)]">
-                    <div className="flex items-center justify-between gap-3">
-                      <div>
-                        <div className="inline-flex items-center gap-1 px-2 py-0.2 rounded-full text-[9px] font-mono text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-0.5">
-                          <ShieldCheck size={10} className="text-[#EC89B5]" />
-                          <span>GUARANTEE</span>
-                        </div>
-                        <h4 className="text-xs font-bold text-white">Give staff their time back.</h4>
-                        <p className="text-[10px] text-white/60 leading-relaxed">No phone distractions during in-person care.</p>
+                  {/* Caller Bar */}
+                  <div className="p-3 sm:p-3.5 rounded-2xl bg-white/[0.02] border border-white/10 flex items-center justify-between mb-3 sm:mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-[#A66B8E]/20 text-[#EC89B5] flex items-center justify-center font-bold">
+                        <PhoneCall size={15} className="animate-pulse" />
                       </div>
-                      <div className="flex items-center gap-3 shrink-0 text-center border-l border-white/10 pl-3">
-                        <div>
-                          <span className="text-sm font-bold font-mono text-emerald-400">3.8x</span>
-                          <span className="text-[8px] text-white/50 font-mono block">ROI Boost</span>
+                      <div>
+                        <div className="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+                          <span>Caller: {activeScenario.caller}</span>
+                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
+                            SAVED CLIENT
+                          </span>
                         </div>
-                        <div>
-                          <span className="text-sm font-bold font-mono text-white">0</span>
-                          <span className="text-[8px] text-emerald-400 font-mono block">Missed</span>
-                        </div>
+                        <div className="text-[11px] text-white/50 font-mono">Line 1 • Direct AI Phone Assistant</div>
                       </div>
                     </div>
-                  </TiltCard>
-                </motion.div>
-              )}
+                    <button
+                      onClick={() => {
+                        setCurrentLine(0);
+                        setIsPlayingAudio(true);
+                      }}
+                      className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/50 hover:text-white transition-colors cursor-pointer"
+                    >
+                      <RotateCcw size={13} />
+                    </button>
+                  </div>
 
-              {/* === STAGE 06: FINANCIAL RECOVERY ENGINE (ROI SLIDER) === */}
-              {stageIndex === 5 && (
-                <motion.div
-                  key="stage-06"
-                  variants={COSMIC_STAR_TRANSITION}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  className="w-full max-w-xl relative"
-                >
-                  <StardustAura />
-                  <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-6 shadow-[0_0_60px_rgba(230,92,142,0.22)] bg-[#120710]/80 backdrop-blur-2xl">
-                    <div className="flex items-center justify-between pb-2 mb-3 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
-                      <span className="text-[#EC89B5] font-semibold">VALUE SIMULATOR // UNIT 06</span>
-                      <span className="text-white/40">ROI ENGINE</span>
+                  {/* Dialogue Feed */}
+                  <div className="space-y-2.5 min-h-[120px] max-h-[170px] overflow-y-auto pr-1 scrollbar-none mb-3 sm:mb-4">
+                    {activeScenario.dialogue.slice(0, currentLine + 1).map((msg, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={`flex gap-2.5 items-start ${
+                          msg.speaker === "aiva" ? "flex-row" : "flex-row-reverse"
+                        }`}
+                      >
+                        <div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 text-[10px] font-bold ${
+                          msg.speaker === "aiva" ? "bg-[#A66B8E] text-white" : "bg-white/10 text-white/70"
+                        }`}>
+                          {msg.speaker === "aiva" ? "A" : <User size={11} />}
+                        </div>
+                        <div className={`p-2.5 sm:p-3 rounded-2xl text-xs max-w-[85%] leading-relaxed ${
+                          msg.speaker === "aiva"
+                            ? "bg-[#A66B8E]/15 border border-[#A66B8E]/30 text-white"
+                            : "bg-white/5 border border-white/10 text-white/80"
+                        }`}>
+                          {msg.text}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* Booking Confirmation Output */}
+                  <div className="p-3 rounded-xl border border-emerald-500/30 bg-emerald-950/20 flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 size={15} className="text-emerald-400 shrink-0" />
+                      <span className="text-white font-medium truncate">Appointment Booked: {activeScenario.service}</span>
+                    </div>
+                    <span className="font-mono text-emerald-400 font-bold shrink-0 ml-2">{activeScenario.revenue}</span>
+                  </div>
+                </TiltCard>
+              </motion.div>
+            )}
+
+            {/* === STAGE 02: 4-QUADRANT PROBLEM RESOLUTION CARDS === */}
+            {stageIndex === 1 && (
+              <motion.div
+                key="stage-02"
+                variants={PLANETARY_CARD_TRANSITION}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="w-full max-w-5xl relative"
+              >
+                <PlanetaryAtmosphereAura />
+                <div className="grid sm:grid-cols-2 gap-3 sm:gap-4 max-h-[64vh] overflow-y-auto sm:overflow-visible pr-1 sm:pr-0 scrollbar-none">
+                  {PROBLEMS.map((p) => {
+                    const Icon = p.icon;
+                    return (
+                      <TiltCard 
+                        key={p.title}
+                        className="rounded-2xl border border-white/15 p-4 sm:p-5 shadow-[0_0_50px_rgba(230,92,142,0.2)] bg-gradient-to-b from-[#180A15]/90 to-[#0E050D]/90 backdrop-blur-2xl flex flex-col justify-between"
+                      >
+                        <div>
+                          {/* Header Ribbon */}
+                          <div className="flex items-center justify-between pb-2 mb-2 sm:mb-3 border-b border-white/[0.08] text-[10px] font-mono">
+                            <span className="flex items-center gap-1.5 text-[#EC89B5] font-semibold">
+                              <Icon size={12} />
+                              {p.category}
+                            </span>
+                            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/50">
+                              {p.stat} · {p.statLabel}
+                            </span>
+                          </div>
+
+                          <h4 className="text-sm sm:text-base font-bold text-white tracking-tight mb-2">
+                            {p.title}
+                          </h4>
+
+                          {/* Friction vs Advantage Blocks */}
+                          <div className="space-y-2 mb-3">
+                            <div className="p-2.5 rounded-xl bg-red-950/20 border border-red-500/20 text-xs text-white/70">
+                              <span className="font-mono text-[10px] text-red-400 uppercase font-semibold flex items-center gap-1 mb-0.5">
+                                <span>✕</span> THE FRICTION · WITHOUT AIVA
+                              </span>
+                              <p className="line-clamp-2 leading-relaxed text-white/70">{p.description}</p>
+                            </div>
+                            <div className="p-2.5 rounded-xl bg-[#E65C8E]/10 border border-[#E65C8E]/25 text-xs text-white/90">
+                              <span className="font-mono text-[10px] text-[#ECA9B7] uppercase font-semibold flex items-center gap-1 mb-0.5">
+                                <span>✓</span> THE AIVA ADVANTAGE
+                              </span>
+                              <p className="line-clamp-2 leading-relaxed text-white/90">{p.solution}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Bottom Feature Tags */}
+                        <div className="pt-2 border-t border-white/[0.06] flex items-center gap-1.5 flex-wrap">
+                          {p.tags.map((tag) => (
+                            <span 
+                              key={tag}
+                              className="px-2 py-0.5 rounded-md bg-white/[0.03] border border-white/10 text-[10px] font-mono text-white/60"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </TiltCard>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
+
+            {/* === STAGE 03: CAPABILITY PARITY MATRIX (COMPARISON TABLE) === */}
+            {stageIndex === 2 && (
+              <motion.div
+                key="stage-03"
+                variants={PLANETARY_CARD_TRANSITION}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="w-full max-w-4xl relative"
+              >
+                <PlanetaryAtmosphereAura />
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-5 sm:p-8 shadow-[0_0_80px_rgba(230,92,142,0.24)] bg-gradient-to-b from-[#180A15]/90 to-[#0E050D]/90 backdrop-blur-2xl">
+                  <div className="flex items-center justify-between pb-3 mb-4 sm:mb-5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+                    <span className="text-[#EC89B5] font-semibold">SYSTEM COMPARISON // UNIT 03</span>
+                    <span className="text-white/40">Validated on 100+ Live Deployments</span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs sm:text-sm min-w-[520px]">
+                      <thead>
+                        <tr className="border-b border-white/10 text-white/40 font-mono text-[10px] sm:text-[11px]">
+                          <th className="pb-3 font-normal">CORE CAPABILITY</th>
+                          <th className="pb-3 font-normal">HUMAN FRONT DESK</th>
+                          <th className="pb-3 font-normal">TRADITIONAL CALL CENTER</th>
+                          <th className="pb-3 font-semibold text-[#EC89B5]">AIVA VOICE AI</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/[0.06]">
+                        <tr>
+                          <td className="py-3 font-medium text-white">Hours of Operation</td>
+                          <td className="py-3 text-white/60">10:00 AM – 8:00 PM only</td>
+                          <td className="py-3 text-white/60">24/7 (Expensive add-on)</td>
+                          <td className="py-3 text-emerald-400 font-bold">✓ 24/7/365 without overtime</td>
+                        </tr>
+                        <tr>
+                          <td className="py-3 font-medium text-white">Simultaneous Call Capacity</td>
+                          <td className="py-3 text-white/60">1 caller (others get busy tone)</td>
+                          <td className="py-3 text-white/60">Long wait & hold queues</td>
+                          <td className="py-3 text-emerald-400 font-bold">✓ Unlimited concurrent lines</td>
+                        </tr>
+                        <tr>
+                          <td className="py-3 font-medium text-white">Direct Calendar & Buffer Sync</td>
+                          <td className="py-3 text-white/60">Manual paper/CRM entry</td>
+                          <td className="py-3 text-white/60">Takes message, can't lock slots</td>
+                          <td className="py-3 text-emerald-400 font-bold">✓ Direct slot & operatory lock</td>
+                        </tr>
+                        <tr>
+                          <td className="py-3 font-medium text-white">WhatsApp Confirmation & UPI</td>
+                          <td className="py-3 text-white/60">Only if staff remembers</td>
+                          <td className="py-3 text-white/60">No text / WhatsApp routing</td>
+                          <td className="py-3 text-emerald-400 font-bold">✓ Instant WhatsApp slip in 3.4s</td>
+                        </tr>
+                        <tr>
+                          <td className="py-3 font-medium text-white">Cost Structure</td>
+                          <td className="py-3 text-white/60">₹35,000 – ₹55,000/mo + PF/ESI</td>
+                          <td className="py-3 text-white/60">Per-minute charges + setup fee</td>
+                          <td className="py-3 text-emerald-400 font-bold">✓ Predictable flat monthly plan</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </TiltCard>
+              </motion.div>
+            )}
+
+            {/* === STAGE 04: EXECUTIVE TELEMETRY CONSOLE (DASHBOARD) === */}
+            {stageIndex === 3 && (
+              <motion.div
+                key="stage-04"
+                variants={PLANETARY_CARD_TRANSITION}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="w-full max-w-4xl relative"
+              >
+                <PlanetaryAtmosphereAura />
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-4 sm:p-7 shadow-[0_0_80px_rgba(230,92,142,0.24)] bg-gradient-to-b from-[#180A15]/90 to-[#0E050D]/90 backdrop-blur-2xl">
+                  {/* Top 4 Metrics */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 mb-4 sm:mb-5">
+                    <div className="p-2.5 sm:p-3 rounded-xl bg-white/[0.02] border border-white/10">
+                      <span className="text-[9px] sm:text-[10px] font-mono text-white/40 block">CALLS TODAY</span>
+                      <span className="text-lg sm:text-2xl font-bold font-mono text-white">48</span>
+                      <span className="text-[9px] sm:text-[10px] text-emerald-400 font-mono block">100% answered • 0 missed</span>
+                    </div>
+                    <div className="p-2.5 sm:p-3 rounded-xl bg-white/[0.02] border border-white/10">
+                      <span className="text-[9px] sm:text-[10px] font-mono text-white/40 block">BOOKED REVENUE</span>
+                      <span className="text-lg sm:text-2xl font-bold font-mono text-emerald-400">₹1,84,200</span>
+                      <span className="text-[9px] sm:text-[10px] text-white/50 font-mono block">18 appointments</span>
+                    </div>
+                    <div className="p-2.5 sm:p-3 rounded-xl bg-white/[0.02] border border-white/10">
+                      <span className="text-[9px] sm:text-[10px] font-mono text-white/40 block">HOURS SAVED</span>
+                      <span className="text-lg sm:text-2xl font-bold font-mono text-white">36.5 hrs</span>
+                      <span className="text-[9px] text-white/50 font-mono block">This week alone</span>
+                    </div>
+                    <div className="p-2.5 sm:p-3 rounded-xl bg-white/[0.02] border border-white/10">
+                      <span className="text-[9px] sm:text-[10px] font-mono text-white/40 block">FEEDBACK</span>
+                      <span className="text-lg sm:text-2xl font-bold font-mono text-pink-400">4.98/5</span>
+                      <span className="text-[9px] sm:text-[10px] text-[#EC89B5] font-mono block">Positive caller ratings</span>
+                    </div>
+                  </div>
+
+                  {/* Tab Selector */}
+                  <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-white/10">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-mono font-bold text-white uppercase">Inbound Call Feed</span>
+                      <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-pink-500/20 text-[#EC89B5] border border-pink-500/30">
+                        Live Feed
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 bg-black/40 p-1 rounded-xl border border-white/5">
+                      <button 
+                        onClick={() => setDashTab("calls")} 
+                        className={`px-3 py-1 rounded-lg text-[10px] font-mono cursor-pointer transition-colors ${dashTab === "calls" ? "bg-[#E65C8E] text-white font-bold" : "text-white/40 hover:text-white"}`}
+                      >
+                        Call Feed
+                      </button>
+                      <button 
+                        onClick={() => setDashTab("schedule")} 
+                        className={`px-3 py-1 rounded-lg text-[10px] font-mono cursor-pointer transition-colors ${dashTab === "schedule" ? "bg-[#E65C8E] text-white font-bold" : "text-white/40 hover:text-white"}`}
+                      >
+                        Calendar
+                      </button>
+                      <button 
+                        onClick={() => setDashTab("crm")} 
+                        className={`px-3 py-1 rounded-lg text-[10px] font-mono cursor-pointer transition-colors ${dashTab === "crm" ? "bg-[#E65C8E] text-white font-bold" : "text-white/40 hover:text-white"}`}
+                      >
+                        Customer Notes
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Tab Feed Content */}
+                  <div className="space-y-2 text-xs max-h-[160px] overflow-y-auto pr-1 scrollbar-none">
+                    <div className="p-2.5 sm:p-3 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/10 text-white/70">01</span>
+                          <span className="font-semibold text-white">Pooja Hegde +91 98450 23489</span>
+                          <span className="text-white/40 text-[11px] font-mono hidden sm:inline">• HydraFacial & Skin Rejuvenation</span>
+                        </div>
+                        <span className="text-white/50 text-[11px] font-mono block mt-1">
+                          Summary: Requested weekend slot with Dr. Anjali. Offered Saturday 3:00 PM. Confirmed, WhatsApp slip sent.
+                        </span>
+                      </div>
+                      <div className="text-right shrink-0 ml-2">
+                        <span className="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 text-[10px] font-mono font-bold block">
+                          BOOKED (₹2,800)
+                        </span>
+                        <span className="text-[10px] text-white/40 font-mono">1m 18s</span>
+                      </div>
                     </div>
 
-                    <div className="space-y-3.5 mb-3">
+                    <div className="p-2.5 sm:p-3 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
                       <div>
-                        <div className="flex justify-between text-xs font-semibold text-white mb-1.5">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/10 text-white/70">02</span>
+                          <span className="font-semibold text-white">Rahul Nair +91 99001 89012</span>
+                          <span className="text-white/40 text-[11px] font-mono hidden sm:inline">• Consultation & Dental Scaling</span>
+                        </div>
+                        <span className="text-white/50 text-[11px] font-mono block mt-1">
+                          Summary: Returning regular client. Matched bi-weekly cadence with Dr. Varun. Booked Thursday 5:30 PM.
+                        </span>
+                      </div>
+                      <div className="text-right shrink-0 ml-2">
+                        <span className="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 text-[10px] font-mono font-bold block">
+                          BOOKED (₹1,500)
+                        </span>
+                        <span className="text-[10px] text-white/40 font-mono">48s</span>
+                      </div>
+                    </div>
+
+                    <div className="p-2.5 sm:p-3 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/10 text-white/70">03</span>
+                          <span className="font-semibold text-white">Claire Dubois +91 98860 34567</span>
+                          <span className="text-white/40 text-[11px] font-mono hidden sm:inline">• Hair Extension Consultation</span>
+                        </div>
+                        <span className="text-white/50 text-[11px] font-mono block mt-1">
+                          Summary: Asked about tape-in extension pricing. Booked a 15-minute consultation with Priya Sharma.
+                        </span>
+                      </div>
+                      <div className="text-right shrink-0 ml-2">
+                        <span className="px-2 py-0.5 rounded bg-blue-500/15 text-blue-400 text-[10px] font-mono font-bold block">
+                          CONSULT (₹3,200)
+                        </span>
+                        <span className="text-[10px] text-white/40 font-mono">2m 04s</span>
+                      </div>
+                    </div>
+                  </div>
+                </TiltCard>
+              </motion.div>
+            )}
+
+            {/* === STAGE 05: 28-SECOND AUTONOMOUS LOOP === */}
+            {stageIndex === 4 && (
+              <motion.div
+                key="stage-05"
+                variants={PLANETARY_CARD_TRANSITION}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="w-full max-w-5xl relative"
+              >
+                <PlanetaryAtmosphereAura />
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5 mb-3 sm:mb-4">
+                  {WORKFLOW_STEPS.map((s) => {
+                    const Icon = s.icon;
+                    return (
+                      <TiltCard key={s.step} className="p-3 sm:p-4 rounded-2xl border border-white/15 bg-gradient-to-b from-[#180A15]/90 to-[#0E050D]/90 backdrop-blur-2xl flex flex-col justify-between shadow-[0_0_40px_rgba(230,92,142,0.18)]">
+                        <div>
+                          <div className="flex items-center justify-between pb-2 mb-2 sm:mb-3 border-b border-white/[0.06] text-[9px] sm:text-[10px] font-mono text-white/40">
+                            <span>STEP {s.step} // {s.phase}</span>
+                            <div className="w-5 sm:w-6 h-5 sm:h-6 rounded-md flex items-center justify-center border border-white/10" style={{ background: `${s.color}15`, color: s.color }}>
+                              <Icon size={12} />
+                            </div>
+                          </div>
+                          <h4 className="text-xs sm:text-sm font-bold text-white mb-1 leading-snug">{s.title}</h4>
+                          <p className="text-[11px] sm:text-xs text-white/60 font-light mb-2.5 line-clamp-3 sm:line-clamp-none leading-relaxed">{s.desc}</p>
+                        </div>
+                        <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-[10px] sm:text-[11px] font-mono">
+                          <span className="text-white/40">RESULT</span>
+                          <span className="text-emerald-400 font-bold">✓ {s.metric}</span>
+                        </div>
+                      </TiltCard>
+                    );
+                  })}
+                </div>
+
+                {/* Staff Productivity Guarantee Card */}
+                <TiltCard className="p-4 sm:p-5 rounded-2xl border border-white/15 bg-gradient-to-b from-[#180A15]/95 to-[#0E050D]/95 backdrop-blur-2xl shadow-[0_0_50px_rgba(230,92,142,0.22)]">
+                  <div className="flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
+                    <div className="max-w-xl">
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[9px] font-mono text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-1.5">
+                        <ShieldCheck size={11} className="text-[#EC89B5]" />
+                        <span>STAFF PRODUCTIVITY GUARANTEE</span>
+                      </div>
+                      <h3 className="text-sm sm:text-lg font-bold text-white mb-1">
+                        Give your staff their time back. Not their patience.
+                      </h3>
+                      <p className="text-xs text-white/60 leading-relaxed">
+                        No more running across the salon floor or clinical operatory to grab the desk phone. Your team delivers 100% undistracted care to the clients and patients right in front of them.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-4 sm:gap-6 shrink-0 border-t md:border-t-0 md:border-l border-white/10 pt-2.5 md:pt-0 md:pl-6 text-center">
+                      <div>
+                        <span className="text-[9px] font-mono text-white/40 block">REVENUE ROI</span>
+                        <span className="text-base sm:text-xl font-bold font-mono text-emerald-400">3.8x</span>
+                        <span className="text-[9px] text-white/50 font-mono block">Average boost</span>
+                      </div>
+                      <div>
+                        <span className="text-[9px] font-mono text-white/40 block">MISSED CALLS</span>
+                        <span className="text-base sm:text-xl font-bold font-mono text-white">0</span>
+                        <span className="text-[9px] text-emerald-400 font-mono block">100% Captured</span>
+                      </div>
+                      <div>
+                        <span className="text-[9px] font-mono text-white/40 block">RETENTION</span>
+                        <span className="text-base sm:text-xl font-bold font-mono text-[#EC89B5]">94.6%</span>
+                        <span className="text-[9px] text-white/50 font-mono block">Top tier clinic</span>
+                      </div>
+                    </div>
+                  </div>
+                </TiltCard>
+              </motion.div>
+            )}
+
+            {/* === STAGE 06: FINANCIAL RECOVERY ENGINE (ROI SLIDER) === */}
+            {stageIndex === 5 && (
+              <motion.div
+                key="stage-06"
+                variants={PLANETARY_CARD_TRANSITION}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="w-full max-w-4xl relative"
+              >
+                <PlanetaryAtmosphereAura />
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-5 sm:p-8 shadow-[0_0_80px_rgba(230,92,142,0.24)] bg-gradient-to-b from-[#180A15]/90 to-[#0E050D]/90 backdrop-blur-2xl">
+                  <div className="flex items-center justify-between pb-3 mb-4 sm:mb-5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+                    <span className="text-[#EC89B5] font-semibold">AIVA APPARATUS // UNIT 06</span>
+                    <span className="text-white/40">VALUE SIMULATOR</span>
+                  </div>
+
+                  <div className="grid md:grid-cols-12 gap-5 sm:gap-6 items-center">
+                    <div className="md:col-span-7 space-y-4 sm:space-y-5">
+                      <div>
+                        <div className="flex justify-between text-xs font-semibold text-white mb-2">
                           <span>Inbound Calls Per Week</span>
                           <span className="font-mono text-[#EC89B5]">{weeklyCalls} calls/week</span>
                         </div>
@@ -911,13 +931,13 @@ export default function AivaCinematicCardStage({
                           step="10"
                           value={weeklyCalls}
                           onChange={(e) => setWeeklyCalls(Number(e.target.value))}
-                          className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#E65C8E]"
+                          className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#E65C8E]"
                         />
                       </div>
 
                       <div>
-                        <div className="flex justify-between text-xs font-semibold text-white mb-1.5">
-                          <span>Average Service Value</span>
+                        <div className="flex justify-between text-xs font-semibold text-white mb-2">
+                          <span>Average Booking / Service Value</span>
                           <span className="font-mono text-emerald-400">₹{averageTicket.toLocaleString("en-IN")}</span>
                         </div>
                         <input
@@ -927,82 +947,86 @@ export default function AivaCinematicCardStage({
                           step="100"
                           value={averageTicket}
                           onChange={(e) => setAverageTicket(Number(e.target.value))}
-                          className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-emerald-400"
+                          className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-emerald-400"
                         />
                       </div>
+
+                      <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 flex justify-between text-xs font-mono">
+                        <span>Missed Calls Saved: <strong className="text-white">{missedCallsMonthly}</strong>/mo</span>
+                        <span>Captured Appointments: <strong className="text-emerald-400">{recoveredBookings}</strong>/mo</span>
+                      </div>
                     </div>
 
-                    <div className="p-3 rounded-2xl border border-[#A66B8E]/30 text-center bg-gradient-to-br from-[#1D0A18]/90 to-[#0D050C]/90">
-                      <span className="text-[9px] font-mono uppercase tracking-wider text-white/50 block mb-0.5">
+                    <div className="md:col-span-5 p-5 rounded-2xl border border-[#A66B8E]/30 text-center bg-gradient-to-br from-[#1D0A18] to-[#0D050C] shadow-lg">
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-white/50 block mb-1">
                         ESTIMATED RECOVERED REVENUE
                       </span>
-                      <div className="text-xl sm:text-3xl font-black font-mono text-emerald-400 tracking-tight mb-1">
+                      <div className="text-2xl sm:text-3xl lg:text-4xl font-black font-mono text-emerald-400 tracking-tight mb-2">
                         +₹{recoveredRevenueMonthly.toLocaleString("en-IN")}
                       </div>
-                      <span className="text-[10px] font-mono text-white/50 block">Per month in previously lost revenue</span>
+                      <span className="text-[11px] font-mono text-white/50 block">Per month in previously lost revenue</span>
                     </div>
-                  </TiltCard>
-                </motion.div>
-              )}
+                  </div>
+                </TiltCard>
+              </motion.div>
+            )}
 
-              {/* === STAGE 07: ENTERPRISE GOVERNANCE MATRIX === */}
-              {stageIndex === 6 && (
-                <motion.div
-                  key="stage-07"
-                  variants={COSMIC_STAR_TRANSITION}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  className="w-full max-w-xl relative"
-                >
-                  <StardustAura />
-                  <div className="grid grid-cols-2 gap-2 mb-3">
-                    {GOVERNANCE_PILLARS.map((p, idx) => {
-                      const Icon = p.icon;
-                      return (
-                        <TiltCard key={p.title} className="p-2.5 rounded-2xl border border-white/15 bg-[#120710]/80 backdrop-blur-2xl flex flex-col justify-between shadow-[0_0_25px_rgba(230,92,142,0.15)]">
-                          <div>
-                            <div className="flex items-center justify-between pb-1 mb-1.5 border-b border-white/[0.06] text-[9px] font-mono text-white/40">
-                              <span>UNIT 07.{idx + 1}</span>
-                              <div className="w-5 h-5 rounded-md flex items-center justify-center border border-white/10" style={{ background: `${p.color}15`, color: p.color }}>
-                                <Icon size={11} />
-                              </div>
+            {/* === STAGE 07: ENTERPRISE GOVERNANCE MATRIX === */}
+            {stageIndex === 6 && (
+              <motion.div
+                key="stage-07"
+                variants={PLANETARY_CARD_TRANSITION}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="w-full max-w-5xl relative"
+              >
+                <PlanetaryAtmosphereAura />
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5 mb-4 sm:mb-5">
+                  {GOVERNANCE_PILLARS.map((p, idx) => {
+                    const Icon = p.icon;
+                    return (
+                      <TiltCard key={p.title} className="p-3 sm:p-4 rounded-2xl border border-white/15 bg-gradient-to-b from-[#180A15]/90 to-[#0E050D]/90 backdrop-blur-2xl flex flex-col justify-between shadow-[0_0_40px_rgba(230,92,142,0.18)]">
+                        <div>
+                          <div className="flex items-center justify-between pb-2 mb-2 sm:mb-3 border-b border-white/[0.06] text-[9px] sm:text-[10px] font-mono text-white/40">
+                            <span>UNIT 07.{idx + 1}</span>
+                            <div className="w-5 sm:w-6 h-5 sm:h-6 rounded-md flex items-center justify-center border border-white/10" style={{ background: `${p.color}15`, color: p.color }}>
+                              <Icon size={12} />
                             </div>
-                            <h4 className="text-xs font-bold text-white mb-0.5">{p.title}</h4>
-                            <p className="text-[10px] text-white/60 font-light mb-1 line-clamp-2 leading-relaxed">{p.desc}</p>
                           </div>
-                          <div className="pt-1 border-t border-white/[0.06] text-[9px] font-mono text-emerald-400">
-                            ✓ {p.telemetry}
-                          </div>
-                        </TiltCard>
-                      );
-                    })}
-                  </div>
+                          <h4 className="text-xs sm:text-sm font-bold text-white mb-1">{p.title}</h4>
+                          <p className="text-[11px] sm:text-xs text-white/60 font-light mb-2 line-clamp-3 sm:line-clamp-none leading-relaxed">{p.desc}</p>
+                        </div>
+                        <div className="pt-2 border-t border-white/[0.06] text-[9px] sm:text-[10px] font-mono text-emerald-400">
+                          ✓ {p.telemetry}
+                        </div>
+                      </TiltCard>
+                    );
+                  })}
+                </div>
 
-                  <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
-                    <button
-                      onClick={onOpenBookDemo}
-                      className="w-full sm:w-auto h-9 sm:h-10 px-4 sm:px-5 rounded-xl font-semibold text-xs text-white inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer hover:brightness-110 active:scale-95 shadow-[0_4px_18px_rgba(230,92,142,0.4)]"
-                      style={{
-                        background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
-                      }}
-                    >
-                      <span>Deploy Aiva On Your Line</span>
-                      <ArrowRight size={13} />
-                    </button>
-                    <button
-                      onClick={onOpenTestCall}
-                      className="w-full sm:w-auto h-9 sm:h-10 px-4 rounded-xl font-medium text-xs text-white/80 hover:text-white bg-white/5 border border-white/10 hover:border-white/20 transition-all cursor-pointer inline-flex items-center justify-center"
-                    >
-                      <span>Hear Live Demo</span>
-                    </button>
-                  </div>
-                </motion.div>
-              )}
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3">
+                  <button
+                    onClick={onOpenBookDemo}
+                    className="w-full sm:w-auto h-10 sm:h-11 px-5 sm:px-6 rounded-xl font-semibold text-xs text-white inline-flex items-center justify-center gap-2 transition-all cursor-pointer hover:brightness-110 active:scale-95 shadow-[0_4px_20px_rgba(230,92,142,0.4)]"
+                    style={{
+                      background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
+                    }}
+                  >
+                    <span>Deploy Aiva On Your Clinic Line</span>
+                    <ArrowRight size={14} />
+                  </button>
+                  <button
+                    onClick={onOpenTestCall}
+                    className="w-full sm:w-auto h-10 sm:h-11 px-4 sm:px-5 rounded-xl font-medium text-xs text-white/80 hover:text-white bg-white/5 border border-white/10 hover:border-white/20 transition-all cursor-pointer inline-flex items-center justify-center"
+                  >
+                    <span>Hear Live Audio Demo</span>
+                  </button>
+                </div>
+              </motion.div>
+            )}
 
-            </AnimatePresence>
-          </div>
-
+          </AnimatePresence>
         </div>
 
         {/* Stage Controller (Active Theory Floating Capsule) */}
@@ -1012,7 +1036,7 @@ export default function AivaCinematicCardStage({
             {/* Play/Pause Auto Tour */}
             <button
               onClick={() => setIsPlayingTour(!isPlayingTour)}
-              title={isPlayingTour ? "Pause Tour" : "Play Tour"}
+              title={isPlayingTour ? "Pause Cinematic Tour" : "Play Cinematic Tour"}
               className={`p-1.5 rounded-full transition-colors cursor-pointer ${
                 isPlayingTour ? "bg-[#E65C8E] text-white" : "text-white/40 hover:text-white hover:bg-white/10"
               }`}
