@@ -2,13 +2,12 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { 
   PhoneCall, 
-  Sparkles, 
   Calendar, 
   RotateCcw, 
   CheckCircle2, 
   ChevronRight, 
   User, 
-  Activity,
+  LayoutDashboard,
   Zap,
   Volume2
 } from "lucide-react";
@@ -105,7 +104,7 @@ export default function AivaHeroSection({ onOpenDemo }: AivaHeroSectionProps) {
         />
         <div 
           className="absolute bottom-[-15%] right-[10%] w-[50vw] h-[50vw] max-w-[650px] rounded-full blur-[160px] opacity-20"
-          style={{ background: "radial-gradient(circle, #6366F1 0%, rgba(99, 102, 241, 0.05) 60%, transparent 100%)" }}
+          style={{ background: "radial-gradient(circle, rgba(230, 92, 142, 0.25) 0%, rgba(230, 92, 142, 0.05) 60%, transparent 100%)" }}
         />
         <div 
           className="absolute inset-0 opacity-[0.03]"
@@ -127,15 +126,15 @@ export default function AivaHeroSection({ onOpenDemo }: AivaHeroSectionProps) {
             >
               {/* Badge */}
               <div 
-                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-8 border border-white/10"
-                style={{
-                  background: "rgba(166, 107, 142, 0.08)",
-                  boxShadow: "0 0 30px rgba(166, 107, 142, 0.15)",
-                }}
+                className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full mb-8 border border-[#E65C8E]/30 bg-[#E65C8E]/10"
               >
-                <Sparkles className="w-4 h-4 text-[#EC89B5]" />
-                <span className="text-xs font-semibold tracking-wider uppercase text-white/90">
-                  Aiva • The AI Receptionist for Growing Businesses
+                <span className="flex items-center gap-1 shrink-0">
+                  <span className="w-1 h-3 bg-[#E65C8E] rounded-full animate-pulse" />
+                  <span className="w-1 h-4 bg-[#E65C8E] rounded-full" />
+                  <span className="w-1 h-2.5 bg-[#E65C8E] rounded-full" />
+                </span>
+                <span className="text-[11px] font-mono tracking-widest uppercase text-[#ECA9B7] font-semibold">
+                  Aiva • 24/7 Autonomous Voice Receptionist
                 </span>
               </div>
 
@@ -146,7 +145,7 @@ export default function AivaHeroSection({ onOpenDemo }: AivaHeroSectionProps) {
               >
                 Never let another phone call <br />
                 <span 
-                  className="bg-clip-text text-transparent bg-gradient-to-r from-[#EC89B5] via-[#A66B8E] to-[#6366F1]"
+                  className="bg-clip-text text-transparent bg-gradient-to-r from-white/90 via-[#FCE7F3] to-[#E65C8E]"
                 >
                   go to voicemail.
                 </span>
@@ -178,7 +177,7 @@ export default function AivaHeroSection({ onOpenDemo }: AivaHeroSectionProps) {
                   className="px-7 py-4 rounded-xl font-medium text-base transition-colors duration-200 hover:bg-white/[0.08] active:opacity-90 w-full sm:w-auto text-white/90 hover:text-white border border-white/10 hover:border-white/20 flex items-center justify-center gap-2"
                   style={{ background: "rgba(255, 255, 255, 0.03)" }}
                 >
-                  <Activity size={18} className="text-[#EC89B5]" />
+                  <LayoutDashboard size={18} className="text-[#ECA9B7]" />
                   <span>View Dashboard Preview</span>
                 </a>
               </div>

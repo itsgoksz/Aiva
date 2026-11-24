@@ -49,7 +49,7 @@ const CALL_RECORDS = [
 const SCHEDULE_ITEMS = [
   { time: "09:30 AM", client: "Elena Vance", service: "HydraFacial Glow", staff: "Dr. Chloe", status: "Completed", color: "#10B981" },
   { time: "11:00 AM", client: "Marcus Brody", service: "Deep Conditioning + Trim", staff: "Dr. Anjali Rao", status: "In Progress", color: "#EC89B5" },
-  { time: "01:30 PM", client: "David Chen", service: "Full Balayage", staff: "Dr. Anjali Rao", status: "Upcoming", color: "#6366F1" },
+  { time: "01:30 PM", client: "David Chen", service: "Full Balayage", staff: "Dr. Anjali Rao", status: "Upcoming", color: "#EC89B5" },
   { time: "03:00 PM", client: "Aria Thorne", service: "Bridal Trial Consultation", staff: "Priya Sharma", status: "Upcoming", color: "#F59E0B" },
 ];
 
@@ -86,7 +86,7 @@ export default function AivaDashboardPreviewSection() {
       />
       <div 
         className="absolute bottom-10 right-0 w-[550px] h-[550px] rounded-full blur-[180px] pointer-events-none opacity-15"
-        style={{ background: "#6366F1" }}
+        style={{ background: "#A66B8E" }}
       />
 
       <div className="container mx-auto px-6 max-w-7xl relative z-10">
@@ -167,7 +167,7 @@ export default function AivaDashboardPreviewSection() {
           <div className="p-6 rounded-2xl border border-white/10 bg-[#0E060D] shadow-xl">
             <div className="flex items-center justify-between text-xs font-mono text-white/40 uppercase mb-2">
               <span>Hours Saved</span>
-              <Clock size={14} className="text-[#6366F1]" />
+              <Clock size={14} className="text-[#ECA9B7]" />
             </div>
             <div className="text-3xl sm:text-4xl font-bold font-mono text-white tracking-tight">36.5 hrs</div>
             <div className="text-xs text-white/50 font-mono mt-1">This week alone</div>

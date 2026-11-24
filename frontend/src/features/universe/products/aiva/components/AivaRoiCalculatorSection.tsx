@@ -19,15 +19,18 @@ export default function AivaRoiCalculatorSection() {
 
       <div className="container mx-auto px-6 max-w-6xl relative z-10">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase text-[#EC89B5] border border-[#A66B8E]/30 bg-[#A66B8E]/10 mb-4 font-mono">
-            Revenue Calculator
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[11px] font-mono tracking-widest uppercase text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
+            FINANCIAL IMPACT // REVENUE RECOVERY
           </div>
           <h2 
             className="text-3xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
             See what missed calls are costing you. <br />
-            <span className="text-white/40">And how quickly Aiva pays for itself.</span>
+            <span className="bg-gradient-to-r from-white/90 via-[#FCE7F3] to-[#E65C8E] bg-clip-text text-transparent">
+              And how quickly Aiva pays for itself.
+            </span>
           </h2>
           <p className="text-lg text-white/60 max-w-2xl mx-auto font-light leading-relaxed">
             Drag the sliders to match your typical weekly call volume and average booking value.
@@ -110,7 +113,7 @@ export default function AivaRoiCalculatorSection() {
               <div 
                 className="p-6 sm:p-8 rounded-3xl border border-[#A66B8E]/30 text-center relative overflow-hidden"
                 style={{
-                  background: "linear-gradient(135deg, rgba(166, 107, 142, 0.15) 0%, rgba(99, 102, 241, 0.1) 100%)",
+                  background: "linear-gradient(135deg, rgba(166, 107, 142, 0.20) 0%, rgba(230, 92, 142, 0.08) 100%)",
                 }}
               >
                 <div className="text-xs font-mono uppercase tracking-wider text-white/50 mb-2">

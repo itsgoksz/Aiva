@@ -50,7 +50,7 @@ const PILLARS: PillarItem[] = [
     title: "End-to-End Encrypted Data",
     desc: "Patient contact numbers, audio recordings, and medical notes are encrypted at rest and in transit. Your client data stays strictly yours.",
     icon: Lock,
-    color: "#6366F1",
+    color: "#E65C8E",
     telemetry: {
       badge: "AES-256 ENCRYPTED",
       detail: "DPDP & HIPAA Compliant Storage"

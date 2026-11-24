@@ -9,7 +9,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
-import { ArrowLeft, Sparkles, LogIn, LayoutDashboard } from "lucide-react";
+import { ArrowLeft, Calendar, LogIn, LayoutDashboard } from "lucide-react";
 import { useAuth } from "../../auth/AuthProvider";
 import { isAivaSubdomain } from "../../../lib/subdomain";
 import AivaHeroSection from "./aiva/components/AivaHeroSection";
@@ -235,7 +235,7 @@ export default function AivaProductPage() {
               className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-white transition-colors duration-200 cursor-pointer flex items-center gap-1.5 hover:bg-[#B882A2] active:opacity-90"
               style={{ backgroundColor: "#A66B8E", boxShadow: "0 4px 14px rgba(166, 107, 142, 0.35)" }}
             >
-              <Sparkles size={14} />
+              <Calendar size={14} />
               <span>Book a Demo</span>
             </button>
           </div>

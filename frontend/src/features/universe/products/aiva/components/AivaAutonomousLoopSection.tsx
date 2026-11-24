@@ -5,8 +5,7 @@ import {
   BrainCircuit,
   ShieldCheck,
   Check,
-  TrendingUp,
-  Sparkles
+  TrendingUp
 } from "lucide-react";
 
 interface StageItem {
@@ -63,7 +62,7 @@ const STAGES: StageItem[] = [
     metric: "3.4s",
     metricLabel: "Instant client delivery",
     icon: MessageSquare,
-    color: "#6366F1",
+    color: "#10B981",
     desc: "Dispatches an official branded WhatsApp slip with specialist doctor name, appointment time, Google Maps pin, and UPI advance token link before caller hangs up.",
     telemetry: {
       label: "WHATSAPP API",
@@ -197,7 +196,7 @@ export default function AivaAutonomousLoopSection() {
           <div className="grid lg:grid-cols-12 gap-8 items-center relative z-10">
             <div className="lg:col-span-7 space-y-3 text-left">
               <span className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold tracking-widest uppercase text-[#ECA9B7] bg-[#E65C8E]/15 px-3 py-1 rounded-full border border-[#E65C8E]/30">
-                <Sparkles size={12} />
+                <ShieldCheck size={12} />
                 STAFF PRODUCTIVITY GUARANTEE
               </span>
               <h3 

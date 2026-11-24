@@ -1,4 +1,4 @@
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, PhoneCall } from "lucide-react";
 import { Link } from "react-router-dom";
 import { isAivaSubdomain, getUniverseUrl } from "../../../../../lib/subdomain";
 
@@ -16,18 +16,18 @@ export default function AivaFinalCTASection({ onOpenDemo }: AivaFinalCTASectionP
         borderTop: "1px solid rgba(255, 255, 255, 0.04)"
       }}
     >
-      {/* High-fidelity ambient radial glow: silky smooth, zero GPU tile seam artifacts or route transition breaks */}
+      {/* High-fidelity ambient radial glow: velvet plum and rose (zero purple haze) */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse 900px 520px at 50% 50%, rgba(166, 107, 142, 0.22) 0%, rgba(99, 102, 241, 0.10) 45%, transparent 75%)",
+          background: "radial-gradient(ellipse 900px 520px at 50% 50%, rgba(230, 92, 142, 0.20) 0%, rgba(166, 107, 142, 0.06) 50%, transparent 75%)",
         }}
       />
 
       <div className="container mx-auto px-6 relative z-10 text-center max-w-4xl">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase text-[#EC89B5] border border-[#A66B8E]/30 bg-[#A66B8E]/10 mb-8 font-mono">
-          <Sparkles size={14} />
-          <span>Get Started Today</span>
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[11px] font-mono tracking-widest uppercase text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-8">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
+          <span>DEPLOYMENT READY // ZERO DISRUPTION</span>
         </div>
 
         <h2 
@@ -35,7 +35,9 @@ export default function AivaFinalCTASection({ onOpenDemo }: AivaFinalCTASectionP
           style={{ fontFamily: "'Space Grotesk', sans-serif" }}
         >
           Never let another client <br />
-          <span className="text-[#EC89B5]">hear a busy signal again.</span>
+          <span className="bg-gradient-to-r from-white/90 via-[#FCE7F3] to-[#E65C8E] bg-clip-text text-transparent">
+            hear a busy signal again.
+          </span>
         </h2>
 
         <p className="text-lg sm:text-xl text-white/60 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
