@@ -18,13 +18,11 @@ import CasaMotoArchitectureSection from "./casamoto/components/CasaMotoArchitect
 import CasaMotoFinalCTASection from "./casamoto/components/CasaMotoFinalCTASection";
 import CasaMotoDemoModal from "./casamoto/components/CasaMotoDemoModal";
 import CasaMotoFooter from "./casamoto/components/CasaMotoFooter";
-import ParticleField from "../components/ParticleField";
+import ProductAtmosphere from "./components/ProductAtmosphere";
 
 export default function CasaMotoProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const [showEnterTransition, setShowEnterTransition] = useState(true);
-  const progressRef = useRef(1); // Show fully formed constellation
-  const activeProductIndexRef = useRef<number | null>(3); // CasaMoto index
 
   // Scroll to top on mount & set color tokens
   useEffect(() => {
@@ -72,10 +70,12 @@ export default function CasaMotoProductPage() {
         )}
       </AnimatePresence>
 
-      {/* Background WebGL Particle Effect */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-35">
-        <ParticleField progressRef={progressRef} activeProductIndexRef={activeProductIndexRef} />
-      </div>
+      {/* Subtle Starfield & Product Atmosphere */}
+      <ProductAtmosphere 
+        accentColor="#FF6B00"
+        secondaryAccent="#FF8533"
+        bgBaseColor="#06080E"
+      />
 
       {/* Foreground Content */}
       <div style={{ position: "relative", zIndex: 10 }}>

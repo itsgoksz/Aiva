@@ -78,13 +78,13 @@ export default function PhilosophySection() {
 
         // Give each slide a dedicated "time window" in the scrub timeline
         const startTime = i * 3;
-        
+
         if (isFirst) {
           // First slide: already visible. Stays for a bit, then flies forward into camera
           // Using autoAlpha toggles visibility:hidden when 0 to completely purge from rendering tree
-          tl.to(slide, { 
-            autoAlpha: 0, 
-            scale: 1.4, 
+          tl.to(slide, {
+            autoAlpha: 0,
+            scale: 1.4,
             duration: 1.2,
             ease: 'power2.in'
           }, startTime + 1.2);
@@ -92,35 +92,35 @@ export default function PhilosophySection() {
           // Emerges gracefully with autoAlpha
           tl.fromTo(
             slide,
-            { 
-              autoAlpha: 0, 
-              scale: 0.7, 
-              y: 20 
+            {
+              autoAlpha: 0,
+              scale: 0.7,
+              y: 20
             },
-            { 
-              autoAlpha: 1, 
-              scale: 1.0, 
-              y: 0, 
+            {
+              autoAlpha: 1,
+              scale: 1.0,
+              y: 0,
               duration: 1.2,
               ease: 'power2.out'
             },
             startTime
           );
-          
+
           if (!isLast) {
             // Flies past camera cleanly before next slide begins (ends at startTime + 2.9; slide i+1 starts at startTime + 3.0)
-            tl.to(slide, { 
-              autoAlpha: 0, 
-              scale: 1.4, 
+            tl.to(slide, {
+              autoAlpha: 0,
+              scale: 1.4,
               duration: 0.9,
               ease: 'power2.in'
-            }, startTime + 2.0); 
+            }, startTime + 2.0);
           } else {
             // The final statement lands and slowly breathes
-            tl.to(slide, { 
-              scale: 1.04, 
-              duration: 2.0, 
-              ease: 'none' 
+            tl.to(slide, {
+              scale: 1.04,
+              duration: 2.0,
+              ease: 'none'
             }, startTime + 1.5);
           }
         }

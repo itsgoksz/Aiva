@@ -11,9 +11,9 @@ export default function AivaRoiCalculatorSection() {
   const hoursSavedMonthly = Math.round((monthlyCalls * 2.5) / 60);
 
   return (
-    <section className="py-28 relative overflow-hidden" style={{ backgroundColor: "#0A0508" }}>
+    <section className="py-28 relative overflow-hidden bg-transparent">
       <div 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full blur-[200px] pointer-events-none opacity-15"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] sm:w-[700px] h-[400px] sm:h-[500px] rounded-full blur-[140px] sm:blur-[200px] pointer-events-none opacity-30 sm:opacity-15"
         style={{ background: "#A66B8E" }}
       />
 

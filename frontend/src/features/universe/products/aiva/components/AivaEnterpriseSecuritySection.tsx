@@ -73,12 +73,12 @@ const PILLARS: PillarItem[] = [
 
 export default function AivaEnterpriseSecuritySection() {
   return (
-    <section className="py-24 relative overflow-hidden" style={{ backgroundColor: "#0A0508" }}>
+    <section className="py-24 relative overflow-hidden bg-transparent">
       {/* Subtle static ambient glow (Zero flicker) */}
       <div 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[450px] rounded-full pointer-events-none opacity-15"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] sm:w-[750px] h-[350px] sm:h-[450px] rounded-full pointer-events-none opacity-30 sm:opacity-15"
         style={{
-          background: "radial-gradient(ellipse at center, rgba(166, 107, 142, 0.25) 0%, transparent 70%)"
+          background: "radial-gradient(ellipse at center, rgba(230, 92, 142, 0.3) 0%, rgba(166, 107, 142, 0.15) 50%, transparent 75%)"
         }}
       />
 

@@ -17,6 +17,7 @@ import NammaHoodMissionsSection from "./namma-hood/components/NammaHoodMissionsS
 import NammaHoodFinalCTA from "./namma-hood/components/NammaHoodFinalCTA";
 import NammaHoodDemoModal from "./namma-hood/components/NammaHoodDemoModal";
 import NammaHoodFooter from "./namma-hood/components/NammaHoodFooter";
+import ProductAtmosphere from "./components/ProductAtmosphere";
 
 export default function NammaHoodProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
@@ -72,6 +73,13 @@ export default function NammaHoodProductPage() {
           />
         )}
       </AnimatePresence>
+
+      {/* Subtle Starfield & Product Atmosphere */}
+      <ProductAtmosphere 
+        accentColor="#10B981"
+        secondaryAccent="#34D399"
+        bgBaseColor="#060807"
+      />
 
       {/* Foreground Content */}
       <div style={{ position: "relative", zIndex: 10 }}>

@@ -78,14 +78,14 @@ export default function AivaDashboardPreviewSection() {
   const [activeTab, setActiveTab] = useState<"calls" | "schedule" | "crm">("calls");
 
   return (
-    <section id="dashboard-preview" className="py-28 relative overflow-hidden" style={{ backgroundColor: "#0A0508" }}>
+    <section id="dashboard-preview" className="py-28 relative overflow-hidden bg-transparent">
       {/* Background ambient lighting */}
       <div 
-        className="absolute top-1/3 left-0 w-[550px] h-[550px] rounded-full blur-[180px] pointer-events-none opacity-15"
+        className="absolute top-1/3 left-0 w-[550px] h-[550px] rounded-full blur-[180px] pointer-events-none opacity-25 sm:opacity-15"
         style={{ background: "#A66B8E" }}
       />
       <div 
-        className="absolute bottom-10 right-0 w-[550px] h-[550px] rounded-full blur-[180px] pointer-events-none opacity-15"
+        className="absolute bottom-10 right-0 w-[550px] h-[550px] rounded-full blur-[180px] pointer-events-none opacity-25 sm:opacity-15"
         style={{ background: "#A66B8E" }}
       />
 

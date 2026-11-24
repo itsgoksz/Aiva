@@ -18,6 +18,7 @@ import AirportDigitalTwinArchitectureSection from "./airport-digital-twin/compon
 import AirportDigitalTwinFinalCTA from "./airport-digital-twin/components/AirportDigitalTwinFinalCTA";
 import AirportDigitalTwinDemoModal from "./airport-digital-twin/components/AirportDigitalTwinDemoModal";
 import AirportDigitalTwinFooter from "./airport-digital-twin/components/AirportDigitalTwinFooter";
+import ProductAtmosphere from "./components/ProductAtmosphere";
 
 export default function AirportDigitalTwinProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
@@ -72,6 +73,13 @@ export default function AirportDigitalTwinProductPage() {
           />
         )}
       </AnimatePresence>
+
+      {/* Subtle Starfield & Product Atmosphere */}
+      <ProductAtmosphere 
+        accentColor="#00E5FF"
+        secondaryAccent="#33EBFF"
+        bgBaseColor="#050811"
+      />
 
       {/* Foreground Content */}
       <div style={{ position: "relative", zIndex: 10 }}>

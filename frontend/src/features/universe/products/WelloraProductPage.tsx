@@ -18,6 +18,7 @@ import WelloraArchitecture from "./wellora/components/WelloraArchitecture";
 import WelloraFinalCTA from "./wellora/components/WelloraFinalCTA";
 import WelloraDemoModal from "./wellora/components/WelloraDemoModal";
 import WelloraFooter from "./wellora/components/WelloraFooter";
+import ProductAtmosphere from "./components/ProductAtmosphere";
 
 export default function WelloraProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
@@ -73,6 +74,13 @@ export default function WelloraProductPage() {
           />
         )}
       </AnimatePresence>
+
+      {/* Subtle Starfield & Product Atmosphere */}
+      <ProductAtmosphere 
+        accentColor="#2ECC71"
+        secondaryAccent="#27AE60"
+        bgBaseColor="#060C08"
+      />
 
       {/* Foreground Content */}
       <div style={{ position: "relative", zIndex: 10 }}>

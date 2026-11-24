@@ -17,12 +17,10 @@ import EchoSecuritySection from './echo/components/EchoSecuritySection';
 import EchoFinalCTASection from './echo/components/EchoFinalCTASection';
 import EchoDemoModal from './echo/components/EchoDemoModal';
 import EchoFooter from './echo/components/EchoFooter';
-import ParticleField from '../components/ParticleField';
+import ProductAtmosphere from './components/ProductAtmosphere';
 
 export default function EchoProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
-  const progressRef = useRef(1); // Set to 1 to show the fully formed Constellation/Solar System
-  const activeProductIndexRef = useRef<number | null>(2); // Echo is index 2
 
   // Scroll to top on mount
   useEffect(() => {
@@ -64,10 +62,12 @@ export default function EchoProductPage() {
         }}
       />
 
-      {/* Background WebGL / Particle Effect */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-40">
-        <ParticleField progressRef={progressRef} activeProductIndexRef={activeProductIndexRef} />
-      </div>
+      {/* Subtle Starfield & Product Atmosphere */}
+      <ProductAtmosphere 
+        accentColor="#2DD4FF"
+        secondaryAccent="#60A5FA"
+        bgBaseColor="#050811"
+      />
 
       {/* Foreground Content */}
       <div style={{ position: 'relative', zIndex: 10 }}>

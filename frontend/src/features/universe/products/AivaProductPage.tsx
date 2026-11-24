@@ -22,6 +22,7 @@ import AivaFinalCTASection from "./aiva/components/AivaFinalCTASection";
 import AivaDemoModal from "./aiva/components/AivaDemoModal";
 import AivaBookDemoModal from "./aiva/components/AivaBookDemoModal";
 import AivaFooter from "./aiva/components/AivaFooter";
+import ProductAtmosphere from "./components/ProductAtmosphere";
 
 export default function AivaProductPage() {
   const [isBookDemoOpen, setIsBookDemoOpen] = useState(false);
@@ -90,6 +91,13 @@ export default function AivaProductPage() {
           />
         )}
       </AnimatePresence>
+
+      {/* Subtle Starfield & Celestial Product Atmosphere */}
+      <ProductAtmosphere 
+        accentColor="#A66B8E"
+        secondaryAccent="#E65C8E"
+        bgBaseColor="#0A0508"
+      />
 
       {/* Foreground Content */}
       <div style={{ position: "relative", zIndex: 10 }}>

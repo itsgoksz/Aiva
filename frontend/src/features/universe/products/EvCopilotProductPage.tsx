@@ -17,6 +17,7 @@ import EvCopilotArchitecture from "./ev-copilot/components/EvCopilotArchitecture
 import EvCopilotFinalCTA from "./ev-copilot/components/EvCopilotFinalCTA";
 import EvCopilotDemoModal from "./ev-copilot/components/EvCopilotDemoModal";
 import EvCopilotFooter from "./ev-copilot/components/EvCopilotFooter";
+import ProductAtmosphere from "./components/ProductAtmosphere";
 
 export default function EvCopilotProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
@@ -72,6 +73,13 @@ export default function EvCopilotProductPage() {
           />
         )}
       </AnimatePresence>
+
+      {/* Subtle Starfield & Product Atmosphere */}
+      <ProductAtmosphere 
+        accentColor="#6D5EF7"
+        secondaryAccent="#8B7CF8"
+        bgBaseColor="#070913"
+      />
 
       {/* Foreground Content */}
       <div style={{ position: "relative", zIndex: 10 }}>

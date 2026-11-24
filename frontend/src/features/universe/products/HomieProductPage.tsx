@@ -8,12 +8,10 @@ import HomieValueProposition from './homie/components/HomieValueProposition';
 import HomieFinalCTA from './homie/components/HomieFinalCTA';
 import HomieDemoModal from './homie/components/HomieDemoModal';
 import HomieFooter from './homie/components/HomieFooter';
-import ParticleField from '../components/ParticleField';
+import ProductAtmosphere from './components/ProductAtmosphere';
 
 export default function HomieProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
-  const progressRef = useRef(1); // Set to 1 to show the fully formed Constellation/Solar System
-  const activeProductIndexRef = useRef<number | null>(4); // Homie is index 4
 
   // Scroll to top on mount
   useEffect(() => {
@@ -55,10 +53,12 @@ export default function HomieProductPage() {
         }}
       />
 
-      {/* Background WebGL / Particle Effect */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-40">
-        <ParticleField progressRef={progressRef} activeProductIndexRef={activeProductIndexRef} />
-      </div>
+      {/* Subtle Starfield & Product Atmosphere */}
+      <ProductAtmosphere 
+        accentColor="#F5A623"
+        secondaryAccent="#FB923C"
+        bgBaseColor="#0B0907"
+      />
 
       <motion.div 
         className="fixed inset-0 z-0 pointer-events-none"

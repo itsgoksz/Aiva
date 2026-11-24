@@ -89,12 +89,12 @@ const STAGES: StageItem[] = [
 
 export default function AivaAutonomousLoopSection() {
   return (
-    <section className="py-24 relative overflow-hidden" style={{ backgroundColor: "#080306" }}>
+    <section className="py-24 relative overflow-hidden bg-transparent">
       {/* Static subtle background glow (Zero repaint jitter) */}
       <div 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[550px] rounded-full pointer-events-none opacity-20"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] sm:w-[850px] h-[400px] sm:h-[550px] rounded-full pointer-events-none opacity-35 sm:opacity-20"
         style={{
-          background: "radial-gradient(ellipse at center, rgba(166, 107, 142, 0.22) 0%, transparent 70%)"
+          background: "radial-gradient(ellipse at center, rgba(230, 92, 142, 0.35) 0%, rgba(166, 107, 142, 0.15) 50%, transparent 75%)"
         }}
       />
 

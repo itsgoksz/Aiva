@@ -14,17 +14,16 @@ export default function AivaFinalCTASection({ onOpenBookDemo, onOpenTestCall, on
   const handleTestCall = onOpenTestCall || onOpenDemo || (() => {});
   return (
     <section 
-      className="py-32 relative overflow-hidden" 
+      className="py-32 relative overflow-hidden bg-transparent" 
       style={{ 
-        backgroundColor: "#0A0508",
         borderTop: "1px solid rgba(255, 255, 255, 0.04)"
       }}
     >
-      {/* High-fidelity ambient radial glow: velvet plum and rose (zero purple haze) */}
+      {/* High-fidelity ambient radial glow: velvet plum and rose */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse 900px 520px at 50% 50%, rgba(230, 92, 142, 0.20) 0%, rgba(166, 107, 142, 0.06) 50%, transparent 75%)",
+          background: "radial-gradient(ellipse 900px 520px at 50% 50%, rgba(230, 92, 142, 0.28) 0%, rgba(166, 107, 142, 0.10) 50%, transparent 75%)",
         }}
       />
 

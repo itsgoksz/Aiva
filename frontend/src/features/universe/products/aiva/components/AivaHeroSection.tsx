@@ -99,23 +99,17 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-28 pb-20 overflow-hidden" style={{ backgroundColor: "#0A0508" }}>
-      {/* Velvet Rose & Indigo Ambient Glows */}
+    <section className="relative min-h-screen flex items-center justify-center pt-28 pb-20 overflow-hidden bg-transparent">
+      {/* Velvet Rose & Indigo Ambient Glows (Mobile-centered + Desktop lateral) */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+        {/* Primary Hero Ambient Aura: centered on mobile, lateral on desktop */}
         <div 
-          className="absolute top-[-10%] left-[15%] w-[60vw] h-[60vw] max-w-[750px] rounded-full blur-[170px] opacity-25"
-          style={{ background: "radial-gradient(circle, #A66B8E 0%, rgba(166, 107, 142, 0.08) 60%, transparent 100%)" }}
+          className="absolute -top-[12%] sm:top-[-10%] left-1/2 sm:left-[15%] -translate-x-1/2 sm:translate-x-0 w-[125vw] sm:w-[60vw] h-[95vw] sm:h-[60vw] max-w-[750px] rounded-full blur-[80px] sm:blur-[170px] opacity-45 sm:opacity-25"
+          style={{ background: "radial-gradient(circle, #E65C8E 0%, rgba(166, 107, 142, 0.25) 50%, transparent 80%)" }}
         />
         <div 
-          className="absolute bottom-[-15%] right-[10%] w-[50vw] h-[50vw] max-w-[650px] rounded-full blur-[160px] opacity-20"
-          style={{ background: "radial-gradient(circle, rgba(230, 92, 142, 0.25) 0%, rgba(230, 92, 142, 0.05) 60%, transparent 100%)" }}
-        />
-        <div 
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: "radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px)",
-            backgroundSize: "36px 36px",
-          }}
+          className="absolute bottom-[-15%] right-[10%] w-[50vw] h-[50vw] max-w-[650px] rounded-full blur-[160px] opacity-25"
+          style={{ background: "radial-gradient(circle, rgba(230, 92, 142, 0.35) 0%, rgba(230, 92, 142, 0.08) 60%, transparent 100%)" }}
         />
       </div>
 
