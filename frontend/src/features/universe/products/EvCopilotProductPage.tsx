@@ -18,6 +18,7 @@ import EvCopilotFinalCTA from "./ev-copilot/components/EvCopilotFinalCTA";
 import EvCopilotDemoModal from "./ev-copilot/components/EvCopilotDemoModal";
 import EvCopilotFooter from "./ev-copilot/components/EvCopilotFooter";
 import ProductAtmosphere from "./components/ProductAtmosphere";
+import ProductCinematicCardStage from "./components/ProductCinematicCardStage";
 
 export default function EvCopilotProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
@@ -187,9 +188,15 @@ export default function EvCopilotProductPage() {
         {/* Master Product Sections */}
         <main>
           <EvCopilotHeroSection onOpenDemo={() => setIsDemoModalOpen(true)} />
-          <EvCopilotProblemSection />
-          <EvCopilotCockpitPreviewSection />
-          <EvCopilotArchitecture />
+          <ProductCinematicCardStage
+            accentColor="#6D5EF7"
+            planetOffset={1}
+            stages={[
+              { id: "problem", short: "REALITY", content: <EvCopilotProblemSection /> },
+              { id: "cockpit", short: "COCKPIT", content: <EvCopilotCockpitPreviewSection /> },
+              { id: "architecture", short: "ENGINE", content: <EvCopilotArchitecture /> },
+            ]}
+          />
           <EvCopilotFinalCTA onOpenDemo={() => setIsDemoModalOpen(true)} />
         </main>
 

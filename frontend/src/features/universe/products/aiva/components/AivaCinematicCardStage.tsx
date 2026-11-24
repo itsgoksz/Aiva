@@ -274,21 +274,33 @@ const DESKTOP_BOUNDS = buildNormalizedBounds(DESKTOP_STAGE_WEIGHTS);
 function mapProgressToStage(latest: number, isMobile: boolean) {
   const bounds = isMobile ? MOBILE_BOUNDS : DESKTOP_BOUNDS;
   const clamped = Math.max(0, Math.min(0.999999, latest));
+  const lastIdx = bounds.length - 1;
   for (let i = 0; i < bounds.length; i++) {
     const { start, end } = bounds[i];
-    if (clamped >= start && (clamped < end || i === bounds.length - 1)) {
+    if (clamped >= start && (clamped < end || i === lastIdx)) {
       const frac = Math.max(0, Math.min(1, (clamped - start) / (end - start)));
-      // Camera holds steadily on Planet i during reading, then flies to Planet i+1 (76% -> 100%)
+      const entryEnd = i === 0 ? 0 : 0.14;
+      const exitStart = i === lastIdx ? 1 : 0.78;
+
+      // Card is visible only while docked on Planet i; disappears symmetrically during
+      // interplanetary camera flights ([0..0.14] arriving, [0.78..1.0] departing)
+      const isCardVisible = frac >= entryEnd && frac <= exitStart;
+
       let floatStage = i;
-      if (i < bounds.length - 1 && frac > 0.76) {
-        const t = (frac - 0.76) / 0.24;
+      if (i > 0 && frac < entryEnd) {
+        const t = frac / entryEnd;
         const eased = t * t * (3 - 2 * t);
-        floatStage = i + eased;
+        floatStage = i - 0.5 + 0.5 * eased;
+      } else if (i < lastIdx && frac > exitStart) {
+        const t = (frac - exitStart) / (1 - exitStart);
+        const eased = t * t * (3 - 2 * t);
+        floatStage = i + 0.5 * eased;
       }
-      return { stageIndex: i, panProgress: 0, floatStage };
+
+      return { stageIndex: i, isCardVisible, panProgress: 0, floatStage };
     }
   }
-  return { stageIndex: 0, panProgress: 0, floatStage: 0 };
+  return { stageIndex: 0, isCardVisible: true, panProgress: 0, floatStage: 0 };
 }
 
 // ─── MAIN CINEMATIC CARD STAGE ───────────────────────────────
@@ -306,8 +318,10 @@ export default function AivaCinematicCardStage(
   const stageInnerRef = useRef<HTMLDivElement>(null);
   const panProgressRef = useRef<number>(0);
 
-  // Active Stage Index (0 to 6) + Continuous Float Index for Namma Universe Camera Flight
+  // Active Stage Index (0 to 5) + Visibility Flag + Continuous Float Index for Planet Flight
   const [stageIndex, setStageIndex] = useState(0);
+  const [isCardVisible, setIsCardVisible] = useState(true);
+  const prevVisibleRef = useRef(true);
   const floatStageRef = useRef<number>(0);
   // Direction: 0 = initial zoom from deep space, 1 = forward orbit, -1 = backward orbit
   const [direction, setDirection] = useState(0);
@@ -350,8 +364,9 @@ export default function AivaCinematicCardStage(
       const rect = containerRef.current.getBoundingClientRect();
       const containerTop = window.scrollY + rect.top;
       const scrollable = Math.max(1, containerRef.current.offsetHeight - window.innerHeight);
-      // Land cleanly at top-card resting zone (panProgress = 0)
-      const targetProgress = seg.start + (seg.end - seg.start) * 0.16;
+      // Land cleanly inside the visible card plateau right after planet arrival
+      const targetFrac = clamped === 0 ? 0.08 : 0.22;
+      const targetProgress = seg.start + (seg.end - seg.start) * targetFrac;
       const targetScroll = containerTop + scrollable * targetProgress;
       window.scrollTo({ top: targetScroll, behavior: "smooth" });
     }
@@ -361,12 +376,14 @@ export default function AivaCinematicCardStage(
       programmaticTargetRef.current = null;
     }, 1400);
 
-    if (clamped === stageIndex) return;
+    if (clamped === stageIndex && isCardVisible) return;
     setDirection(clamped > stageIndex ? 1 : -1);
     prevStageRef.current = clamped;
+    prevVisibleRef.current = true;
     floatStageRef.current = clamped;
     panProgressRef.current = 0;
     applyCardPan();
+    setIsCardVisible(true);
     setStageIndex(clamped);
   };
 
@@ -377,6 +394,8 @@ export default function AivaCinematicCardStage(
     const timer = setInterval(() => {
       setDirection(1);
       panProgressRef.current = 0;
+      prevVisibleRef.current = true;
+      setIsCardVisible(true);
       setStageIndex((prev) => {
         const next = (prev + 1) % 6;
         prevStageRef.current = next;
@@ -388,7 +407,7 @@ export default function AivaCinematicCardStage(
     return () => clearInterval(timer);
   }, [isPlayingTour]);
 
-  // Scroll Sync: Continuous Namma Universe Plateau Curve + Seamless Internal Card Pan
+  // Scroll Sync: Continuous Namma Universe Plateau Curve + Seamless Card Disappear/Reappear
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
@@ -413,6 +432,11 @@ export default function AivaCinematicCardStage(
       floatStageRef.current = mapped.floatStage;
       panProgressRef.current = mapped.panProgress;
       applyCardPan();
+
+      if (mapped.isCardVisible !== prevVisibleRef.current) {
+        prevVisibleRef.current = mapped.isCardVisible;
+        setIsCardVisible(mapped.isCardVisible);
+      }
 
       if (mapped.stageIndex !== prevStageRef.current) {
         setDirection(mapped.stageIndex > prevStageRef.current ? 1 : -1);
@@ -454,9 +478,9 @@ export default function AivaCinematicCardStage(
       ref={containerRef}
       className="relative min-h-[680vh] md:min-h-[700vh] bg-transparent"
     >
-      {/* Sticky Cinematic Theater (Positioned cleanly below navbar with generous header breathing room) */}
+      {/* Sticky Cinematic Theater (Full-screen top-0 h-[100dvh] prevents navbar seam gaps) */}
       <div 
-        className="sticky top-[70px] sm:top-[76px] h-[calc(100dvh-4.375rem)] sm:h-[calc(100dvh-4.75rem)] flex flex-col justify-between overflow-x-hidden overflow-y-hidden px-3 sm:px-6 z-20 relative"
+        className="sticky top-0 h-[100dvh] flex flex-col justify-between overflow-x-hidden overflow-y-hidden px-3 sm:px-6 z-20 relative"
       >
         {/* Realistic Namma Universe 3D Solar System & Planet-Flight Canvas */}
         <AivaSolarSystemBackground
@@ -465,8 +489,11 @@ export default function AivaCinematicCardStage(
           className="absolute inset-0 pointer-events-none z-0"
         />
         
-        {/* Stage Header: Clean Apple-Style Centered Display Heading (Zero Shadow Artifacts) */}
-        <div className="max-w-3xl mx-auto w-full pt-5 sm:pt-7 pb-3 sm:pb-4 px-2 text-center select-none shrink-0 relative z-10">
+        {/* Stage Header: Clean Apple-Style Centered Display Heading */}
+        <div
+          className="max-w-3xl mx-auto w-full pt-[84px] sm:pt-[96px] pb-2 sm:pb-3 px-2 text-center select-none shrink-0 relative z-10 transition-opacity duration-300"
+          style={{ opacity: isCardVisible ? 1 : 0.25 }}
+        >
           <h2 
             className="text-[24px] sm:text-[34px] md:text-[40px] font-bold tracking-[-0.03em] leading-[1.15] text-balance text-white"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
@@ -482,10 +509,10 @@ export default function AivaCinematicCardStage(
         >
           {/* Planetary Emergence Aura Pulse: glows from the planet's center as card blooms out */}
           <motion.div
-            key={`aura-${stageIndex}`}
-            initial={{ opacity: 0.75, scale: 0.15 }}
-            animate={{ opacity: 0.12, scale: 1.15 }}
-            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+            key={`aura-${stageIndex}-${isCardVisible ? "on" : "off"}`}
+            initial={{ opacity: isCardVisible ? 0.75 : 0.12, scale: isCardVisible ? 0.15 : 1.0 }}
+            animate={{ opacity: isCardVisible ? 0.12 : 0.0, scale: isCardVisible ? 1.15 : 0.35 }}
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             className="pointer-events-none absolute w-[320px] h-[320px] sm:w-[460px] sm:h-[460px] rounded-full blur-[70px] z-0"
             style={{
               background: `radial-gradient(circle, ${activePlanetColor}66 0%, transparent 70%)`,
@@ -503,7 +530,7 @@ export default function AivaCinematicCardStage(
               <AnimatePresence mode="wait" custom={direction}>
             
             {/* === STAGE 01: UNIFIED 28-SECOND BOOKING PIPELINE (FULL TEXT, CARD 4 FOOTPRINT) === */}
-            {stageIndex === 0 && (
+            {isCardVisible && stageIndex === 0 && (
               <motion.div
                 key="stage-01"
                 custom={direction}
@@ -598,7 +625,7 @@ export default function AivaCinematicCardStage(
             )}
 
             {/* === STAGE 02: FRONT-DESK REALITY MATRIX (FULL TEXT, EYE-CATCHING, ZERO CUTOFFS) === */}
-            {stageIndex === 1 && (
+            {isCardVisible && stageIndex === 1 && (
               <motion.div
                 key="stage-02"
                 custom={direction}
@@ -660,7 +687,7 @@ export default function AivaCinematicCardStage(
             )}
 
             {/* === STAGE 03: FRIENDLY, NON-TECHNICAL COMPARISON (ZERO HORIZONTAL SCROLL) === */}
-            {stageIndex === 2 && (
+            {isCardVisible && stageIndex === 2 && (
               <motion.div
                 key="stage-03"
                 custom={direction}
@@ -753,7 +780,7 @@ export default function AivaCinematicCardStage(
             )}
 
             {/* === STAGE 04: EXECUTIVE TELEMETRY CONSOLE (DASHBOARD) === */}
-            {stageIndex === 3 && (
+            {isCardVisible && stageIndex === 3 && (
               <motion.div
                 key="stage-04"
                 custom={direction}
@@ -883,7 +910,7 @@ export default function AivaCinematicCardStage(
             )}
 
             {/* === STAGE 05: FINANCIAL RECOVERY ENGINE (ROI SLIDER) === */}
-            {stageIndex === 4 && (
+            {isCardVisible && stageIndex === 4 && (
               <motion.div
                 key="stage-05"
                 custom={direction}
@@ -955,7 +982,7 @@ export default function AivaCinematicCardStage(
             )}
 
             {/* === STAGE 06: ENTERPRISE GOVERNANCE MATRIX (SINGLE CARD, NO BOTTOM BUTTONS) === */}
-            {stageIndex === 5 && (
+            {isCardVisible && stageIndex === 5 && (
               <motion.div
                 key="stage-06"
                 custom={direction}

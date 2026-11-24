@@ -19,6 +19,7 @@ import WelloraFinalCTA from "./wellora/components/WelloraFinalCTA";
 import WelloraDemoModal from "./wellora/components/WelloraDemoModal";
 import WelloraFooter from "./wellora/components/WelloraFooter";
 import ProductAtmosphere from "./components/ProductAtmosphere";
+import ProductCinematicCardStage from "./components/ProductCinematicCardStage";
 
 export default function WelloraProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
@@ -188,10 +189,16 @@ export default function WelloraProductPage() {
         {/* Master Product Sections */}
         <main>
           <WelloraHeroSection onOpenDemo={() => setIsDemoModalOpen(true)} />
-          <WelloraProblemSection />
-          <WelloraDashboardPreviewSection />
-          <WelloraConversationSection />
-          <WelloraArchitecture />
+          <ProductCinematicCardStage
+            accentColor="#2ECC71"
+            planetOffset={3}
+            stages={[
+              { id: "problem", short: "REALITY", content: <WelloraProblemSection /> },
+              { id: "dashboard", short: "EXPERIENCE", content: <WelloraDashboardPreviewSection /> },
+              { id: "companion", short: "COMPANION", content: <WelloraConversationSection /> },
+              { id: "architecture", short: "ENGINE", content: <WelloraArchitecture /> },
+            ]}
+          />
           <WelloraFinalCTA onOpenDemo={() => setIsDemoModalOpen(true)} />
         </main>
 

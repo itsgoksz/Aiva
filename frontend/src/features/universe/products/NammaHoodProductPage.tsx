@@ -18,6 +18,7 @@ import NammaHoodFinalCTA from "./namma-hood/components/NammaHoodFinalCTA";
 import NammaHoodDemoModal from "./namma-hood/components/NammaHoodDemoModal";
 import NammaHoodFooter from "./namma-hood/components/NammaHoodFooter";
 import ProductAtmosphere from "./components/ProductAtmosphere";
+import ProductCinematicCardStage from "./components/ProductCinematicCardStage";
 
 export default function NammaHoodProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
@@ -198,9 +199,15 @@ export default function NammaHoodProductPage() {
         {/* Master Product Sections */}
         <main>
           <NammaHoodHeroSection onOpenDemo={() => setIsDemoModalOpen(true)} />
-          <NammaHoodProblemSection />
-          <NammaHoodTerritorySection />
-          <NammaHoodMissionsSection />
+          <ProductCinematicCardStage
+            accentColor="#10B981"
+            planetOffset={3}
+            stages={[
+              { id: "problem", short: "REALITY", content: <NammaHoodProblemSection /> },
+              { id: "territory", short: "WARD", content: <NammaHoodTerritorySection /> },
+              { id: "missions", short: "MISSIONS", content: <NammaHoodMissionsSection /> },
+            ]}
+          />
           <NammaHoodFinalCTA onOpenDemo={() => setIsDemoModalOpen(true)} />
         </main>
 

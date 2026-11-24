@@ -19,6 +19,7 @@ import AirportDigitalTwinFinalCTA from "./airport-digital-twin/components/Airpor
 import AirportDigitalTwinDemoModal from "./airport-digital-twin/components/AirportDigitalTwinDemoModal";
 import AirportDigitalTwinFooter from "./airport-digital-twin/components/AirportDigitalTwinFooter";
 import ProductAtmosphere from "./components/ProductAtmosphere";
+import ProductCinematicCardStage from "./components/ProductCinematicCardStage";
 
 export default function AirportDigitalTwinProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
@@ -196,9 +197,15 @@ export default function AirportDigitalTwinProductPage() {
         {/* Master Product Sections */}
         <main>
           <AirportDigitalTwinHeroSection onOpenDemo={() => setIsDemoModalOpen(true)} />
-          <AirportDigitalTwinProblemSection />
-          <AirportDigitalTwinSpatialTwinSection />
-          <AirportDigitalTwinArchitectureSection />
+          <ProductCinematicCardStage
+            accentColor="#00E5FF"
+            planetOffset={2}
+            stages={[
+              { id: "problem", short: "REALITY", content: <AirportDigitalTwinProblemSection /> },
+              { id: "spatial", short: "TWIN", content: <AirportDigitalTwinSpatialTwinSection /> },
+              { id: "architecture", short: "SYSTEMS", content: <AirportDigitalTwinArchitectureSection /> },
+            ]}
+          />
           <AirportDigitalTwinFinalCTA onOpenDemo={() => setIsDemoModalOpen(true)} />
         </main>
 

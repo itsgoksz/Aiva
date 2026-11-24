@@ -19,6 +19,7 @@ import CasaMotoFinalCTASection from "./casamoto/components/CasaMotoFinalCTASecti
 import CasaMotoDemoModal from "./casamoto/components/CasaMotoDemoModal";
 import CasaMotoFooter from "./casamoto/components/CasaMotoFooter";
 import ProductAtmosphere from "./components/ProductAtmosphere";
+import ProductCinematicCardStage from "./components/ProductCinematicCardStage";
 
 export default function CasaMotoProductPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
@@ -183,12 +184,18 @@ export default function CasaMotoProductPage() {
         {/* CasaMoto Product Content Sections */}
         <main>
           <CasaMotoHeroSection onOpenDemo={() => setIsDemoModalOpen(true)} />
-          <CasaMotoProblemSection />
-          <CasaMotoGarageSection />
-          <CasaMotoRideRadarSection />
-          <CasaMotoSynergySection />
-          <CasaMotoGamificationSection />
-          <CasaMotoArchitectureSection />
+          <ProductCinematicCardStage
+            accentColor="#FF6B00"
+            planetOffset={0}
+            stages={[
+              { id: "problem", short: "REALITY", content: <CasaMotoProblemSection /> },
+              { id: "garage", short: "GARAGE", content: <CasaMotoGarageSection /> },
+              { id: "radar", short: "RADAR", content: <CasaMotoRideRadarSection /> },
+              { id: "synergy", short: "SYNERGY", content: <CasaMotoSynergySection /> },
+              { id: "gamification", short: "REWARDS", content: <CasaMotoGamificationSection /> },
+              { id: "architecture", short: "ENGINE", content: <CasaMotoArchitectureSection /> },
+            ]}
+          />
           <CasaMotoFinalCTASection onOpenDemo={() => setIsDemoModalOpen(true)} />
         </main>
 
