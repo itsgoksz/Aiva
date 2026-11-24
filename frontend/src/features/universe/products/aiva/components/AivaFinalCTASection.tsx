@@ -48,66 +48,41 @@ export default function AivaFinalCTASection({ onOpenBookDemo, onOpenTestCall, on
           Give your front desk an extra set of hands and make sure every single caller gets booked.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-3.5 w-full sm:w-auto">
           <button
             onClick={handleBookDemo}
-            className="group w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-base sm:text-lg text-white transition-all duration-200 hover:bg-[#B882A2] active:opacity-90 flex items-center justify-center gap-2.5 cursor-pointer shadow-lg"
+            className="group w-full sm:w-auto h-12 sm:h-13 px-6 sm:px-7 rounded-xl font-semibold text-sm sm:text-base text-white inline-flex items-center justify-center gap-2.5 transition-all duration-200 cursor-pointer hover:brightness-110 active:scale-[0.98] whitespace-nowrap"
             style={{
-              backgroundColor: "#A66B8E",
-              boxShadow: "0 10px 30px rgba(166, 107, 142, 0.35)",
+              background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
+              boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 8px 24px -4px rgba(230, 92, 142, 0.45)",
             }}
           >
-            <Calendar size={18} />
+            <Calendar size={17} className="shrink-0" />
             <span>Book a Demo</span>
-            <ArrowRight size={18} className="transition-transform duration-200 group-hover:translate-x-1" />
+            <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
           </button>
 
           <button
             onClick={handleTestCall}
-            className="group w-full sm:w-auto px-7 py-4 rounded-xl font-medium text-base text-white/90 hover:text-white transition-all duration-200 hover:bg-white/[0.08] active:opacity-90 flex items-center justify-center gap-2.5 cursor-pointer border border-[#E65C8E]/30 hover:border-[#E65C8E]/60"
-            style={{ background: "rgba(230, 92, 142, 0.08)" }}
+            className="group w-full sm:w-auto h-12 sm:h-13 px-5 sm:px-6 rounded-xl font-medium text-sm sm:text-base text-white/90 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] active:scale-[0.98] transition-all duration-200 inline-flex items-center justify-center gap-2.5 cursor-pointer border border-white/15 hover:border-[#E65C8E]/40 whitespace-nowrap shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
           >
-            <PhoneCall size={18} className="text-[#EC89B5]" />
+            <PhoneCall size={16} className="text-[#EC89B5] shrink-0" />
             <span>Try a Live Test Call</span>
           </button>
 
           {isSubdomain ? (
             <a
               href={getUniverseUrl("/#products")}
-              className="group w-full sm:w-auto px-8 py-4 rounded-xl text-white/90 hover:text-white font-medium text-base transition-all duration-200 text-center flex items-center justify-center cursor-pointer active:opacity-90"
-              style={{
-                backgroundColor: "rgba(255, 255, 255, 0.04)",
-                boxShadow: "inset 0 0 0 1px rgba(255, 255, 255, 0.12)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.08)";
-                e.currentTarget.style.boxShadow = "inset 0 0 0 1px rgba(255, 255, 255, 0.22)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.04)";
-                e.currentTarget.style.boxShadow = "inset 0 0 0 1px rgba(255, 255, 255, 0.12)";
-              }}
+              className="group w-full sm:w-auto h-12 sm:h-13 px-5 sm:px-6 rounded-xl text-white/70 hover:text-white font-medium text-sm sm:text-base transition-all duration-200 inline-flex items-center justify-center cursor-pointer active:scale-[0.98] border border-white/10 hover:border-white/20 bg-white/[0.02] hover:bg-white/[0.06] whitespace-nowrap"
             >
-              <span>Explore Other Universe Products</span>
+              <span>Explore Universe</span>
             </a>
           ) : (
             <Link
               to="/#products"
-              className="group w-full sm:w-auto px-8 py-4 rounded-xl text-white/90 hover:text-white font-medium text-base transition-all duration-200 text-center flex items-center justify-center cursor-pointer active:opacity-90"
-              style={{
-                backgroundColor: "rgba(255, 255, 255, 0.04)",
-                boxShadow: "inset 0 0 0 1px rgba(255, 255, 255, 0.12)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.08)";
-                e.currentTarget.style.boxShadow = "inset 0 0 0 1px rgba(255, 255, 255, 0.22)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.04)";
-                e.currentTarget.style.boxShadow = "inset 0 0 0 1px rgba(255, 255, 255, 0.12)";
-              }}
+              className="group w-full sm:w-auto h-12 sm:h-13 px-5 sm:px-6 rounded-xl text-white/70 hover:text-white font-medium text-sm sm:text-base transition-all duration-200 inline-flex items-center justify-center cursor-pointer active:scale-[0.98] border border-white/10 hover:border-white/20 bg-white/[0.02] hover:bg-white/[0.06] whitespace-nowrap"
             >
-              <span>Explore Other Universe Products</span>
+              <span>Explore Universe</span>
             </Link>
           )}
         </div>

@@ -216,11 +216,11 @@ export default function AivaProductPage() {
           </div>
 
           {/* Actions */}
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <div className="flex items-center gap-2 sm:gap-3">
             {isAuthenticated ? (
               <Link
                 to="/app"
-                className="hidden sm:flex items-center gap-1.5 text-xs font-mono text-white/80 hover:text-white transition-colors px-3 py-1.5 rounded-lg bg-white/5 border border-white/10"
+                className="hidden sm:inline-flex items-center gap-1.5 h-9 px-3 rounded-xl text-xs font-mono text-white/80 hover:text-white transition-colors bg-white/5 border border-white/10"
               >
                 <LayoutDashboard size={14} />
                 <span>Dashboard</span>
@@ -228,17 +228,16 @@ export default function AivaProductPage() {
             ) : (
               <Link
                 to="/login"
-                className="hidden sm:flex items-center gap-1.5 text-xs font-mono text-white/60 hover:text-white transition-colors"
+                className="hidden sm:inline-flex items-center gap-1.5 text-xs font-mono text-white/60 hover:text-white transition-colors px-2 py-1"
               >
-                <LogIn size={14} />
+                <LogIn size={13} />
                 <span>Sign in</span>
               </Link>
             )}
 
             <button
               onClick={() => setIsTestCallOpen(true)}
-              className="hidden md:flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-mono text-white/80 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer border border-[#E65C8E]/30"
-              style={{ background: "rgba(230, 92, 142, 0.08)" }}
+              className="hidden sm:inline-flex items-center gap-1.5 h-9 sm:h-9.5 px-3.5 rounded-xl text-xs font-semibold text-white/90 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] active:scale-[0.98] transition-all cursor-pointer border border-white/10 hover:border-[#E65C8E]/40 whitespace-nowrap shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
             >
               <PhoneCall size={13} className="text-[#EC89B5]" />
               <span>Test Call</span>
@@ -246,10 +245,13 @@ export default function AivaProductPage() {
 
             <button
               onClick={() => setIsBookDemoOpen(true)}
-              className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-white transition-colors duration-200 cursor-pointer flex items-center gap-1.5 hover:bg-[#B882A2] active:opacity-90"
-              style={{ backgroundColor: "#A66B8E", boxShadow: "0 4px 14px rgba(166, 107, 142, 0.35)" }}
+              className="inline-flex items-center gap-1.5 h-9 sm:h-9.5 px-3.5 sm:px-4.5 rounded-xl font-semibold text-xs sm:text-sm text-white transition-all duration-200 cursor-pointer hover:brightness-110 active:scale-[0.98] whitespace-nowrap"
+              style={{
+                background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
+                boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 14px rgba(230, 92, 142, 0.35)",
+              }}
             >
-              <Calendar size={14} />
+              <Calendar size={13} />
               <span>Book a Demo</span>
             </button>
           </div>

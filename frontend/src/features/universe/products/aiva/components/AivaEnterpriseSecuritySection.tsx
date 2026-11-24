@@ -104,13 +104,13 @@ export default function AivaEnterpriseSecuritySection() {
         </div>
 
         {/* 4 Apple-Style Enterprise Cards (Solid obsidian, zero flicker) */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {PILLARS.map((p) => {
             const Icon = p.icon;
             return (
               <div
                 key={p.title}
-                className="rounded-2xl border border-white/10 bg-[#0E060D] p-6 sm:p-7 relative overflow-hidden flex flex-col justify-between transition-all duration-200 hover:border-[#E65C8E]/40 shadow-xl"
+                className="rounded-2xl border border-white/10 bg-[#0E060D] p-5 sm:p-7 relative overflow-hidden flex flex-col justify-between transition-all duration-200 hover:border-[#E65C8E]/40 shadow-xl"
                 style={{
                   boxShadow: "inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 20px 40px rgba(0, 0, 0, 0.6)"
                 }}

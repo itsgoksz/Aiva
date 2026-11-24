@@ -105,131 +105,162 @@ export default function AivaDashboardPreviewSection() {
             See who called, what was discussed, which appointments were booked, and how much revenue came in.
           </p>
 
-          <div className="flex items-center justify-center gap-2 mt-8">
-            <div className="inline-flex p-1.5 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-xl">
+          <div className="flex items-center justify-center mt-6 sm:mt-8 w-full overflow-x-auto px-1 scrollbar-none">
+            <div className="inline-flex p-1 sm:p-1.5 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-xl">
               <button
                 onClick={() => setActiveTab("calls")}
-                className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+                className={`whitespace-nowrap px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                   activeTab === "calls"
-                    ? "bg-[#A66B8E] text-white shadow-md"
+                    ? "text-white shadow-md"
                     : "text-white/60 hover:text-white"
                 }`}
+                style={
+                  activeTab === "calls"
+                    ? {
+                        background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
+                        boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 12px rgba(230, 92, 142, 0.35)",
+                      }
+                    : {}
+                }
               >
-                Call Logs & Summaries
+                <span className="sm:hidden">Call Logs</span>
+                <span className="hidden sm:inline">Call Logs & Summaries</span>
               </button>
               <button
                 onClick={() => setActiveTab("schedule")}
-                className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+                className={`whitespace-nowrap px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                   activeTab === "schedule"
-                    ? "bg-[#A66B8E] text-white shadow-md"
+                    ? "text-white shadow-md"
                     : "text-white/60 hover:text-white"
                 }`}
+                style={
+                  activeTab === "schedule"
+                    ? {
+                        background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
+                        boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 12px rgba(230, 92, 142, 0.35)",
+                      }
+                    : {}
+                }
               >
-                Team Calendar
+                <span className="sm:hidden">Calendar</span>
+                <span className="hidden sm:inline">Team Calendar</span>
               </button>
               <button
                 onClick={() => setActiveTab("crm")}
-                className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+                className={`whitespace-nowrap px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                   activeTab === "crm"
-                    ? "bg-[#A66B8E] text-white shadow-md"
+                    ? "text-white shadow-md"
                     : "text-white/60 hover:text-white"
                 }`}
+                style={
+                  activeTab === "crm"
+                    ? {
+                        background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
+                        boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 12px rgba(230, 92, 142, 0.35)",
+                      }
+                    : {}
+                }
               >
-                Customer History & Notes
+                <span className="sm:hidden">Client Notes</span>
+                <span className="hidden sm:inline">Customer History & Notes</span>
               </button>
             </div>
           </div>
         </div>
 
         {/* Top Metric Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-          <div className="p-6 rounded-2xl border border-white/10 bg-[#0E060D] shadow-xl">
-            <div className="flex items-center justify-between text-xs font-mono text-white/40 uppercase mb-2">
-              <span>Calls Today</span>
-              <Phone size={14} className="text-[#EC89B5]" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8">
+          <div className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#0E060D] shadow-xl overflow-hidden">
+            <div className="flex items-center justify-between text-[11px] sm:text-xs font-mono text-white/40 uppercase mb-1.5 sm:mb-2">
+              <span className="truncate">Calls Today</span>
+              <Phone size={13} className="text-[#EC89B5] shrink-0" />
             </div>
-            <div className="text-3xl sm:text-4xl font-bold font-mono text-white tracking-tight">48</div>
-            <div className="text-xs text-emerald-400 font-mono mt-1 flex items-center gap-1">
-              <CheckCircle2 size={12} />
-              <span>100% answered • 0 missed</span>
+            <div className="text-2xl sm:text-3xl lg:text-4xl font-bold font-mono text-white tracking-tight truncate">48</div>
+            <div className="text-[11px] sm:text-xs text-emerald-400 font-mono mt-1 flex items-center gap-1 truncate">
+              <CheckCircle2 size={11} className="shrink-0" />
+              <span className="truncate">100% answered • 0 missed</span>
             </div>
           </div>
 
-          <div className="p-6 rounded-2xl border border-white/10 bg-[#0E060D] shadow-xl">
-            <div className="flex items-center justify-between text-xs font-mono text-white/40 uppercase mb-2">
-              <span>Booked Revenue</span>
-              <IndianRupee size={14} className="text-emerald-400" />
+          <div className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#0E060D] shadow-xl overflow-hidden">
+            <div className="flex items-center justify-between text-[11px] sm:text-xs font-mono text-white/40 uppercase mb-1.5 sm:mb-2">
+              <span className="truncate">Booked Revenue</span>
+              <IndianRupee size={13} className="text-emerald-400 shrink-0" />
             </div>
-            <div className="text-3xl sm:text-4xl font-bold font-mono text-emerald-400 tracking-tight">₹1,84,200</div>
-            <div className="text-xs text-white/50 font-mono mt-1">18 appointments scheduled</div>
+            <div className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold font-mono text-emerald-400 tracking-tight truncate">
+              ₹1,84,200
+            </div>
+            <div className="text-[11px] sm:text-xs text-white/50 font-mono mt-1 truncate">18 appointments scheduled</div>
           </div>
 
-          <div className="p-6 rounded-2xl border border-white/10 bg-[#0E060D] shadow-xl">
-            <div className="flex items-center justify-between text-xs font-mono text-white/40 uppercase mb-2">
-              <span>Hours Saved</span>
-              <Clock size={14} className="text-[#ECA9B7]" />
+          <div className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#0E060D] shadow-xl overflow-hidden">
+            <div className="flex items-center justify-between text-[11px] sm:text-xs font-mono text-white/40 uppercase mb-1.5 sm:mb-2">
+              <span className="truncate">Hours Saved</span>
+              <Clock size={13} className="text-[#ECA9B7] shrink-0" />
             </div>
-            <div className="text-3xl sm:text-4xl font-bold font-mono text-white tracking-tight">36.5 hrs</div>
-            <div className="text-xs text-white/50 font-mono mt-1">This week alone</div>
+            <div className="text-2xl sm:text-3xl lg:text-4xl font-bold font-mono text-white tracking-tight truncate">36.5 hrs</div>
+            <div className="text-[11px] sm:text-xs text-white/50 font-mono mt-1 truncate">This week alone</div>
           </div>
 
-          <div className="p-6 rounded-2xl border border-white/10 bg-[#0E060D] shadow-xl">
-            <div className="flex items-center justify-between text-xs font-mono text-white/40 uppercase mb-2">
-              <span>Customer Feedback</span>
-              <HeartHandshake size={14} className="text-pink-400" />
+          <div className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#0E060D] shadow-xl overflow-hidden">
+            <div className="flex items-center justify-between text-[11px] sm:text-xs font-mono text-white/40 uppercase mb-1.5 sm:mb-2">
+              <span className="truncate">Feedback</span>
+              <HeartHandshake size={13} className="text-pink-400 shrink-0" />
             </div>
-            <div className="text-3xl sm:text-4xl font-bold font-mono text-white tracking-tight">4.98<span className="text-white/40 text-lg">/5</span></div>
-            <div className="text-xs text-[#EC89B5] font-mono mt-1">Positive caller ratings</div>
+            <div className="text-2xl sm:text-3xl lg:text-4xl font-bold font-mono text-white tracking-tight truncate">
+              4.98<span className="text-white/40 text-sm sm:text-lg">/5</span>
+            </div>
+            <div className="text-[11px] sm:text-xs text-[#EC89B5] font-mono mt-1 truncate">Positive caller ratings</div>
           </div>
         </div>
 
         {/* Tab 1: Call Logs */}
         {activeTab === "calls" && (
           <div 
-            className="rounded-2xl border border-white/10 p-6 sm:p-8 shadow-2xl"
+            className="rounded-2xl border border-white/10 p-4 sm:p-8 shadow-2xl"
             style={{ background: "#0E060D" }}
           >
-            <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/[0.08]">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-white/[0.08]">
+              <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 <span>Inbound Call Feed</span>
-                <span className="text-xs font-mono px-2 py-0.5 rounded bg-[#A66B8E]/20 text-[#EC89B5] border border-[#A66B8E]/30">
+                <span className="text-[10px] sm:text-xs font-mono px-2 py-0.5 rounded bg-[#A66B8E]/20 text-[#EC89B5] border border-[#A66B8E]/30 whitespace-nowrap">
                   Live Feed
                 </span>
               </h3>
-              <span className="text-xs font-mono text-white/40">Direct transcripts & summaries</span>
+              <span className="text-[11px] sm:text-xs font-mono text-white/40">Direct transcripts & summaries</span>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {CALL_RECORDS.map((c, idx) => (
                 <div
                   key={c.caller}
-                  className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/15 transition-all"
+                  className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/15 transition-all"
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 mb-2 sm:mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-[#A66B8E]/15 text-[#EC89B5] flex items-center justify-center font-bold font-mono shrink-0">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#A66B8E]/15 text-[#EC89B5] flex items-center justify-center font-bold font-mono shrink-0 text-xs sm:text-sm">
                         0{idx + 1}
                       </div>
                       <div>
-                        <div className="text-base font-semibold text-white flex items-center gap-2">
+                        <div className="text-sm sm:text-base font-semibold text-white flex flex-wrap items-center gap-x-2 gap-y-0.5">
                           <span>{c.caller}</span>
-                          <span className="text-xs font-mono text-white/40">{c.phone}</span>
+                          <span className="text-[11px] sm:text-xs font-mono text-white/40">{c.phone}</span>
                         </div>
-                        <div className="text-xs text-[#EC89B5] font-mono mt-0.5">
+                        <div className="text-[11px] sm:text-xs text-[#EC89B5] font-mono mt-0.5">
                           {c.service} • Assigned to {c.staff}
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 self-end sm:self-center">
-                      <span className="text-xs font-mono px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">
+                    <div className="flex items-center gap-2 sm:gap-3 self-start sm:self-center pl-12 sm:pl-0">
+                      <span className="text-[11px] sm:text-xs font-mono px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold whitespace-nowrap">
                         {c.status} ({c.revenue})
                       </span>
-                      <span className="text-xs font-mono text-white/40">{c.duration}</span>
+                      <span className="text-[11px] sm:text-xs font-mono text-white/40 whitespace-nowrap">{c.duration}</span>
                     </div>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-white/70 leading-relaxed font-light pl-0 sm:pl-13">
+                  <p className="text-xs sm:text-sm text-white/70 leading-relaxed font-light pl-0 sm:pl-13 mt-1.5 sm:mt-0">
                     <strong className="text-white font-medium">Summary: </strong>
                     {c.summary}
                   </p>
@@ -242,39 +273,39 @@ export default function AivaDashboardPreviewSection() {
         {/* Tab 2: Calendar */}
         {activeTab === "schedule" && (
           <div 
-            className="rounded-2xl border border-white/10 p-6 sm:p-8 shadow-2xl"
+            className="rounded-2xl border border-white/10 p-4 sm:p-8 shadow-2xl"
             style={{ background: "#0E060D" }}
           >
-            <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/[0.08]">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-white/[0.08]">
+              <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 <span>Today's Appointment Schedule</span>
-                <span className="text-xs font-mono px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
+                <span className="text-[10px] sm:text-xs font-mono px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 whitespace-nowrap">
                   Synchronized
                 </span>
               </h3>
-              <span className="text-xs font-mono text-white/40">Updated automatically</span>
+              <span className="text-[11px] sm:text-xs font-mono text-white/40">Updated automatically</span>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5 sm:space-y-3">
               {SCHEDULE_ITEMS.map((item) => (
                 <div
                   key={item.time}
-                  className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                  className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.02] border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="font-mono text-sm font-bold text-white/80 w-20 shrink-0">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="font-mono text-xs sm:text-sm font-bold text-white/80 w-16 sm:w-20 shrink-0">
                       {item.time}
                     </div>
                     <div>
                       <div className="text-sm font-semibold text-white">{item.client}</div>
-                      <div className="text-xs text-white/50 font-mono mt-0.5">
+                      <div className="text-[11px] sm:text-xs text-white/50 font-mono mt-0.5">
                         {item.service} • Assigned: {item.staff}
                       </div>
                     </div>
                   </div>
 
                   <span 
-                    className="text-xs font-mono px-3 py-1 rounded-xl self-end sm:self-center font-semibold"
+                    className="text-[11px] sm:text-xs font-mono px-2.5 py-1 rounded-lg self-start sm:self-center font-semibold whitespace-nowrap"
                     style={{ background: `${item.color}15`, color: item.color, border: `1px solid ${item.color}30` }}
                   >
                     {item.status}
@@ -288,24 +319,24 @@ export default function AivaDashboardPreviewSection() {
         {/* Tab 3: CRM */}
         {activeTab === "crm" && (
           <div 
-            className="rounded-2xl border border-white/10 p-6 sm:p-8 shadow-2xl"
+            className="rounded-2xl border border-white/10 p-4 sm:p-8 shadow-2xl"
             style={{ background: "#0E060D" }}
           >
-            <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/[0.08]">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-white/[0.08]">
+              <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 <span>Customer Preferences & History</span>
-                <span className="text-xs font-mono px-2 py-0.5 rounded bg-indigo-500/15 text-indigo-400 border border-indigo-500/25">
+                <span className="text-[10px] sm:text-xs font-mono px-2 py-0.5 rounded bg-[#E65C8E]/15 text-[#ECA9B7] border border-[#E65C8E]/30 whitespace-nowrap">
                   Client Memory
                 </span>
               </h3>
-              <span className="text-xs font-mono text-white/40">Saved automatically from calls</span>
+              <span className="text-[11px] sm:text-xs font-mono text-white/40">Saved automatically from calls</span>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-5">
+            <div className="grid md:grid-cols-2 gap-4 sm:gap-5">
               {CLIENT_PROFILES.map((p) => (
                 <div
                   key={p.name}
-                  className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 relative overflow-hidden"
+                  className="p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-white/[0.02] border border-white/5 relative overflow-hidden"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div>

@@ -145,7 +145,7 @@ export default function AivaBookDemoModal({ isOpen, onClose }: AivaBookDemoModal
           initial={{ opacity: 0, scale: 0.96, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 15 }}
-          className="relative w-full max-w-lg rounded-3xl bg-[#0E060D] border border-white/10 p-6 sm:p-8 shadow-2xl z-10 text-white overflow-hidden my-auto"
+          className="relative w-full max-w-lg rounded-2xl sm:rounded-3xl bg-[#0E060D] border border-white/10 p-5 sm:p-8 shadow-2xl z-10 text-white my-auto max-h-[92vh] overflow-y-auto"
           style={{
             boxShadow: "0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 40px rgba(166, 107, 142, 0.15)",
           }}
@@ -329,10 +329,10 @@ export default function AivaBookDemoModal({ isOpen, onClose }: AivaBookDemoModal
                     <button
                       type="submit"
                       disabled={!formData.name || !formData.businessName || !formData.phone || formData.phone.length < 10 || !formData.email}
-                      className="w-full py-3.5 rounded-xl font-semibold text-sm text-white transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#B882A2] active:opacity-90"
+                      className="w-full h-12 rounded-xl font-semibold text-sm sm:text-base text-white transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 active:scale-[0.98] whitespace-nowrap shadow-lg"
                       style={{
-                        backgroundColor: "#A66B8E",
-                        boxShadow: "0 6px 20px rgba(166, 107, 142, 0.35)",
+                        background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
+                        boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 8px 24px -4px rgba(230, 92, 142, 0.45)",
                       }}
                     >
                       <span>Next: Select Date & Time</span>
@@ -373,20 +373,20 @@ export default function AivaBookDemoModal({ isOpen, onClose }: AivaBookDemoModal
                       <CalendarIcon size={14} className="text-[#ECA9B7]" />
                       <span>Select Preferred Day</span>
                     </div>
-                    <div className="grid grid-cols-5 gap-2">
+                    <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
                       {availableDates.map((d) => (
                         <button
                           key={d.full}
                           type="button"
                           onClick={() => setSelectedDate(d.full)}
-                          className={`flex flex-col items-center justify-center py-3 rounded-xl border transition-all cursor-pointer ${
+                          className={`flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl border transition-all cursor-pointer ${
                             selectedDate === d.full
                               ? "border-[#E65C8E] bg-[#E65C8E]/20 text-white shadow-lg"
                               : "border-white/10 bg-white/[0.02] text-white/60 hover:border-white/20 hover:text-white"
                           }`}
                         >
-                          <span className="text-[10px] uppercase font-mono">{d.day}</span>
-                          <span className="text-base sm:text-lg font-bold font-mono mt-0.5">{d.date}</span>
+                          <span className="text-[9px] sm:text-[10px] uppercase font-mono">{d.day}</span>
+                          <span className="text-sm sm:text-base lg:text-lg font-bold font-mono mt-0.5">{d.date}</span>
                         </button>
                       ))}
                     </div>
@@ -409,7 +409,7 @@ export default function AivaBookDemoModal({ isOpen, onClose }: AivaBookDemoModal
                             key={t}
                             type="button"
                             onClick={() => setSelectedTime(t)}
-                            className={`py-2 px-2 rounded-lg border text-xs font-mono transition-all cursor-pointer text-center ${
+                            className={`py-2 px-1.5 sm:px-2 rounded-lg border text-[11px] sm:text-xs font-mono transition-all cursor-pointer text-center ${
                               selectedTime === t
                                 ? "border-[#E65C8E] bg-[#E65C8E]/20 text-white font-bold"
                                 : "border-white/10 bg-white/[0.02] text-white/60 hover:border-white/20 hover:text-white"
@@ -427,7 +427,7 @@ export default function AivaBookDemoModal({ isOpen, onClose }: AivaBookDemoModal
                     <button
                       type="button"
                       onClick={() => setStep("details")}
-                      className="px-5 py-3 rounded-xl font-medium text-xs sm:text-sm text-white/70 hover:text-white border border-white/10 hover:bg-white/[0.04] transition-all cursor-pointer"
+                      className="h-12 px-5 rounded-xl font-medium text-xs sm:text-sm text-white/70 hover:text-white border border-white/10 hover:bg-white/[0.04] transition-all cursor-pointer whitespace-nowrap"
                     >
                       Back
                     </button>
@@ -435,10 +435,10 @@ export default function AivaBookDemoModal({ isOpen, onClose }: AivaBookDemoModal
                       type="button"
                       disabled={!selectedDate || !selectedTime || isSubmitting}
                       onClick={handleSubmit}
-                      className="flex-1 py-3.5 rounded-xl font-semibold text-sm text-white transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#B882A2] active:opacity-90"
+                      className="flex-1 h-12 rounded-xl font-semibold text-sm sm:text-base text-white transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 active:scale-[0.98] whitespace-nowrap shadow-lg"
                       style={{
-                        backgroundColor: "#A66B8E",
-                        boxShadow: "0 6px 20px rgba(166, 107, 142, 0.35)",
+                        background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
+                        boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 8px 24px -4px rgba(230, 92, 142, 0.45)",
                       }}
                     >
                       {isSubmitting ? (

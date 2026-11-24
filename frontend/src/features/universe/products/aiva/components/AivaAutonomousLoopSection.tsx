@@ -187,7 +187,7 @@ export default function AivaAutonomousLoopSection() {
 
         {/* Bottom Banner: Executive Impact Slab (Solid obsidian gradient: Zero flicker) */}
         <div 
-          className="rounded-3xl border border-white/10 p-8 sm:p-12 relative overflow-hidden shadow-2xl"
+          className="rounded-2xl sm:rounded-3xl border border-white/10 p-5 sm:p-10 lg:p-12 relative overflow-hidden shadow-2xl"
           style={{
             background: "linear-gradient(135deg, #170914 0%, #0D050C 50%, #130811 100%)",
             boxShadow: "inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 30px 60px rgba(0, 0, 0, 0.7)"
@@ -213,21 +213,21 @@ export default function AivaAutonomousLoopSection() {
             </div>
 
             {/* 3 Metric Counters */}
-            <div className="lg:col-span-5 grid grid-cols-3 gap-3">
-              <div className="p-4 rounded-2xl bg-[#090307]/90 border border-white/10 text-center shadow-lg">
-                <span className="text-[10px] font-mono text-white/40 block mb-1">REVENUE ROI</span>
-                <span className="text-2xl sm:text-3xl font-black text-[#ECA9B7] font-mono block">3.8x</span>
-                <span className="text-[10px] text-white/60 block mt-1">Average boost</span>
+            <div className="lg:col-span-5 grid grid-cols-3 gap-2 sm:gap-3">
+              <div className="p-2.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#090307]/90 border border-white/10 text-center shadow-lg">
+                <span className="text-[9px] sm:text-[10px] font-mono text-white/40 block mb-0.5 sm:mb-1 truncate">REVENUE ROI</span>
+                <span className="text-xl sm:text-2xl lg:text-3xl font-black text-[#ECA9B7] font-mono block">3.8x</span>
+                <span className="text-[9px] sm:text-[10px] text-white/60 block mt-0.5 sm:mt-1 truncate">Average boost</span>
               </div>
-              <div className="p-4 rounded-2xl bg-[#090307]/90 border border-emerald-500/20 text-center shadow-lg">
-                <span className="text-[10px] font-mono text-white/40 block mb-1">MISSED CALLS</span>
-                <span className="text-2xl sm:text-3xl font-black text-emerald-400 font-mono block">0</span>
-                <span className="text-[10px] text-emerald-400 block mt-1">100% Captured</span>
+              <div className="p-2.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#090307]/90 border border-emerald-500/20 text-center shadow-lg">
+                <span className="text-[9px] sm:text-[10px] font-mono text-white/40 block mb-0.5 sm:mb-1 truncate">MISSED CALLS</span>
+                <span className="text-xl sm:text-2xl lg:text-3xl font-black text-emerald-400 font-mono block">0</span>
+                <span className="text-[9px] sm:text-[10px] text-emerald-400 block mt-0.5 sm:mt-1 truncate">100% Captured</span>
               </div>
-              <div className="p-4 rounded-2xl bg-[#090307]/90 border border-white/10 text-center shadow-lg">
-                <span className="text-[10px] font-mono text-white/40 block mb-1">RETENTION</span>
-                <span className="text-2xl sm:text-3xl font-black text-white font-mono block">94.6%</span>
-                <span className="text-[10px] text-white/60 block mt-1">Top tier clinic</span>
+              <div className="p-2.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#090307]/90 border border-white/10 text-center shadow-lg">
+                <span className="text-[9px] sm:text-[10px] font-mono text-white/40 block mb-0.5 sm:mb-1 truncate">RETENTION</span>
+                <span className="text-xl sm:text-2xl lg:text-3xl font-black text-white font-mono block">94.6%</span>
+                <span className="text-[9px] sm:text-[10px] text-white/60 block mt-0.5 sm:mt-1 truncate">Top tier clinic</span>
               </div>
             </div>
           </div>

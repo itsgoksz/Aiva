@@ -163,34 +163,32 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
               </p>
 
               {/* CTAs */}
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 mb-10">
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-3.5 mb-10 w-full sm:w-auto">
                 <button
                   onClick={handleBookDemo}
-                  className="group px-7 py-4 rounded-xl font-semibold text-base sm:text-lg transition-colors duration-200 hover:bg-[#B882A2] active:opacity-90 w-full sm:w-auto text-white flex items-center justify-center gap-2.5 cursor-pointer shadow-lg"
+                  className="w-full sm:w-auto h-12 sm:h-12.5 px-6 sm:px-7 rounded-xl font-semibold text-sm sm:text-base text-white inline-flex items-center justify-center gap-2.5 transition-all duration-200 cursor-pointer hover:brightness-110 active:scale-[0.98] whitespace-nowrap"
                   style={{
-                    backgroundColor: "#A66B8E",
-                    boxShadow: "0 10px 30px rgba(166, 107, 142, 0.35)",
+                    background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
+                    boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 8px 24px -4px rgba(230, 92, 142, 0.45)",
                   }}
                 >
-                  <Calendar size={18} />
+                  <Calendar size={17} className="shrink-0" />
                   <span>Book a Demo</span>
                 </button>
 
                 <button
                   onClick={handleTestCall}
-                  className="px-6 py-4 rounded-xl font-medium text-base transition-all duration-200 hover:bg-white/[0.08] active:opacity-90 w-full sm:w-auto text-white/90 hover:text-white border border-[#E65C8E]/30 hover:border-[#E65C8E]/60 flex items-center justify-center gap-2.5 cursor-pointer"
-                  style={{ background: "rgba(230, 92, 142, 0.08)" }}
+                  className="w-full sm:w-auto h-12 sm:h-12.5 px-5 sm:px-6 rounded-xl font-medium text-sm sm:text-base text-white/90 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] active:scale-[0.98] transition-all duration-200 inline-flex items-center justify-center gap-2.5 cursor-pointer border border-white/15 hover:border-[#E65C8E]/40 whitespace-nowrap shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
                 >
-                  <PhoneCall size={18} className="text-[#EC89B5]" />
+                  <PhoneCall size={16} className="text-[#EC89B5] shrink-0" />
                   <span>Hear a Live Test Call</span>
                 </button>
 
                 <a
                   href="#dashboard-preview"
-                  className="px-5 py-4 rounded-xl font-medium text-base transition-colors duration-200 hover:bg-white/[0.08] active:opacity-90 w-full sm:w-auto text-white/60 hover:text-white border border-white/10 hover:border-white/20 flex items-center justify-center gap-2"
-                  style={{ background: "rgba(255, 255, 255, 0.03)" }}
+                  className="w-full sm:w-auto h-12 sm:h-12.5 px-5 sm:px-6 rounded-xl font-medium text-sm sm:text-base text-white/70 hover:text-white bg-white/[0.02] hover:bg-white/[0.06] active:scale-[0.98] transition-all duration-200 inline-flex items-center justify-center gap-2 cursor-pointer border border-white/10 hover:border-white/20 whitespace-nowrap"
                 >
-                  <LayoutDashboard size={18} className="text-[#ECA9B7]" />
+                  <LayoutDashboard size={16} className="text-[#ECA9B7] shrink-0" />
                   <span>Dashboard</span>
                 </a>
               </div>
@@ -231,31 +229,31 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
               className="relative w-full max-w-xl mx-auto"
             >
               <div 
-                className="rounded-3xl p-6 sm:p-7 relative overflow-hidden border border-white/10 shadow-2xl"
+                className="rounded-2xl sm:rounded-3xl p-4 sm:p-7 relative overflow-hidden border border-white/10 shadow-2xl"
                 style={{
                   background: "linear-gradient(150deg, #170B14 0%, #0A0508 100%)",
                   boxShadow: "0 30px 100px -20px rgba(0, 0, 0, 0.85), 0 0 50px -10px rgba(166, 107, 142, 0.2)",
                 }}
               >
                 {/* Header: Status & Scenario Switcher */}
-                <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-white/[0.08]">
+                <div className="flex flex-wrap items-center justify-between gap-2.5 mb-5 pb-4 border-b border-white/[0.08]">
                   <div className="flex items-center gap-2">
                     <span className="relative flex h-2.5 w-2.5">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#EC89B5] opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#A66B8E]"></span>
                     </span>
-                    <span className="font-mono text-xs uppercase tracking-widest text-[#EC89B5] font-bold">
+                    <span className="font-mono text-[11px] sm:text-xs uppercase tracking-widest text-[#EC89B5] font-bold">
                       AIVA LIVE CALL DEMO
                     </span>
                   </div>
 
                   {/* Scenarios selector tabs */}
-                  <div className="flex items-center gap-1.5 bg-black/40 p-1 rounded-xl border border-white/5">
+                  <div className="flex items-center gap-1 bg-black/40 p-1 rounded-xl border border-white/5 overflow-x-auto max-w-full scrollbar-none">
                     {CALL_SCENARIOS.map((sc, idx) => (
                       <button
                         key={sc.id}
                         onClick={() => handleSelectScenario(idx)}
-                        className={`px-2.5 py-1 text-[11px] font-medium rounded-lg transition-all cursor-pointer ${
+                        className={`whitespace-nowrap px-2.5 py-1 text-[10px] sm:text-[11px] font-medium rounded-lg transition-all cursor-pointer ${
                           scenarioIndex === idx
                             ? "bg-[#A66B8E] text-white font-semibold shadow-sm"
                             : "text-white/40 hover:text-white"

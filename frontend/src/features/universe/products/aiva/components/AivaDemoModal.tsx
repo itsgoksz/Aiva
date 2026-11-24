@@ -117,83 +117,88 @@ export default function AivaDemoModal({ isOpen, onClose }: AivaDemoModalProps) {
       />
 
       {/* Modal Dialog */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 15 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 15 }}
-        className="relative w-full max-w-2xl rounded-3xl bg-[#0D070B] border border-[#A66B8E]/30 p-6 sm:p-7 shadow-2xl z-10 text-white"
-      >
-        <button
-          onClick={handleReset}
-          className="absolute top-5 right-5 w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-neutral-400 hover:text-white transition-colors"
+        {/* Modal Window */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 15 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 15 }}
+          className="relative w-full max-w-2xl rounded-2xl sm:rounded-3xl bg-[#0D070B] border border-[#A66B8E]/30 p-4 sm:p-7 shadow-2xl z-10 text-white max-h-[92vh] overflow-y-auto"
         >
-          <X size={16} />
-        </button>
+          <button
+            onClick={handleReset}
+            className="absolute top-4 right-4 sm:top-5 sm:right-5 w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-neutral-400 hover:text-white transition-colors cursor-pointer z-10"
+          >
+            <X size={16} />
+          </button>
 
-        {/* Modal Header */}
-        <div className="mb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-mono tracking-widest uppercase text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
-            INTERACTIVE TRIAL // LIVE TEST CALL SIMULATOR
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#A66B8E]/20 border border-[#A66B8E]/40 flex items-center justify-center text-[#EC89B5] shrink-0">
-              <PhoneCall size={20} />
+          {/* Modal Header */}
+          <div className="mb-5 sm:mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-mono tracking-widest uppercase text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
+              INTERACTIVE TRIAL // LIVE TEST CALL SIMULATOR
             </div>
-            <div>
-              <h3 className="text-lg font-bold font-display text-white">
-                Trial Test Call Simulator
-              </h3>
-              <p className="text-xs text-neutral-400">
-                Experience how Aiva answers inbound calls in &lt;1s, verifies slots, and logs confirmed bookings.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Scenario Switchers */}
-        <div className="grid grid-cols-3 gap-2 mb-6">
-          {SCENARIOS.map((sc) => {
-            const isSelected = selectedScenario.id === sc.id;
-            return (
-              <button
-                key={sc.id}
-                onClick={() => startCall(sc)}
-                className={`p-3 rounded-xl text-left border transition-all cursor-pointer ${
-                  isSelected
-                    ? 'bg-[#A66B8E]/25 border-[#A66B8E]/60 text-white shadow-md'
-                    : 'bg-white/[0.02] border-white/[0.06] text-neutral-400 hover:text-neutral-200'
-                }`}
-              >
-                <div className="text-xs font-semibold truncate">{sc.business.split('&')[0]}</div>
-                <div className="text-[10px] font-mono text-[#EC89B5] mt-0.5">{sc.fee} service</div>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Interactive Call Display Screen */}
-        <div className="p-5 rounded-2xl bg-black/60 border border-white/[0.08] mb-5 relative overflow-hidden">
-          {callState === 'idle' && (
-            <div className="py-8 text-center">
-              <div className="w-14 h-14 rounded-2xl bg-[#A66B8E]/15 border border-[#A66B8E]/30 flex items-center justify-center text-[#EC89B5] mx-auto mb-3 animate-pulse">
-                <PhoneIncoming size={24} />
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-[#A66B8E]/20 border border-[#A66B8E]/40 flex items-center justify-center text-[#EC89B5] shrink-0">
+                <PhoneCall size={20} />
               </div>
-              <div className="text-sm font-semibold text-white mb-1">
-                Simulate Incoming Call: {selectedScenario.callerName} ({selectedScenario.callerPhone})
+              <div>
+                <h3 className="text-base sm:text-lg font-bold font-display text-white">
+                  Trial Test Call Simulator
+                </h3>
+                <p className="text-xs text-white/60">
+                  Experience how Aiva answers inbound calls in &lt;1s, verifies slots, and logs confirmed bookings.
+                </p>
               </div>
-              <p className="text-xs text-neutral-400 max-w-sm mx-auto mb-4">
-                Calling into {selectedScenario.business} ({selectedScenario.location})
-              </p>
-              <button
-                onClick={() => startCall(selectedScenario)}
-                className="px-6 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#A66B8E] hover:bg-[#B882A2] transition-colors duration-200 flex items-center gap-2 mx-auto cursor-pointer active:opacity-90" style={{ boxShadow: "0 4px 14px rgba(166, 107, 142, 0.35)" }}
-              >
-                <PhoneCall size={14} />
-                <span>Answer Call with Aiva</span>
-              </button>
             </div>
-          )}
+          </div>
+
+          {/* Scenario Switchers */}
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-5 sm:mb-6">
+            {SCENARIOS.map((sc) => {
+              const isSelected = selectedScenario.id === sc.id;
+              return (
+                <button
+                  key={sc.id}
+                  onClick={() => startCall(sc)}
+                  className={`p-2 sm:p-3 rounded-xl text-left border transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-[#A66B8E]/25 border-[#A66B8E]/60 text-white shadow-md'
+                      : 'bg-white/[0.02] border-white/[0.06] text-neutral-400 hover:text-neutral-200'
+                  }`}
+                >
+                  <div className="text-[11px] sm:text-xs font-semibold truncate">{sc.business.split('&')[0]}</div>
+                  <div className="text-[9px] sm:text-[10px] font-mono text-[#EC89B5] mt-0.5 truncate">{sc.fee} service</div>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Interactive Call Display Screen */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-black/60 border border-white/[0.08] mb-5 relative overflow-hidden">
+            {callState === 'idle' && (
+              <div className="py-6 sm:py-8 text-center">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#A66B8E]/15 border border-[#A66B8E]/30 flex items-center justify-center text-[#EC89B5] mx-auto mb-3 animate-pulse">
+                  <PhoneIncoming size={22} />
+                </div>
+                <div className="text-sm font-semibold text-white mb-1">
+                  Simulate Incoming Call: {selectedScenario.callerName} ({selectedScenario.callerPhone})
+                </div>
+                <p className="text-xs text-neutral-400 max-w-sm mx-auto mb-4">
+                  Calling into {selectedScenario.business} ({selectedScenario.location})
+                </p>
+                <button
+                  onClick={() => startCall(selectedScenario)}
+                  className="px-6 py-3 rounded-xl text-xs sm:text-sm font-semibold text-white transition-all flex items-center gap-2 mx-auto cursor-pointer hover:brightness-110 active:scale-[0.98] whitespace-nowrap"
+                  style={{
+                    background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
+                    boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 14px rgba(230, 92, 142, 0.35)",
+                  }}
+                >
+                  <PhoneCall size={14} />
+                  <span>Answer Call with Aiva</span>
+                </button>
+              </div>
+            )}
 
           {callState === 'calling' && (
             <div className="py-8 text-center">

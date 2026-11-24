@@ -100,14 +100,14 @@ export default function AivaProblemSection() {
             return (
               <div
                 key={item.title}
-                className="group rounded-3xl border border-white/[0.07] bg-[#0C060B] hover:border-white/20 p-7 sm:p-9 flex flex-col justify-between transition-all duration-300 relative overflow-hidden shadow-xl"
+                className="group rounded-2xl sm:rounded-3xl border border-white/[0.07] bg-[#0C060B] hover:border-white/20 p-5 sm:p-8 lg:p-9 flex flex-col justify-between transition-all duration-300 relative overflow-hidden shadow-xl"
                 style={{
                   boxShadow: "0 20px 40px -15px rgba(0, 0, 0, 0.7)"
                 }}
               >
                 <div>
                   {/* Top Header: Clean category & stat */}
-                  <div className="flex items-center justify-between pb-4 border-b border-white/[0.06] mb-6">
+                  <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-white/[0.06] mb-5 sm:mb-6">
                     <div className="flex items-center gap-2.5">
                       <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-[#ECA9B7]">
                         <Icon size={16} />
