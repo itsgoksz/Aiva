@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 export default function AivaRoiCalculatorSection() {
   const [weeklyCalls, setWeeklyCalls] = useState(120);
@@ -39,8 +40,12 @@ export default function AivaRoiCalculatorSection() {
           </p>
         </div>
 
-        {/* The Calculator Box */}
-        <div 
+        {/* The Calculator Box (Apple Morph Entry) */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.90, y: 40 }}
+          whileInView={{ opacity: 1, scale: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
           className="rounded-2xl sm:rounded-3xl border border-white/10 p-5 sm:p-8 lg:p-12 shadow-2xl max-w-4xl mx-auto"
           style={{
             background: "linear-gradient(150deg, #170A14 0%, #0A0508 100%)",
@@ -112,7 +117,11 @@ export default function AivaRoiCalculatorSection() {
 
             {/* Output */}
             <div className="lg:col-span-5">
-              <div 
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.94 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: false, amount: 0.2 }}
+                transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1], delay: 0.12 }}
                 className="p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-[#A66B8E]/30 text-center relative overflow-hidden"
                 style={{
                   background: "linear-gradient(135deg, rgba(166, 107, 142, 0.20) 0%, rgba(230, 92, 142, 0.08) 100%)",
@@ -131,10 +140,10 @@ export default function AivaRoiCalculatorSection() {
                 <div className="pt-4 border-t border-white/10 text-xs text-white/70 leading-relaxed font-light">
                   That's about <strong className="text-white font-semibold">{recoveredBookings} appointments</strong> each month that would have otherwise gone to voicemail.
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -7,6 +7,16 @@ import {
   Check,
   TrendingUp
 } from "lucide-react";
+import { motion } from "framer-motion";
+
+// Apple-style directional fanning offsets
+// The 4 workflow stages fan out smoothly from the central axis
+const FAN_OFFSETS = [
+  { x: -28, y: 30 },
+  { x: -10, y: 30 },
+  { x: 10, y: 30 },
+  { x: 28, y: 30 },
+];
 
 interface StageItem {
   step: string;
@@ -119,14 +129,33 @@ export default function AivaAutonomousLoopSection() {
           </p>
         </div>
 
-        {/* 4 Apple-Style Process Cards (Solid obsidian, zero flicker) */}
+        {/* 4 Apple-Style Process Cards (Solid obsidian with fluid bloom animation) */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          {STAGES.map((s) => {
+          {STAGES.map((s, idx) => {
             const Icon = s.icon;
+            const offset = FAN_OFFSETS[idx] || { x: 0, y: 30 };
             return (
-              <div
+              <motion.div
                 key={s.step}
-                className="rounded-2xl border border-white/10 bg-[#0E060D] p-6 relative overflow-hidden flex flex-col justify-between transition-all duration-200 hover:border-[#E65C8E]/40 shadow-xl"
+                initial={{ 
+                  opacity: 0, 
+                  scale: 0.88, 
+                  x: offset.x, 
+                  y: offset.y 
+                }}
+                whileInView={{ 
+                  opacity: 1, 
+                  scale: 1, 
+                  x: 0, 
+                  y: 0 
+                }}
+                viewport={{ once: false, amount: 0.2 }}
+                transition={{ 
+                  duration: 0.85, 
+                  ease: [0.16, 1, 0.3, 1], 
+                  delay: idx * 0.08 
+                }}
+                className="rounded-2xl border border-white/10 bg-[#0E060D] p-6 relative overflow-hidden flex flex-col justify-between transition-colors duration-200 hover:border-[#E65C8E]/40 shadow-xl"
                 style={{
                   boxShadow: "inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 20px 40px rgba(0, 0, 0, 0.6)"
                 }}
@@ -180,13 +209,17 @@ export default function AivaAutonomousLoopSection() {
                     <span style={{ color: s.color }}>{s.metric}</span>
                   </span>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
 
-        {/* Bottom Banner: Executive Impact Slab (Solid obsidian gradient: Zero flicker) */}
-        <div 
+        {/* Bottom Banner: Executive Impact Slab (Solid obsidian gradient with converge morph) */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.92, y: 35 }}
+          whileInView={{ opacity: 1, scale: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.15 }}
+          transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
           className="rounded-2xl sm:rounded-3xl border border-white/10 p-5 sm:p-10 lg:p-12 relative overflow-hidden shadow-2xl"
           style={{
             background: "linear-gradient(135deg, #170914 0%, #0D050C 50%, #130811 100%)",
@@ -231,7 +264,7 @@ export default function AivaAutonomousLoopSection() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,10 +1,20 @@
 import React from "react";
+import { motion } from "framer-motion";
 import { 
   PhoneMissed, 
   Clock, 
   Users, 
   MessageSquareOff
 } from "lucide-react";
+
+// Apple-style 4-quadrant outward bloom offsets
+// As you scroll from the single Hero card, the 4 cards burst outward from a unified origin point
+const QUADRANT_OFFSETS = [
+  { x: 35, y: 35 },   // Card 0: Top-left bursts out from center (+x, +y)
+  { x: -35, y: 35 },  // Card 1: Top-right bursts out from center (-x, +y)
+  { x: 35, y: -35 },  // Card 2: Bottom-left bursts out from center (+x, -y)
+  { x: -35, y: -35 }, // Card 3: Bottom-right bursts out from center (-x, -y)
+];
 
 interface ProblemItem {
   icon: typeof PhoneMissed;
@@ -93,14 +103,33 @@ export default function AivaProblemSection() {
           </p>
         </div>
 
-        {/* 4 Premium, Horizontally-Aligned Product Cards */}
+        {/* 4 Premium, Horizontally-Aligned Product Cards (Apple Morph Outward Bloom) */}
         <div className="grid md:grid-cols-2 gap-6 mb-16">
-          {PROBLEMS.map((item) => {
+          {PROBLEMS.map((item, idx) => {
             const Icon = item.icon;
+            const offset = QUADRANT_OFFSETS[idx] || { x: 0, y: 30 };
             return (
-              <div
+              <motion.div
                 key={item.title}
-                className="group rounded-2xl sm:rounded-3xl border border-white/[0.08] bg-[#120810]/75 hover:bg-[#150A13]/90 hover:border-[#E65C8E]/30 p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden backdrop-blur-xl shadow-2xl"
+                initial={{ 
+                  opacity: 0, 
+                  scale: 0.88, 
+                  x: offset.x, 
+                  y: offset.y 
+                }}
+                whileInView={{ 
+                  opacity: 1, 
+                  scale: 1, 
+                  x: 0, 
+                  y: 0 
+                }}
+                viewport={{ once: false, amount: 0.2 }}
+                transition={{ 
+                  duration: 0.85, 
+                  ease: [0.16, 1, 0.3, 1], 
+                  delay: idx * 0.08 
+                }}
+                className="group rounded-2xl sm:rounded-3xl border border-white/[0.08] bg-[#120810]/75 hover:bg-[#150A13]/90 hover:border-[#E65C8E]/30 p-6 sm:p-8 flex flex-col justify-between transition-colors duration-300 relative overflow-hidden backdrop-blur-xl shadow-2xl"
                 style={{
                   boxShadow: "0 24px 48px -18px rgba(0, 0, 0, 0.75)"
                 }}
@@ -182,15 +211,18 @@ export default function AivaProblemSection() {
                     </span>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
 
-        {/* Clean Minimalist Comparison Table */}
-        <div 
-          className="rounded-3xl border border-white/[0.07] p-6 sm:p-9 overflow-x-auto shadow-2xl"
-          style={{ background: "#0D060C" }}
+        {/* Clean Minimalist Comparison Table (Morph Expansion from 4 Cards) */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.90, y: 40 }}
+          whileInView={{ opacity: 1, scale: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+          className="rounded-3xl border border-white/10 p-6 sm:p-9 overflow-x-auto shadow-2xl bg-[#120810]/80 backdrop-blur-xl"
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-white/10 mb-6 gap-2">
             <div>
@@ -258,7 +290,7 @@ export default function AivaProblemSection() {
               </tr>
             </tbody>
           </table>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

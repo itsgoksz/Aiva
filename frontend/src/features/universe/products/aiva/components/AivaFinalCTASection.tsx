@@ -1,5 +1,6 @@
 import { ArrowRight, PhoneCall, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { isAivaSubdomain, getUniverseUrl } from "../../../../../lib/subdomain";
 
 interface AivaFinalCTASectionProps {
@@ -27,7 +28,13 @@ export default function AivaFinalCTASection({ onOpenBookDemo, onOpenTestCall, on
         }}
       />
 
-      <div className="container mx-auto px-6 relative z-10 text-center max-w-4xl">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.92, y: 35 }}
+        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.2 }}
+        transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+        className="container mx-auto px-6 relative z-10 text-center max-w-4xl"
+      >
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[11px] font-mono tracking-widest uppercase text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-8">
           <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
           <span>DEPLOYMENT READY // ZERO DISRUPTION</span>
@@ -85,7 +92,7 @@ export default function AivaFinalCTASection({ onOpenBookDemo, onOpenTestCall, on
             </Link>
           )}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

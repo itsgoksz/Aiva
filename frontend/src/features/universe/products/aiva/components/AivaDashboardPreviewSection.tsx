@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { 
   Phone, 
   CheckCircle2, 
@@ -172,9 +173,15 @@ export default function AivaDashboardPreviewSection() {
           </div>
         </div>
 
-        {/* Top Metric Cards */}
+        {/* Top Metric Cards (Cascade from Top Edge) */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8">
-          <div className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#120810]/75 backdrop-blur-xl shadow-xl overflow-hidden">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.90, y: -24 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1], delay: 0 }}
+            className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#120810]/75 backdrop-blur-xl shadow-xl overflow-hidden"
+          >
             <div className="flex items-center justify-between text-[11px] sm:text-xs font-mono text-white/40 uppercase mb-1.5 sm:mb-2">
               <span className="truncate">Calls Today</span>
               <Phone size={13} className="text-[#EC89B5] shrink-0" />
@@ -184,9 +191,15 @@ export default function AivaDashboardPreviewSection() {
               <CheckCircle2 size={11} className="shrink-0" />
               <span className="truncate">100% answered • 0 missed</span>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#120810]/75 backdrop-blur-xl shadow-xl overflow-hidden">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.90, y: -24 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1], delay: 0.08 }}
+            className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#120810]/75 backdrop-blur-xl shadow-xl overflow-hidden"
+          >
             <div className="flex items-center justify-between text-[11px] sm:text-xs font-mono text-white/40 uppercase mb-1.5 sm:mb-2">
               <span className="truncate">Booked Revenue</span>
               <IndianRupee size={13} className="text-emerald-400 shrink-0" />
@@ -195,18 +208,30 @@ export default function AivaDashboardPreviewSection() {
               ₹1,84,200
             </div>
             <div className="text-[11px] sm:text-xs text-white/50 font-mono mt-1 truncate">18 appointments scheduled</div>
-          </div>
+          </motion.div>
 
-          <div className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#120810]/75 backdrop-blur-xl shadow-xl overflow-hidden">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.90, y: -24 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1], delay: 0.16 }}
+            className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#120810]/75 backdrop-blur-xl shadow-xl overflow-hidden"
+          >
             <div className="flex items-center justify-between text-[11px] sm:text-xs font-mono text-white/40 uppercase mb-1.5 sm:mb-2">
               <span className="truncate">Hours Saved</span>
               <Clock size={13} className="text-[#ECA9B7] shrink-0" />
             </div>
             <div className="text-2xl sm:text-3xl lg:text-4xl font-bold font-mono text-white tracking-tight truncate">36.5 hrs</div>
             <div className="text-[11px] sm:text-xs text-white/50 font-mono mt-1 truncate">This week alone</div>
-          </div>
+          </motion.div>
 
-          <div className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#120810]/75 backdrop-blur-xl shadow-xl overflow-hidden">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.90, y: -24 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1], delay: 0.24 }}
+            className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#120810]/75 backdrop-blur-xl shadow-xl overflow-hidden"
+          >
             <div className="flex items-center justify-between text-[11px] sm:text-xs font-mono text-white/40 uppercase mb-1.5 sm:mb-2">
               <span className="truncate">Feedback</span>
               <HeartHandshake size={13} className="text-pink-400 shrink-0" />
@@ -215,12 +240,16 @@ export default function AivaDashboardPreviewSection() {
               4.98<span className="text-white/40 text-sm sm:text-lg">/5</span>
             </div>
             <div className="text-[11px] sm:text-xs text-[#EC89B5] font-mono mt-1 truncate">Positive caller ratings</div>
-          </div>
+          </motion.div>
         </div>
 
-        {/* Tab 1: Call Logs */}
+        {/* Tab 1: Call Logs (Console Deck Expansion) */}
         {activeTab === "calls" && (
-          <div 
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.92, y: 35 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
             className="rounded-2xl border border-white/10 p-4 sm:p-8 shadow-2xl bg-[#120810]/80 backdrop-blur-xl"
           >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-white/[0.08]">
@@ -270,12 +299,16 @@ export default function AivaDashboardPreviewSection() {
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Tab 2: Calendar */}
         {activeTab === "schedule" && (
-          <div 
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.92, y: 35 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
             className="rounded-2xl border border-white/10 p-4 sm:p-8 shadow-2xl bg-[#120810]/80 backdrop-blur-xl"
           >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-white/[0.08]">
@@ -315,12 +348,16 @@ export default function AivaDashboardPreviewSection() {
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Tab 3: CRM */}
         {activeTab === "crm" && (
-          <div 
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.92, y: 35 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
             className="rounded-2xl border border-white/10 p-4 sm:p-8 shadow-2xl bg-[#120810]/80 backdrop-blur-xl"
           >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-white/[0.08]">
@@ -366,7 +403,7 @@ export default function AivaDashboardPreviewSection() {
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
         )}
       </div>
     </section>

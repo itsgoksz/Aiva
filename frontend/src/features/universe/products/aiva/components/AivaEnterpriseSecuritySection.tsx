@@ -6,6 +6,15 @@ import {
   CheckCircle2,
   Cpu
 } from "lucide-react";
+import { motion } from "framer-motion";
+
+// Apple-style 4-card security bloom offsets
+const SECURITY_OFFSETS = [
+  { x: -28, y: 30 },
+  { x: -10, y: 30 },
+  { x: 10, y: 30 },
+  { x: 28, y: 30 },
+];
 
 interface PillarItem {
   tag: string;
@@ -103,14 +112,33 @@ export default function AivaEnterpriseSecuritySection() {
           </p>
         </div>
 
-        {/* 4 Apple-Style Enterprise Cards (Solid obsidian, zero flicker) */}
+        {/* 4 Apple-Style Enterprise Cards (Solid obsidian with Apple directional bloom) */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {PILLARS.map((p) => {
+          {PILLARS.map((p, idx) => {
             const Icon = p.icon;
+            const offset = SECURITY_OFFSETS[idx] || { x: 0, y: 30 };
             return (
-              <div
+              <motion.div
                 key={p.title}
-                className="rounded-2xl border border-white/10 bg-[#0E060D] p-5 sm:p-7 relative overflow-hidden flex flex-col justify-between transition-all duration-200 hover:border-[#E65C8E]/40 shadow-xl"
+                initial={{ 
+                  opacity: 0, 
+                  scale: 0.88, 
+                  x: offset.x, 
+                  y: offset.y 
+                }}
+                whileInView={{ 
+                  opacity: 1, 
+                  scale: 1, 
+                  x: 0, 
+                  y: 0 
+                }}
+                viewport={{ once: false, amount: 0.2 }}
+                transition={{ 
+                  duration: 0.85, 
+                  ease: [0.16, 1, 0.3, 1], 
+                  delay: idx * 0.08 
+                }}
+                className="rounded-2xl border border-white/10 bg-[#0E060D] p-5 sm:p-7 relative overflow-hidden flex flex-col justify-between transition-colors duration-200 hover:border-[#E65C8E]/40 shadow-xl"
                 style={{
                   boxShadow: "inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 20px 40px rgba(0, 0, 0, 0.6)"
                 }}
@@ -165,7 +193,7 @@ export default function AivaEnterpriseSecuritySection() {
                     {p.protocol}
                   </span>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
