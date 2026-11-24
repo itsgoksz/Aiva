@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import AivaCardMorphBridge from "./AivaCardMorphBridge";
-import { 
-  Phone, 
-  CheckCircle2, 
-  Clock, 
+import {
+  Phone,
+  CheckCircle2,
+  Clock,
   IndianRupee,
   HeartHandshake
 } from "lucide-react";
@@ -82,16 +82,16 @@ export default function AivaDashboardPreviewSection() {
   return (
     <section id="dashboard-preview" className="pt-10 pb-16 sm:pt-14 sm:pb-20 relative overflow-hidden bg-transparent" style={{ perspective: "1200px" }}>
       {/* Background ambient lighting — Smooth radial gradient (Zero GPU blur-box clipping) */}
-      <div 
+      <div
         className="absolute top-1/4 -left-[10%] w-[650px] h-[650px] pointer-events-none opacity-35"
-        style={{ 
-          background: "radial-gradient(circle at 40% 50%, rgba(166, 107, 142, 0.28) 0%, rgba(230, 92, 142, 0.08) 50%, transparent 75%)" 
+        style={{
+          background: "radial-gradient(circle at 40% 50%, rgba(166, 107, 142, 0.28) 0%, rgba(230, 92, 142, 0.08) 50%, transparent 75%)"
         }}
       />
-      <div 
+      <div
         className="absolute bottom-10 -right-[10%] w-[650px] h-[650px] pointer-events-none opacity-30"
-        style={{ 
-          background: "radial-gradient(circle at 60% 50%, rgba(230, 92, 142, 0.25) 0%, rgba(166, 107, 142, 0.06) 50%, transparent 75%)" 
+        style={{
+          background: "radial-gradient(circle at 60% 50%, rgba(230, 92, 142, 0.25) 0%, rgba(166, 107, 142, 0.06) 50%, transparent 75%)"
         }}
       />
 
@@ -100,7 +100,7 @@ export default function AivaDashboardPreviewSection() {
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase text-[#EC89B5] border border-[#A66B8E]/30 bg-[#A66B8E]/10 mb-4 font-mono">
             Management Console
           </div>
-          <h2 
+          <h2
             className="text-3xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
@@ -115,17 +115,16 @@ export default function AivaDashboardPreviewSection() {
             <div className="inline-flex p-1 sm:p-1.5 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-xl">
               <button
                 onClick={() => setActiveTab("calls")}
-                className={`whitespace-nowrap px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
-                  activeTab === "calls"
-                    ? "text-white shadow-md"
-                    : "text-white/60 hover:text-white"
-                }`}
+                className={`whitespace-nowrap px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${activeTab === "calls"
+                  ? "text-white shadow-md"
+                  : "text-white/60 hover:text-white"
+                  }`}
                 style={
                   activeTab === "calls"
                     ? {
-                        background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
-                        boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 12px rgba(230, 92, 142, 0.35)",
-                      }
+                      background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
+                      boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 12px rgba(230, 92, 142, 0.35)",
+                    }
                     : {}
                 }
               >
@@ -134,17 +133,16 @@ export default function AivaDashboardPreviewSection() {
               </button>
               <button
                 onClick={() => setActiveTab("schedule")}
-                className={`whitespace-nowrap px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
-                  activeTab === "schedule"
-                    ? "text-white shadow-md"
-                    : "text-white/60 hover:text-white"
-                }`}
+                className={`whitespace-nowrap px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${activeTab === "schedule"
+                  ? "text-white shadow-md"
+                  : "text-white/60 hover:text-white"
+                  }`}
                 style={
                   activeTab === "schedule"
                     ? {
-                        background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
-                        boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 12px rgba(230, 92, 142, 0.35)",
-                      }
+                      background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
+                      boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 12px rgba(230, 92, 142, 0.35)",
+                    }
                     : {}
                 }
               >
@@ -153,17 +151,16 @@ export default function AivaDashboardPreviewSection() {
               </button>
               <button
                 onClick={() => setActiveTab("crm")}
-                className={`whitespace-nowrap px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
-                  activeTab === "crm"
-                    ? "text-white shadow-md"
-                    : "text-white/60 hover:text-white"
-                }`}
+                className={`whitespace-nowrap px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${activeTab === "crm"
+                  ? "text-white shadow-md"
+                  : "text-white/60 hover:text-white"
+                  }`}
                 style={
                   activeTab === "crm"
                     ? {
-                        background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
-                        boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 12px rgba(230, 92, 142, 0.35)",
-                      }
+                      background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
+                      boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 12px rgba(230, 92, 142, 0.35)",
+                    }
                     : {}
                 }
               >
@@ -175,14 +172,14 @@ export default function AivaDashboardPreviewSection() {
         </div>
 
         {/* Transformation Bridge 01 -> 01 */}
-        <AivaCardMorphBridge 
-          variant="bus-1-to-1" 
-          label="CARD METAMORPHOSIS // 01 ➔ 01 [MORPH INTO TELEMETRY CONSOLE]" 
+        <AivaCardMorphBridge
+          variant="bus-1-to-1"
+          label="CARD METAMORPHOSIS // 01 ➔ 01 [MORPH INTO TELEMETRY CONSOLE]"
         />
 
         {/* Top Metric Cards (Cascade from Top Edge) */}
         <div id="card-module-04" className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.90, y: -24 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: false, amount: 0.2 }}
@@ -200,7 +197,7 @@ export default function AivaDashboardPreviewSection() {
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.90, y: -24 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: false, amount: 0.2 }}
@@ -217,7 +214,7 @@ export default function AivaDashboardPreviewSection() {
             <div className="text-[11px] sm:text-xs text-white/50 font-mono mt-1 truncate">18 appointments scheduled</div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.90, y: -24 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: false, amount: 0.2 }}
@@ -232,7 +229,7 @@ export default function AivaDashboardPreviewSection() {
             <div className="text-[11px] sm:text-xs text-white/50 font-mono mt-1 truncate">This week alone</div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.90, y: -24 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: false, amount: 0.2 }}
@@ -252,7 +249,7 @@ export default function AivaDashboardPreviewSection() {
 
         {/* Tab 1: Call Logs (Console Deck Expansion) */}
         {activeTab === "calls" && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.92, y: 35 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: false, amount: 0.15 }}
@@ -322,7 +319,7 @@ export default function AivaDashboardPreviewSection() {
 
         {/* Tab 2: Calendar */}
         {activeTab === "schedule" && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.92, y: 35 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: false, amount: 0.15 }}
@@ -368,7 +365,7 @@ export default function AivaDashboardPreviewSection() {
                     </div>
                   </div>
 
-                  <span 
+                  <span
                     className="text-[11px] sm:text-xs font-mono px-2.5 py-1 rounded-lg self-start sm:self-center font-semibold whitespace-nowrap"
                     style={{ background: `${item.color}15`, color: item.color, border: `1px solid ${item.color}30` }}
                   >
@@ -382,7 +379,7 @@ export default function AivaDashboardPreviewSection() {
 
         {/* Tab 3: CRM */}
         {activeTab === "crm" && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.92, y: 35 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: false, amount: 0.15 }}

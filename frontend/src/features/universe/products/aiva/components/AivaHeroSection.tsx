@@ -99,7 +99,7 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-28 pb-20 overflow-hidden bg-transparent">
+    <section className="relative min-h-[640px] sm:min-h-screen flex items-center justify-center pt-24 sm:pt-28 pb-16 sm:pb-20 overflow-hidden bg-transparent">
       {/* Velvet Rose & Indigo Ambient Glows (Mobile-centered + Desktop lateral) */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
         {/* Primary Hero Ambient Aura: centered on mobile, lateral on desktop */}

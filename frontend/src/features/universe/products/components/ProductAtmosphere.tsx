@@ -1,18 +1,20 @@
 /**
  * ProductAtmosphere — Unified Celestial Starfield & Atmospheric Glow
  * 
- * Provides a subtle, diamond-sharp starfield and rich responsive nebula glows
- * across all product pages (Aiva, Wellora, CasaMoto, etc.) while preserving
- * each product's bespoke color palette and brand identity.
+ * Provides:
+ * 1. Fixed, rock-solid starfield canvas immune to iOS Safari / mobile address bar resizing
+ * 2. Delicate, twinkling stars with product-themed tinting
+ * 3. Radial ambient atmospheric nebula glows matching the product's color system
+ * 4. Micro-dot subtle space grid for high-tech spatial alignment
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface ProductAtmosphereProps {
-  accentColor: string;       // Primary product color (e.g. '#A66B8E', '#2ECC71', '#FF6B00')
-  secondaryAccent?: string;  // Secondary/glow color (e.g. '#E65C8E')
-  bgBaseColor?: string;      // Base dark hue (e.g. '#0A0508')
-  starCount?: number;        // Total stars (default 220)
+  accentColor: string;
+  secondaryAccent?: string;
+  bgBaseColor?: string;
+  starCount?: number;
 }
 
 interface Star {
@@ -27,14 +29,20 @@ interface Star {
   driftSpeed: number;
 }
 
-// Convert hex to rgb
 function hexToRgb(hex: string): [number, number, number] {
-  let cleanHex = hex.replace('#', '');
-  if (cleanHex.length === 3) {
-    cleanHex = cleanHex.split('').map(c => c + c).join('');
+  const clean = hex.replace('#', '');
+  if (clean.length === 3) {
+    return [
+      parseInt(clean[0] + clean[0], 16),
+      parseInt(clean[1] + clean[1], 16),
+      parseInt(clean[2] + clean[2], 16),
+    ];
   }
-  const num = parseInt(cleanHex, 16);
-  return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+  return [
+    parseInt(clean.substring(0, 2), 16),
+    parseInt(clean.substring(2, 4), 16),
+    parseInt(clean.substring(4, 6), 16),
+  ];
 }
 
 export default function ProductAtmosphere({
@@ -45,18 +53,28 @@ export default function ProductAtmosphere({
 }: ProductAtmosphereProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const secondary = secondaryAccent || accentColor;
-  const rgbAccent = hexToRgb(secondary);
+  const rgbAccent = hexToRgb(accentColor);
+
+  // Stable viewport height that NEVER changes when mobile address bar expands/contracts
+  const [stableHeight, setStableHeight] = useState<number>(() => {
+    if (typeof window === 'undefined') return 900;
+    const screenH = (window.screen && window.screen.height) ? window.screen.height : window.innerHeight;
+    return Math.max(window.innerHeight, screenH) + 120;
+  });
+
+  const lastWidthRef = useRef<number>(typeof window !== 'undefined' ? window.innerWidth : 1000);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     let animId: number;
-    let width = 0;
-    let height = 0;
     let stars: Star[] = [];
+    let width = window.innerWidth;
+    let height = stableHeight;
 
     const initStars = (w: number, h: number) => {
       // Responsive star count: ~180 on mobile, ~280 on desktop
@@ -84,10 +102,25 @@ export default function ProductAtmosphere({
     };
 
     const handleResize = () => {
+      const newWidth = window.innerWidth;
+      const newHeight = window.innerHeight;
+
+      // On iOS Safari / Android Chrome, address bar expand/collapse changes height by ~50-90px.
+      // If width hasn't changed significantly (< 40px), ignore it completely!
+      // This prevents canvas re-seeding and background jitter when scrolling up/down.
+      if (Math.abs(newWidth - lastWidthRef.current) < 40) {
+        return;
+      }
+
+      lastWidthRef.current = newWidth;
+      const screenH = (window.screen && window.screen.height) ? window.screen.height : newHeight;
+      const newStableHeight = Math.max(newHeight, screenH) + 120;
+      setStableHeight(newStableHeight);
+
+      width = newWidth;
+      height = newStableHeight;
+
       const dpr = Math.min(window.devicePixelRatio || 1, 3);
-      width = window.innerWidth;
-      height = window.innerHeight;
-      
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       canvas.style.width = `${width}px`;
@@ -97,7 +130,15 @@ export default function ProductAtmosphere({
       stars = initStars(width, height);
     };
 
-    handleResize();
+    // Initial setup
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    ctx.scale(dpr, dpr);
+    stars = initStars(width, height);
+
     window.addEventListener('resize', handleResize, { passive: true });
 
     let lastTime = performance.now();
@@ -152,18 +193,17 @@ export default function ProductAtmosphere({
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', handleResize);
     };
-  }, [starCount, secondary, rgbAccent]);
+  }, [starCount, secondary, rgbAccent, stableHeight]);
 
   return (
     <div 
-      className="fixed inset-0 pointer-events-none overflow-hidden"
+      className="fixed inset-x-0 top-0 pointer-events-none overflow-hidden"
       style={{ 
         position: 'fixed',
         top: 0,
         left: 0,
-        width: '100vw',
-        height: '100lvh',
-        minHeight: '100vh',
+        width: '100%',
+        height: `${stableHeight}px`,
         zIndex: 0,
         backgroundColor: bgBaseColor,
       }}
@@ -171,7 +211,7 @@ export default function ProductAtmosphere({
       {/* ── 1. Themed Radial Atmospheric Nebula Glows (Responsive Mobile + Desktop) ── */}
       {/* Top Hero Glow — Fills mobile and desktop with product color aura */}
       <div 
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[140vw] sm:w-[90vw] h-[55vh] sm:h-[65vh] pointer-events-none"
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[140vw] sm:w-[90vw] h-[520px] sm:h-[650px] pointer-events-none"
         style={{
           background: `radial-gradient(ellipse 70% 60% at 50% 15%, ${secondary}30 0%, ${accentColor}12 45%, transparent 75%)`,
         }}
@@ -179,7 +219,7 @@ export default function ProductAtmosphere({
 
       {/* Floating Ambient Orb (Left) */}
       <div 
-        className="absolute top-[35%] -left-[20%] sm:-left-[10%] w-[80vw] sm:w-[45vw] h-[80vw] sm:h-[45vw] rounded-full blur-[100px] sm:blur-[160px] pointer-events-none opacity-40 sm:opacity-25"
+        className="absolute top-[30%] -left-[20%] sm:-left-[10%] w-[80vw] sm:w-[45vw] h-[80vw] sm:h-[45vw] rounded-full blur-[100px] sm:blur-[160px] pointer-events-none opacity-40 sm:opacity-25"
         style={{
           background: `radial-gradient(circle, ${accentColor} 0%, transparent 70%)`,
         }}
@@ -187,7 +227,7 @@ export default function ProductAtmosphere({
 
       {/* Floating Ambient Orb (Right) */}
       <div 
-        className="absolute top-[65%] -right-[25%] sm:-right-[10%] w-[90vw] sm:w-[50vw] h-[90vw] sm:h-[50vw] rounded-full blur-[110px] sm:blur-[170px] pointer-events-none opacity-35 sm:opacity-25"
+        className="absolute top-[60%] -right-[25%] sm:-right-[10%] w-[90vw] sm:w-[50vw] h-[90vw] sm:h-[50vw] rounded-full blur-[110px] sm:blur-[170px] pointer-events-none opacity-35 sm:opacity-25"
         style={{
           background: `radial-gradient(circle, ${secondary} 0%, transparent 70%)`,
         }}
@@ -195,7 +235,7 @@ export default function ProductAtmosphere({
 
       {/* Bottom CTA Aura */}
       <div 
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[130vw] sm:w-[85vw] h-[40vh] pointer-events-none"
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[130vw] sm:w-[85vw] h-[350px] sm:h-[420px] pointer-events-none"
         style={{
           background: `radial-gradient(ellipse 80% 50% at 50% 100%, ${secondary}22 0%, transparent 70%)`,
         }}
