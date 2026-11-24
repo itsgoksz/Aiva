@@ -1,13 +1,16 @@
 /**
- * AivaCinematicCardStage — Cosmic Metamorphosis Theater (Active Theory Architecture)
+ * AivaCinematicCardStage — Cosmic Metamorphosis Theater (Namma Universe Architecture)
  * 
  * Cinematic Features:
- * 1. Planetary Emergence Animation for Cards (Matching Namma Universe):
- *    The card ITSELF emerges smoothly from deep within the background space
- *    (starting at scale 0.42, soft blur, and subtle 3D planetary inclination, then gliding forward into full crystal clarity).
- * 2. Pure Card Focus: No floating planet meshes—the card is the celestial centerpiece.
- * 3. Atmospheric Planetary Corona: A soft, radiant planetary atmosphere blooms around each card.
- * 4. 3D Interactive Tilt & Specular Ray: Tactile 3D perspective tracking with dynamic sheen.
+ * 1. Exact Namma Universe Celestial Camera Zoom:
+ *    When entering the section, the camera zooms in smoothly from deep space into the card
+ *    (initial zoom from scale 0.38, deep z-space, and soft depth blur into full crystal clarity).
+ * 2. Namma Universe Planet-to-Planet Orbital Transition:
+ *    When switching between sections, the cards animate exactly like planets transitioning in Namma Universe:
+ *    the active card sweeps along a 3D orbital curve while the incoming card swoops in from its orbital coordinates.
+ * 3. Pure, Pristine Obsidian Glass Cards:
+ *    Zero cartoonish overlays or stickers. Full focus on elegant, readable cards.
+ * 4. Active Theory 3D Tilt Physics: Subtle perspective tilt with dynamic specular ray sheen.
  * 5. Mobile Smoothness & Touch Swipe: Responsive touch gestures and dynamic viewport sizing.
  */
 
@@ -200,59 +203,53 @@ const GOVERNANCE_PILLARS = [
   }
 ];
 
-// --- PLANETARY CARD EMERGENCE & DISSOLUTION PHYSICS ---
-// Mimics how planets emerge smoothly from deep within the background space in Namma Universe
-const PLANETARY_CARD_TRANSITION = {
-  initial: { 
-    opacity: 0, 
-    scale: 0.42, 
-    rotateX: -10, 
-    filter: "blur(16px)", 
-    y: 40 
+// ─── NAMMA UNIVERSE CELESTIAL CAMERA TRANSITIONS ─────────────
+// Exact 3D orbital camera flight matching Namma Universe's planet-to-planet transitions:
+// - Initial Zoom: Camera zooms in from deep space into the first card.
+// - Forward Sweep: Outgoing card glides away along an orbital arc (leftward & back),
+//   while the incoming card swoops into focus from the forward orbital curve.
+// - Backward Sweep: Reverses direction smoothly when scrolling back up.
+const NAMMA_UNIVERSE_TRANSITION = {
+  initial: (direction: number) => ({
+    opacity: 0,
+    x: direction === 0 ? 0 : direction > 0 ? 240 : -240,
+    y: direction === 0 ? 50 : 0,
+    z: direction === 0 ? -650 : -250,
+    scale: direction === 0 ? 0.38 : 0.84,
+    rotateY: direction === 0 ? 0 : direction > 0 ? -16 : 16,
+    rotateX: direction === 0 ? -8 : 0,
+    filter: "blur(14px)",
+  }),
+  animate: {
+    opacity: 1,
+    x: 0,
+    y: 0,
+    z: 0,
+    scale: 1,
+    rotateY: 0,
+    rotateX: 0,
+    filter: "blur(0px)",
+    transition: {
+      duration: 0.9,
+      ease: [0.16, 1, 0.3, 1], // Exact smooth lerp curve matching Namma Universe camera
+    },
   },
-  animate: { 
-    opacity: 1, 
-    scale: 1, 
-    rotateX: 0, 
-    filter: "blur(0px)", 
-    y: 0 
-  },
-  exit: { 
-    opacity: 0, 
-    scale: 0.38, 
-    rotateX: 10, 
-    filter: "blur(18px)", 
-    y: -40 
-  },
-  transition: { 
-    duration: 0.95, 
-    ease: [0.16, 1, 0.3, 1] // Active Theory smooth celestial deceleration curve
-  }
+  exit: (direction: number) => ({
+    opacity: 0,
+    x: direction > 0 ? -240 : 240,
+    y: 0,
+    z: -250,
+    scale: 0.84,
+    rotateY: direction > 0 ? 16 : -16,
+    filter: "blur(14px)",
+    transition: {
+      duration: 0.75,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  }),
 };
 
-// Radiant Planetary Atmosphere Corona (Expands softly behind each card)
-function PlanetaryAtmosphereAura() {
-  return (
-    <div className="pointer-events-none absolute -inset-8 sm:-inset-16 z-0 overflow-visible">
-      {/* Soft Spherical Atmospheric Nebula Halo */}
-      <div 
-        className="absolute inset-0 rounded-full opacity-60 blur-3xl transition-opacity duration-700"
-        style={{
-          background: "radial-gradient(circle at 50% 50%, rgba(230, 92, 142, 0.24) 0%, rgba(166, 107, 142, 0.12) 40%, transparent 72%)"
-        }}
-      />
-      {/* Subtle planetary orbital glow ring */}
-      <div 
-        className="absolute inset-4 sm:inset-6 rounded-3xl opacity-30 border border-[#E65C8E]/40"
-        style={{
-          boxShadow: "0 0 50px rgba(230, 92, 142, 0.25)"
-        }}
-      />
-    </div>
-  );
-}
-
-// --- 3D INTERACTIVE TILT CONTAINER (Active Theory Physics) ---
+// ─── 3D INTERACTIVE TILT CONTAINER ───────────────────────────
 
 interface TiltCardProps {
   children: React.ReactNode;
@@ -309,7 +306,7 @@ function TiltCard({ children, className = "", style = {} }: TiltCardProps) {
   );
 }
 
-// --- MAIN CINEMATIC CARD STAGE ---
+// ─── MAIN CINEMATIC CARD STAGE ───────────────────────────────
 
 interface AivaCinematicCardStageProps {
   onOpenBookDemo?: () => void;
@@ -324,6 +321,9 @@ export default function AivaCinematicCardStage({
 
   // Active Stage Index (0 to 6)
   const [stageIndex, setStageIndex] = useState(0);
+  // Direction: 0 = initial zoom from deep space, 1 = forward orbit, -1 = backward orbit
+  const [direction, setDirection] = useState(0);
+  const prevStageRef = useRef(0);
   const [isPlayingTour, setIsPlayingTour] = useState(false);
 
   // Audio Demo State (Stage 01)
@@ -343,6 +343,14 @@ export default function AivaCinematicCardStage({
   const recoveredBookings = Math.round(missedCallsMonthly * 0.65);
   const recoveredRevenueMonthly = Math.round(recoveredBookings * averageTicket);
 
+  // Change Stage with Directional Camera Orbit
+  const changeStage = (newIndex: number) => {
+    if (newIndex === stageIndex) return;
+    setDirection(newIndex > stageIndex ? 1 : -1);
+    prevStageRef.current = newIndex;
+    setStageIndex(newIndex);
+  };
+
   // Auto-advance audio dialogue in Stage 01
   const activeScenario = CALL_SCENARIOS[scenarioIdx];
   useEffect(() => {
@@ -361,13 +369,14 @@ export default function AivaCinematicCardStage({
     if (!isPlayingTour) return;
 
     const timer = setInterval(() => {
+      setDirection(1);
       setStageIndex((prev) => (prev + 1) % 7);
     }, 5500);
 
     return () => clearInterval(timer);
   }, [isPlayingTour]);
 
-  // Scroll Sync: Track container scroll to map to stage index
+  // Scroll Sync: Track container scroll to map to stage index with camera direction
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
@@ -377,7 +386,11 @@ export default function AivaCinematicCardStage({
     return scrollYProgress.on("change", (latest) => {
       if (isPlayingTour) return;
       const calculatedIndex = Math.min(6, Math.floor(latest * 7));
-      setStageIndex(calculatedIndex);
+      if (calculatedIndex !== prevStageRef.current) {
+        setDirection(calculatedIndex > prevStageRef.current ? 1 : -1);
+        prevStageRef.current = calculatedIndex;
+        setStageIndex(calculatedIndex);
+      }
     });
   }, [scrollYProgress, isPlayingTour]);
 
@@ -397,20 +410,20 @@ export default function AivaCinematicCardStage({
     if (Math.abs(deltaY) > 45 && Math.abs(deltaY) > Math.abs(deltaX)) {
       if (deltaY < 0 && stageIndex < 6) {
         setIsPlayingTour(false);
-        setStageIndex((prev) => Math.min(6, prev + 1));
+        changeStage(stageIndex + 1);
       } else if (deltaY > 0 && stageIndex > 0) {
         setIsPlayingTour(false);
-        setStageIndex((prev) => Math.max(0, prev - 1));
+        changeStage(stageIndex - 1);
       }
     }
   };
 
   const STAGE_METADATA = [
     { num: "01", short: "CORE", name: "Live Audio Ingest", title: "Answers on Ring One in Fluent Voice", badge: "AUTONOMOUS INGESTION" },
-    { num: "02", short: "LOGIC", name: "4-Quadrant Resolution", title: "Every Missed Call is Revenue Lost", badge: "THE FRONT-DESK REALITY" },
+    { num: "02", short: "LOGIC", name: "4-Quadrant Resolution", title: "Every Missed Call is Revenue Lost", badge: "FRONT-DESK REALITY" },
     { num: "03", short: "MATRIX", name: "Capability Parity", title: "Traditional Front Desk vs Aiva Teammate", badge: "SYSTEM COMPARISON" },
     { num: "04", short: "DECK", name: "Telemetry Console", title: "Real-Time Clinic Management Deck", badge: "LIVE TELEMETRY" },
-    { num: "05", short: "RUNTIME", name: "28s Autonomous Loop", title: "From Inquiry to Confirmed Booking", badge: "WORKFLOW PIPELINE" },
+    { num: "05", short: "LOOP", name: "28s Autonomous Loop", title: "From Inquiry to Confirmed Booking", badge: "WORKFLOW PIPELINE" },
     { num: "06", short: "ROI", name: "Financial Recovery", title: "Live Missed-Call Cost & Revenue Engine", badge: "FINANCIAL IMPACT" },
     { num: "07", short: "SHIELD", name: "Enterprise Governance", title: "Strict Compliance & Zero Risk Protocol", badge: "ENTERPRISE PROTOCOLS" },
   ];
@@ -431,7 +444,7 @@ export default function AivaCinematicCardStage({
         
         {/* Stage Header: Active Theory Style High-Altitude Narrative Ribbon */}
         <div className="max-w-5xl mx-auto w-full pt-1 sm:pt-3 text-center select-none shrink-0">
-          <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono tracking-widest uppercase text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-1 sm:mb-2">
+          <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono tracking-widest uppercase text-[#ECA9B7] border border-[#E65C8E]/30 bg-[#E65C8E]/10 mb-1.5 sm:mb-2">
             <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
             <span>MODULE {currentMeta.num} // {currentMeta.badge}</span>
           </div>
@@ -444,22 +457,26 @@ export default function AivaCinematicCardStage({
           </h2>
         </div>
 
-        {/* Central Morphing Stage (Card Emerging from Background like a Planet) */}
-        <div className="flex-1 max-w-5xl mx-auto w-full flex items-center justify-center my-auto py-2 sm:py-3 overflow-hidden">
-          <AnimatePresence mode="wait">
+        {/* Central Morphing Stage (3D Orbital Camera Perspectives) */}
+        <div 
+          className="flex-1 max-w-5xl mx-auto w-full flex items-center justify-center my-auto py-2 sm:py-3 overflow-hidden"
+          style={{ perspective: "1400px" }}
+        >
+          <AnimatePresence mode="wait" custom={direction}>
             
             {/* === STAGE 01: HERO AUDIO DEMO CARD === */}
             {stageIndex === 0 && (
               <motion.div
                 key="stage-01"
-                variants={PLANETARY_CARD_TRANSITION}
+                custom={direction}
+                variants={NAMMA_UNIVERSE_TRANSITION}
                 initial="initial"
                 animate="animate"
                 exit="exit"
                 className="w-full max-w-xl mx-auto relative"
+                style={{ transformStyle: "preserve-3d" }}
               >
-                <PlanetaryAtmosphereAura />
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-4 sm:p-7 shadow-[0_0_80px_rgba(230,92,142,0.24)] bg-gradient-to-b from-[#180A15]/90 via-[#0E050D]/90 to-[#120710]/90 backdrop-blur-2xl">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-4 sm:p-7 shadow-[0_0_80px_rgba(230,92,142,0.22)] bg-gradient-to-b from-[#180A15]/90 via-[#0E050D]/90 to-[#120710]/90 backdrop-blur-2xl">
                   {/* Chassis Ribbon */}
                   <div className="flex items-center justify-between pb-3 mb-3 sm:mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
                     <span className="flex items-center gap-2 text-[#EC89B5] font-semibold">
@@ -567,13 +584,14 @@ export default function AivaCinematicCardStage({
             {stageIndex === 1 && (
               <motion.div
                 key="stage-02"
-                variants={PLANETARY_CARD_TRANSITION}
+                custom={direction}
+                variants={NAMMA_UNIVERSE_TRANSITION}
                 initial="initial"
                 animate="animate"
                 exit="exit"
                 className="w-full max-w-5xl relative"
+                style={{ transformStyle: "preserve-3d" }}
               >
-                <PlanetaryAtmosphereAura />
                 <div className="grid sm:grid-cols-2 gap-3 sm:gap-4 max-h-[64vh] overflow-y-auto sm:overflow-visible pr-1 sm:pr-0 scrollbar-none">
                   {PROBLEMS.map((p) => {
                     const Icon = p.icon;
@@ -637,13 +655,14 @@ export default function AivaCinematicCardStage({
             {stageIndex === 2 && (
               <motion.div
                 key="stage-03"
-                variants={PLANETARY_CARD_TRANSITION}
+                custom={direction}
+                variants={NAMMA_UNIVERSE_TRANSITION}
                 initial="initial"
                 animate="animate"
                 exit="exit"
                 className="w-full max-w-4xl relative"
+                style={{ transformStyle: "preserve-3d" }}
               >
-                <PlanetaryAtmosphereAura />
                 <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-5 sm:p-8 shadow-[0_0_80px_rgba(230,92,142,0.24)] bg-gradient-to-b from-[#180A15]/90 to-[#0E050D]/90 backdrop-blur-2xl">
                   <div className="flex items-center justify-between pb-3 mb-4 sm:mb-5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
                     <span className="text-[#EC89B5] font-semibold">SYSTEM COMPARISON // UNIT 03</span>
@@ -702,13 +721,14 @@ export default function AivaCinematicCardStage({
             {stageIndex === 3 && (
               <motion.div
                 key="stage-04"
-                variants={PLANETARY_CARD_TRANSITION}
+                custom={direction}
+                variants={NAMMA_UNIVERSE_TRANSITION}
                 initial="initial"
                 animate="animate"
                 exit="exit"
                 className="w-full max-w-4xl relative"
+                style={{ transformStyle: "preserve-3d" }}
               >
-                <PlanetaryAtmosphereAura />
                 <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-4 sm:p-7 shadow-[0_0_80px_rgba(230,92,142,0.24)] bg-gradient-to-b from-[#180A15]/90 to-[#0E050D]/90 backdrop-blur-2xl">
                   {/* Top 4 Metrics */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 mb-4 sm:mb-5">
@@ -730,7 +750,7 @@ export default function AivaCinematicCardStage({
                     <div className="p-2.5 sm:p-3 rounded-xl bg-white/[0.02] border border-white/10">
                       <span className="text-[9px] sm:text-[10px] font-mono text-white/40 block">FEEDBACK</span>
                       <span className="text-lg sm:text-2xl font-bold font-mono text-pink-400">4.98/5</span>
-                      <span className="text-[9px] sm:text-[10px] text-[#EC89B5] font-mono block">Positive caller ratings</span>
+                      <span className="text-[9px] text-[#EC89B5] font-mono block">Positive caller ratings</span>
                     </div>
                   </div>
 
@@ -831,13 +851,14 @@ export default function AivaCinematicCardStage({
             {stageIndex === 4 && (
               <motion.div
                 key="stage-05"
-                variants={PLANETARY_CARD_TRANSITION}
+                custom={direction}
+                variants={NAMMA_UNIVERSE_TRANSITION}
                 initial="initial"
                 animate="animate"
                 exit="exit"
                 className="w-full max-w-5xl relative"
+                style={{ transformStyle: "preserve-3d" }}
               >
-                <PlanetaryAtmosphereAura />
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5 mb-3 sm:mb-4">
                   {WORKFLOW_STEPS.map((s) => {
                     const Icon = s.icon;
@@ -862,7 +883,6 @@ export default function AivaCinematicCardStage({
                   })}
                 </div>
 
-                {/* Staff Productivity Guarantee Card */}
                 <TiltCard className="p-4 sm:p-5 rounded-2xl border border-white/15 bg-gradient-to-b from-[#180A15]/95 to-[#0E050D]/95 backdrop-blur-2xl shadow-[0_0_50px_rgba(230,92,142,0.22)]">
                   <div className="flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
                     <div className="max-w-xl">
@@ -904,13 +924,14 @@ export default function AivaCinematicCardStage({
             {stageIndex === 5 && (
               <motion.div
                 key="stage-06"
-                variants={PLANETARY_CARD_TRANSITION}
+                custom={direction}
+                variants={NAMMA_UNIVERSE_TRANSITION}
                 initial="initial"
                 animate="animate"
                 exit="exit"
                 className="w-full max-w-4xl relative"
+                style={{ transformStyle: "preserve-3d" }}
               >
-                <PlanetaryAtmosphereAura />
                 <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-5 sm:p-8 shadow-[0_0_80px_rgba(230,92,142,0.24)] bg-gradient-to-b from-[#180A15]/90 to-[#0E050D]/90 backdrop-blur-2xl">
                   <div className="flex items-center justify-between pb-3 mb-4 sm:mb-5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
                     <span className="text-[#EC89B5] font-semibold">AIVA APPARATUS // UNIT 06</span>
@@ -975,13 +996,14 @@ export default function AivaCinematicCardStage({
             {stageIndex === 6 && (
               <motion.div
                 key="stage-07"
-                variants={PLANETARY_CARD_TRANSITION}
+                custom={direction}
+                variants={NAMMA_UNIVERSE_TRANSITION}
                 initial="initial"
                 animate="animate"
                 exit="exit"
                 className="w-full max-w-5xl relative"
+                style={{ transformStyle: "preserve-3d" }}
               >
-                <PlanetaryAtmosphereAura />
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5 mb-4 sm:mb-5">
                   {GOVERNANCE_PILLARS.map((p, idx) => {
                     const Icon = p.icon;
@@ -1053,7 +1075,7 @@ export default function AivaCinematicCardStage({
                     key={meta.num}
                     onClick={() => {
                       setIsPlayingTour(false);
-                      setStageIndex(idx);
+                      changeStage(idx);
                     }}
                     className={`px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-[11px] font-mono transition-all cursor-pointer ${
                       isActive
@@ -1081,7 +1103,7 @@ export default function AivaCinematicCardStage({
               <button
                 onClick={() => {
                   setIsPlayingTour(false);
-                  setStageIndex((prev) => Math.max(0, prev - 1));
+                  changeStage(Math.max(0, stageIndex - 1));
                 }}
                 disabled={stageIndex === 0}
                 className="p-1 text-white/50 hover:text-white disabled:opacity-20 transition-colors cursor-pointer"
@@ -1091,7 +1113,7 @@ export default function AivaCinematicCardStage({
               <button
                 onClick={() => {
                   setIsPlayingTour(false);
-                  setStageIndex((prev) => Math.min(6, prev + 1));
+                  changeStage(Math.min(6, stageIndex + 1));
                 }}
                 disabled={stageIndex === 6}
                 className="p-1 text-white/50 hover:text-white disabled:opacity-20 transition-colors cursor-pointer"
