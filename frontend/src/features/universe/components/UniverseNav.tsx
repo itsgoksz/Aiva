@@ -10,6 +10,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
+import { getStableVh } from './ParticleField';
 import { 
   Layers, 
   X, 
@@ -158,7 +159,7 @@ export default function UniverseNav() {
       const productsEl = document.getElementById('products');
       const constellationEl = document.getElementById('constellation');
 
-      const vh = window.innerHeight;
+      const vh = getStableVh();
       const mid = y + vh * 0.45;
 
       let nextSection = 'singularity';

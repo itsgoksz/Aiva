@@ -15,17 +15,34 @@ import * as THREE from 'three';
 
 // ─── Constants & Scratch Objects ─────────────────────────────
 
+// Stable viewport reference that ignores mobile browser address bar expand/collapse
+let stableVh = typeof window !== 'undefined' ? window.innerHeight : 800;
+let lastWidth = typeof window !== 'undefined' ? window.innerWidth : 1000;
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('resize', () => {
+    // Only update height on actual width changes (orientation flip or desktop window resize)
+    // NEVER on vertical-only address bar expand/contract!
+    if (Math.abs(window.innerWidth - lastWidth) > 50) {
+      lastWidth = window.innerWidth;
+      stableVh = window.innerHeight;
+    }
+  }, { passive: true });
+}
+
+export const getStableVh = () => stableVh;
+
 const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 const isLowEnd = typeof navigator !== 'undefined' && (navigator as any).hardwareConcurrency && (navigator as any).hardwareConcurrency <= 4;
 const isMobileOrLowEnd = isMobile || isLowEnd;
 
 // Calibrated particle counts:
-// - Desktop: 145,000 (lush, expansive 16:9 galaxy)
-// - Mobile (iPhone / modern mobile): 105,000 (pinpoint-sharp, dense, and luminous)
+// - Desktop: 150,000 (lush, expansive galaxy)
+// - Mobile (iPhone / modern mobile): 115,000 (dense, luminous, diamond-sharp)
 // - Low-end: 85,000
 const PARTICLE_COUNT = isLowEnd 
   ? 85000 
-  : (isMobile ? 105000 : 145000);
+  : (isMobile ? 115000 : 150000);
 
 // Reusable scratch objects to guarantee ZERO per-frame garbage collection
 const _scratchMouseVec = new THREE.Vector3();
@@ -547,8 +564,8 @@ function Particles({ progressRef, mouseRef, activeProductIndexRef }: ParticlesPr
   const uniforms = useMemo(() => ({
     uProgress:   { value: 0 },
     uTime:       { value: 0 },
-    uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
-    uHeight:     { value: window.innerHeight },
+    uPixelRatio: { value: typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 3) : 1 },
+    uHeight:     { value: getStableVh() },
     uRayOrigin:  { value: new THREE.Vector3() },
     uRayDir:     { value: new THREE.Vector3() },
     uWormhole:   { value: 0 },
@@ -561,7 +578,7 @@ function Particles({ progressRef, mouseRef, activeProductIndexRef }: ParticlesPr
     if (materialRef.current && groupRef.current) {
       materialRef.current.uniforms.uProgress.value = smoothProgress.current;
       materialRef.current.uniforms.uTime.value = clock.elapsedTime;
-      materialRef.current.uniforms.uHeight.value = window.innerHeight;
+      materialRef.current.uniforms.uHeight.value = getStableVh(); // Immune to address bar expansion
       
       const targetWormhole = sharedState.isWormhole ? 1.0 : 0.0;
       materialRef.current.uniforms.uWormhole.value += (targetWormhole - materialRef.current.uniforms.uWormhole.value) * (1 - Math.exp(-2 * delta));
@@ -860,7 +877,7 @@ function CameraController({ progressRef, activeProductIndexRef, mouseRef }: Came
     sharedState.entryTilt += (0 - sharedState.entryTilt) * (1 - Math.exp(-0.5 * delta));
     
     const scrollY = window.scrollY;
-    const vh = window.innerHeight;
+    const vh = getStableVh(); // Use stable height to completely prevent jumps when Safari toolbar expands/collapses
     const maxScroll = 4.0;
     const effectiveScroll = Math.min(scrollY / vh, maxScroll);
     const scrollForward = effectiveScroll * 0.8;
@@ -1149,7 +1166,20 @@ export default function ParticleField({ progressRef, activeProductIndexRef, clas
   }, []);
 
   return (
-    <div className={className} style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
+    <div 
+      className={className} 
+      style={{ 
+        position: 'fixed', 
+        top: 0, 
+        left: 0, 
+        width: '100vw', 
+        height: '100lvh', // Large Viewport Height: CONSTANT and immune to Safari address bar expand/collapse
+        minHeight: '100vh',
+        zIndex: 0,
+        pointerEvents: 'none',
+        overflow: 'hidden'
+      }}
+    >
       {/* Heavy vignette overlay for dramatic cinematic focus */}
       <div 
         style={{
@@ -1208,7 +1238,7 @@ export default function ParticleField({ progressRef, activeProductIndexRef, clas
       
       <Canvas
         camera={{ position: [0, 0, 20], fov: 65, near: 0.1, far: 150 }}
-        dpr={isLowEnd ? [1, 1.5] : [1, 2]}
+        dpr={typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 3) : 1}
         gl={{
           antialias: false,
           alpha: true,

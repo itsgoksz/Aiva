@@ -13,6 +13,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Ignore mobile vertical address bar resize events so ScrollTrigger doesn't jitter or recalculate pin offsets during scroll
+ScrollTrigger.config({
+  ignoreMobileResize: true,
+});
+
 const slides = [
   {
     text: 'Every technology begins as an idea.',
@@ -132,7 +137,8 @@ export default function PhilosophySection() {
       style={{
         position: 'relative',
         zIndex: 10,
-        height: '100dvh', // Modern dynamic viewport height: stable across mobile address bar show/hide
+        height: '100lvh', // Large Viewport Height: completely stable across mobile Safari address bar expand/collapse
+        minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

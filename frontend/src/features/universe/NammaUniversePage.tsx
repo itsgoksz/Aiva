@@ -12,7 +12,7 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
-import ParticleField from './components/ParticleField';
+import ParticleField, { getStableVh } from './components/ParticleField';
 import SingularityIntro from './components/SingularityIntro';
 import UniverseNav from './components/UniverseNav';
 import UniverseMap from './components/UniverseMap';
@@ -43,9 +43,10 @@ export default function NammaUniversePage() {
   useEffect(() => {
     const handleScroll = () => {
       // The intro section is 400vh tall. Map scroll within that to 0→1.
-      const introHeight = window.innerHeight * 4;
+      // Uses getStableVh() so mobile Safari address bar expansion/collapse never shifts progress
+      const introHeight = getStableVh() * 4;
       const raw = window.scrollY / introHeight;
-      progressRef.current = Math.min(raw, 1);
+      progressRef.current = raw >= 1 ? 1 : Math.max(0, raw);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });

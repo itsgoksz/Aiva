@@ -14,7 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useRef, useEffect, useState } from 'react';
 import { ExternalLink } from 'lucide-react';
-import { sharedState } from './ParticleField';
+import { sharedState, getStableVh } from './ParticleField';
 
 interface ProductWorld {
   id: string;
@@ -133,7 +133,7 @@ export default function ProductWorlds({ activeProductIndexRef }: { activeProduct
 
       const container = containerRef.current;
       const containerRect = container.getBoundingClientRect();
-      const vh = window.innerHeight;
+      const vh = getStableVh();
 
       // Early exit if the product container is far above or below the viewport
       // (e.g. user is in Philosophy, Singularity, or Constellation sections)
