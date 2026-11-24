@@ -132,7 +132,7 @@ export default function PhilosophySection() {
       style={{
         position: 'relative',
         zIndex: 10,
-        height: '100vh',
+        height: '100dvh', // Modern dynamic viewport height: stable across mobile address bar show/hide
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

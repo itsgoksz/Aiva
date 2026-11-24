@@ -19,11 +19,13 @@ const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 const isLowEnd = typeof navigator !== 'undefined' && (navigator as any).hardwareConcurrency && (navigator as any).hardwareConcurrency <= 4;
 const isMobileOrLowEnd = isMobile || isLowEnd;
 
-// Calibrated particle count: delivers the lush, dense cosmic starfields loved from before,
-// while guaranteeing zero lag and locked 60/120fps across all devices
-const PARTICLE_COUNT = isMobile 
-  ? 75000 
-  : (isLowEnd ? 110000 : 140000);
+// Calibrated particle counts:
+// - Desktop: 145,000 (lush, expansive 16:9 galaxy)
+// - Mobile (iPhone / modern mobile): 105,000 (pinpoint-sharp, dense, and luminous)
+// - Low-end: 85,000
+const PARTICLE_COUNT = isLowEnd 
+  ? 85000 
+  : (isMobile ? 105000 : 145000);
 
 // Reusable scratch objects to guarantee ZERO per-frame garbage collection
 const _scratchMouseVec = new THREE.Vector3();
@@ -592,13 +594,10 @@ function Particles({ progressRef, mouseRef, activeProductIndexRef }: ParticlesPr
       smoothMouse.current.x += (mouseRef.current.x - smoothMouse.current.x) * (1 - Math.exp(-4 * delta));
       smoothMouse.current.y += (mouseRef.current.y - smoothMouse.current.y) * (1 - Math.exp(-4 * delta));
       
-      const scrollY = window.scrollY;
-      const vh = window.innerHeight;
-      const extraScrollRot = Math.max(0, (scrollY / vh) - 4.0); // Starts tilting deeply after Intro
-
-      // Tilt the universe based on mouse (parallax) and deep scroll
-      groupRef.current.rotation.y = smoothMouse.current.x * 0.15 + (extraScrollRot * 0.05);
-      groupRef.current.rotation.x = -smoothMouse.current.y * 0.15 + (extraScrollRot * 0.02) + sharedState.entryTilt;
+      // Tilt the universe based purely on smooth mouse parallax and entry tilt decay.
+      // Background remains completely rock-solid and locked during Philosophy scroll!
+      groupRef.current.rotation.y = smoothMouse.current.x * 0.15;
+      groupRef.current.rotation.x = -smoothMouse.current.y * 0.15 + sharedState.entryTilt;
       
       // Cinematic spin (roll) around the camera's flight path
       groupRef.current.rotation.z = smoothProgress.current * 0.5 + (Date.now() % 100000) * 0.00005;
@@ -886,9 +885,8 @@ function CameraController({ progressRef, activeProductIndexRef, mouseRef }: Came
           Math.sin(angle0) * p0.radius
         );
         
-        const extraScrollRot = Math.max(0, (scrollY / vh) - 4.0);
-        const rx = -smoothMouse.current.y * 0.15 + (extraScrollRot * 0.02) + sharedState.entryTilt;
-        const ry = smoothMouse.current.x * 0.15 + (extraScrollRot * 0.05);
+        const rx = -smoothMouse.current.y * 0.15 + sharedState.entryTilt;
+        const ry = smoothMouse.current.x * 0.15;
         const rz = smoothProgress.current * 0.5 + (Date.now() % 100000) * 0.00005;
         _camEuler.set(rx, ry, rz, 'XYZ');
         
@@ -912,9 +910,8 @@ function CameraController({ progressRef, activeProductIndexRef, mouseRef }: Came
           Math.sin(angle1) * p1.radius
         );
         
-        const extraScrollRot = Math.max(0, (scrollY / vh) - 4.0);
-        const rx = -smoothMouse.current.y * 0.15 + (extraScrollRot * 0.02) + sharedState.entryTilt;
-        const ry = smoothMouse.current.x * 0.15 + (extraScrollRot * 0.05);
+        const rx = -smoothMouse.current.y * 0.15 + sharedState.entryTilt;
+        const ry = smoothMouse.current.x * 0.15;
         const rz = smoothProgress.current * 0.5 + (Date.now() % 100000) * 0.00005;
         _camEuler.set(rx, ry, rz, 'XYZ');
         
@@ -949,9 +946,8 @@ function CameraController({ progressRef, activeProductIndexRef, mouseRef }: Came
         );
         
         _camPos0.lerp(_camPos1, t);
-        const extraScrollRot = Math.max(0, (scrollY / vh) - 4.0);
-        const rx = -smoothMouse.current.y * 0.15 + (extraScrollRot * 0.02) + sharedState.entryTilt;
-        const ry = smoothMouse.current.x * 0.15 + (extraScrollRot * 0.05);
+        const rx = -smoothMouse.current.y * 0.15 + sharedState.entryTilt;
+        const ry = smoothMouse.current.x * 0.15;
         const rz = smoothProgress.current * 0.5 + (Date.now() % 100000) * 0.00005;
         
         _camEuler.set(rx, ry, rz, 'XYZ');
@@ -1113,18 +1109,16 @@ export default function ParticleField({ progressRef, activeProductIndexRef, clas
       };
     };
 
+    // Only track fine pointer movements (mouse) for parallax; touch swipes are for scrolling, not 3D scene tilting
     const handleMouseMove = (e: MouseEvent) => {
       updatePosition(e.clientX, e.clientY);
     };
 
-    const handleTouchMove = (e: TouchEvent) => {
-      if (e.touches.length > 0) {
-        updatePosition(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    };
-
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    // Only register mousemove on fine pointer devices (desktops/laptops).
+    // On mobile touchscreens, touch is strictly for scrolling so the background stays completely locked and calm!
+    if (typeof window !== 'undefined' && window.matchMedia('(pointer: fine)').matches) {
+      window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    }
     
     // ── KONAMI CODE EASTER EGG ──
     const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
@@ -1150,7 +1144,6 @@ export default function ParticleField({ progressRef, activeProductIndexRef, clas
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
@@ -1215,7 +1208,7 @@ export default function ParticleField({ progressRef, activeProductIndexRef, clas
       
       <Canvas
         camera={{ position: [0, 0, 20], fov: 65, near: 0.1, far: 150 }}
-        dpr={isMobileOrLowEnd ? [1, 1.25] : [1, 1.5]}
+        dpr={isLowEnd ? [1, 1.5] : [1, 2]}
         gl={{
           antialias: false,
           alpha: true,
