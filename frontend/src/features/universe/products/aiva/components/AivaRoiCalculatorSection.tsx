@@ -13,8 +13,10 @@ export default function AivaRoiCalculatorSection() {
   return (
     <section className="py-28 relative overflow-hidden bg-transparent">
       <div 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] sm:w-[700px] h-[400px] sm:h-[500px] rounded-full blur-[140px] sm:blur-[200px] pointer-events-none opacity-30 sm:opacity-15"
-        style={{ background: "#A66B8E" }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] sm:w-[700px] h-[400px] sm:h-[500px] rounded-full pointer-events-none opacity-30 sm:opacity-20"
+        style={{ 
+          background: "radial-gradient(ellipse at center, rgba(166, 107, 142, 0.28) 0%, rgba(230, 92, 142, 0.08) 50%, transparent 75%)" 
+        }}
       />
 
       <div className="container mx-auto px-6 max-w-6xl relative z-10">

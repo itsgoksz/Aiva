@@ -79,14 +79,18 @@ export default function AivaDashboardPreviewSection() {
 
   return (
     <section id="dashboard-preview" className="py-28 relative overflow-hidden bg-transparent">
-      {/* Background ambient lighting */}
+      {/* Background ambient lighting — Smooth radial gradient (Zero GPU blur-box clipping) */}
       <div 
-        className="absolute top-1/3 left-0 w-[550px] h-[550px] rounded-full blur-[180px] pointer-events-none opacity-25 sm:opacity-15"
-        style={{ background: "#A66B8E" }}
+        className="absolute top-1/4 -left-[10%] w-[650px] h-[650px] pointer-events-none opacity-35"
+        style={{ 
+          background: "radial-gradient(circle at 40% 50%, rgba(166, 107, 142, 0.28) 0%, rgba(230, 92, 142, 0.08) 50%, transparent 75%)" 
+        }}
       />
       <div 
-        className="absolute bottom-10 right-0 w-[550px] h-[550px] rounded-full blur-[180px] pointer-events-none opacity-25 sm:opacity-15"
-        style={{ background: "#A66B8E" }}
+        className="absolute bottom-10 -right-[10%] w-[650px] h-[650px] pointer-events-none opacity-30"
+        style={{ 
+          background: "radial-gradient(circle at 60% 50%, rgba(230, 92, 142, 0.25) 0%, rgba(166, 107, 142, 0.06) 50%, transparent 75%)" 
+        }}
       />
 
       <div className="container mx-auto px-6 max-w-7xl relative z-10">
@@ -170,7 +174,7 @@ export default function AivaDashboardPreviewSection() {
 
         {/* Top Metric Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8">
-          <div className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#0E060D] shadow-xl overflow-hidden">
+          <div className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#120810]/75 backdrop-blur-xl shadow-xl overflow-hidden">
             <div className="flex items-center justify-between text-[11px] sm:text-xs font-mono text-white/40 uppercase mb-1.5 sm:mb-2">
               <span className="truncate">Calls Today</span>
               <Phone size={13} className="text-[#EC89B5] shrink-0" />
@@ -182,7 +186,7 @@ export default function AivaDashboardPreviewSection() {
             </div>
           </div>
 
-          <div className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#0E060D] shadow-xl overflow-hidden">
+          <div className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#120810]/75 backdrop-blur-xl shadow-xl overflow-hidden">
             <div className="flex items-center justify-between text-[11px] sm:text-xs font-mono text-white/40 uppercase mb-1.5 sm:mb-2">
               <span className="truncate">Booked Revenue</span>
               <IndianRupee size={13} className="text-emerald-400 shrink-0" />
@@ -193,7 +197,7 @@ export default function AivaDashboardPreviewSection() {
             <div className="text-[11px] sm:text-xs text-white/50 font-mono mt-1 truncate">18 appointments scheduled</div>
           </div>
 
-          <div className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#0E060D] shadow-xl overflow-hidden">
+          <div className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#120810]/75 backdrop-blur-xl shadow-xl overflow-hidden">
             <div className="flex items-center justify-between text-[11px] sm:text-xs font-mono text-white/40 uppercase mb-1.5 sm:mb-2">
               <span className="truncate">Hours Saved</span>
               <Clock size={13} className="text-[#ECA9B7] shrink-0" />
@@ -202,7 +206,7 @@ export default function AivaDashboardPreviewSection() {
             <div className="text-[11px] sm:text-xs text-white/50 font-mono mt-1 truncate">This week alone</div>
           </div>
 
-          <div className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#0E060D] shadow-xl overflow-hidden">
+          <div className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 bg-[#120810]/75 backdrop-blur-xl shadow-xl overflow-hidden">
             <div className="flex items-center justify-between text-[11px] sm:text-xs font-mono text-white/40 uppercase mb-1.5 sm:mb-2">
               <span className="truncate">Feedback</span>
               <HeartHandshake size={13} className="text-pink-400 shrink-0" />
@@ -217,8 +221,7 @@ export default function AivaDashboardPreviewSection() {
         {/* Tab 1: Call Logs */}
         {activeTab === "calls" && (
           <div 
-            className="rounded-2xl border border-white/10 p-4 sm:p-8 shadow-2xl"
-            style={{ background: "#0E060D" }}
+            className="rounded-2xl border border-white/10 p-4 sm:p-8 shadow-2xl bg-[#120810]/80 backdrop-blur-xl"
           >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-white/[0.08]">
               <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
@@ -273,8 +276,7 @@ export default function AivaDashboardPreviewSection() {
         {/* Tab 2: Calendar */}
         {activeTab === "schedule" && (
           <div 
-            className="rounded-2xl border border-white/10 p-4 sm:p-8 shadow-2xl"
-            style={{ background: "#0E060D" }}
+            className="rounded-2xl border border-white/10 p-4 sm:p-8 shadow-2xl bg-[#120810]/80 backdrop-blur-xl"
           >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-white/[0.08]">
               <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
@@ -319,8 +321,7 @@ export default function AivaDashboardPreviewSection() {
         {/* Tab 3: CRM */}
         {activeTab === "crm" && (
           <div 
-            className="rounded-2xl border border-white/10 p-4 sm:p-8 shadow-2xl"
-            style={{ background: "#0E060D" }}
+            className="rounded-2xl border border-white/10 p-4 sm:p-8 shadow-2xl bg-[#120810]/80 backdrop-blur-xl"
           >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-white/[0.08]">
               <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
