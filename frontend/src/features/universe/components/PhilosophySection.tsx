@@ -80,9 +80,9 @@ export default function PhilosophySection() {
           tl.to(slide, { 
             autoAlpha: 0, 
             scale: 1.4, 
-            duration: 1.5,
+            duration: 1.2,
             ease: 'power2.in'
-          }, startTime + 1.0);
+          }, startTime + 1.2);
         } else {
           // Emerges gracefully with autoAlpha
           tl.fromTo(
@@ -96,18 +96,18 @@ export default function PhilosophySection() {
               autoAlpha: 1, 
               scale: 1.0, 
               y: 0, 
-              duration: 1.5,
+              duration: 1.2,
               ease: 'power2.out'
             },
             startTime
           );
           
           if (!isLast) {
-            // Flies past camera smoothly without giant texture blowups
+            // Flies past camera cleanly before next slide begins (ends at startTime + 2.9; slide i+1 starts at startTime + 3.0)
             tl.to(slide, { 
               autoAlpha: 0, 
               scale: 1.4, 
-              duration: 1.5,
+              duration: 0.9,
               ease: 'power2.in'
             }, startTime + 2.0); 
           } else {
