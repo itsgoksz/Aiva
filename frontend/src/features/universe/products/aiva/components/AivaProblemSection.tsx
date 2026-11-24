@@ -24,9 +24,9 @@ const PROBLEMS: ProblemItem[] = [
     title: "Unanswered calls during the daily rush.",
     stat: "62%",
     statLabel: "Never call back",
-    description: "When staff is occupied with in-person clients, the phone rings out. Most callers hang up within 8 seconds and immediately book with the next competitor on Google.",
-    solution: "Aiva answers in under 240ms with warm, natural hospitality. Handles unlimited concurrent callers, checks live operatory slots, and locks the booking right then and there.",
-    tags: ["Sub-300ms Pick-up", "Zero Busy Tones", "100% Captured"]
+    description: "When staff is occupied with in-person clients, calls ring out unanswered. Callers hang up within 8 seconds and immediately book with a competitor.",
+    solution: "Picks up in under 240ms with warm hospitality, handles unlimited concurrent callers, and locks bookings directly into your calendar.",
+    tags: ["< 240ms Pick-up", "Zero Busy Tones", "100% Call Capture"]
   },
   {
     icon: Clock,
@@ -34,9 +34,9 @@ const PROBLEMS: ProblemItem[] = [
     title: "Losing high-value bookings after you close.",
     stat: "38%",
     statLabel: "Inquiries after 8 PM",
-    description: "Clients remember to schedule appointments late at night or early Sunday morning when your doors are locked and nobody is at the reception desk.",
-    solution: "Aiva works 24/7/365 without overtime costs, converting late-night and weekend callers into confirmed appointments on your calendar with instant WhatsApp slips.",
-    tags: ["24/7 Coverage", "Instant WhatsApp Slips", "Zero Overtime"]
+    description: "Clients remember to book late at night or over the weekend when your clinic doors are locked and nobody is at the reception desk.",
+    solution: "Works 24/7/365 with zero overtime costs, locking appointments and sending instant WhatsApp confirmations while you sleep.",
+    tags: ["24/7/365 Always-On", "Instant WhatsApp Slips", "Zero Overtime Cost"]
   },
   {
     icon: Users,
@@ -44,9 +44,9 @@ const PROBLEMS: ProblemItem[] = [
     title: "Front desk constantly interrupted by the phone.",
     stat: "14 hrs",
     statLabel: "Lost weekly to phone tag",
-    description: "Your team is continually distracted while greeting clients in person to answer repetitive routine questions about pricing, doctor timings, and directions.",
-    solution: "Aiva handles 100% of routine inquiries and bookings autonomously in the background, freeing your front desk to deliver memorable in-room care.",
-    tags: ["Zero Desk Distraction", "100% Floor Focus", "Calmer Atmosphere"]
+    description: "Front desk staff is continually distracted while greeting clients in person to answer repetitive routine questions on pricing, doctor timings, and directions.",
+    solution: "Handles 100% of routine inquiries and appointment bookings autonomously, letting your team focus on premium in-person client care.",
+    tags: ["Zero Desk Distraction", "100% In-Person Focus", "Calmer Lobby Atmosphere"]
   },
   {
     icon: MessageSquareOff,
@@ -54,9 +54,9 @@ const PROBLEMS: ProblemItem[] = [
     title: "Treating loyal regulars like first-time strangers.",
     stat: "1 in 3",
     statLabel: "Churn from cold triage",
-    description: "Returning clients have to explain their treatment history, preferred specialist doctor, and contact info over again every single time they dial in.",
-    solution: "Aiva recognizes the caller ID instantly, greets them by name, recalls past services and doctor preferences, and delivers a warm, familiar concierge experience.",
-    tags: ["Instant VIP Recall", "Doctor Synchronization", "Loyalty Guard"]
+    description: "Returning VIP clients are forced to re-explain their treatment history, doctor preferences, and notes every time they dial in.",
+    solution: "Instantly recognizes caller ID, greets regulars by name, recalls past doctor notes and service preferences, and delivers warm VIP concierge care.",
+    tags: ["Instant VIP Recall", "Specialist Preference Sync", "Automated Client Memory"]
   }
 ];
 
@@ -93,67 +93,75 @@ export default function AivaProblemSection() {
           </p>
         </div>
 
-        {/* 4 Minimalist, Clutter-Free Cards */}
+        {/* 4 Premium, High-Readability Product Cards */}
         <div className="grid md:grid-cols-2 gap-6 mb-16">
           {PROBLEMS.map((item) => {
             const Icon = item.icon;
             return (
               <div
                 key={item.title}
-                className="group rounded-2xl sm:rounded-3xl border border-white/[0.07] bg-[#0C060B] hover:border-white/20 p-5 sm:p-8 lg:p-9 flex flex-col justify-between transition-all duration-300 relative overflow-hidden shadow-xl"
+                className="group rounded-2xl sm:rounded-3xl border border-white/[0.08] bg-[#120810]/75 hover:bg-[#150A13]/90 hover:border-[#E65C8E]/30 p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden backdrop-blur-xl shadow-2xl"
                 style={{
-                  boxShadow: "0 20px 40px -15px rgba(0, 0, 0, 0.7)"
+                  boxShadow: "0 24px 48px -18px rgba(0, 0, 0, 0.75)"
                 }}
               >
+                {/* Subtle top edge gradient highlight on hover */}
+                <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-[#E65C8E]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
                 <div>
-                  {/* Top Header: Clean category & stat */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-white/[0.06] mb-5 sm:mb-6">
+                  {/* Top Header: Category & Stat Badge */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 pb-5 border-b border-white/[0.06] mb-5 sm:mb-6">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-[#ECA9B7]">
+                      <div className="w-8 h-8 rounded-lg bg-[#E65C8E]/10 border border-[#E65C8E]/25 flex items-center justify-center text-[#ECA9B7] group-hover:bg-[#E65C8E]/20 transition-colors">
                         <Icon size={16} />
                       </div>
-                      <span className="text-xs font-mono tracking-wider uppercase text-white/50 font-medium">
+                      <span className="text-xs font-mono tracking-wider uppercase text-white/70 font-semibold">
                         {item.category}
                       </span>
                     </div>
 
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] text-xs font-mono text-white/80">
-                      <span className="font-bold text-[#ECA9B7]">{item.stat}</span>
-                      <span className="text-white/40 font-light">· {item.statLabel}</span>
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono">
+                      <span className="font-bold text-[#ECA9B7] text-sm">{item.stat}</span>
+                      <span className="text-white/50 text-[11px] font-normal">· {item.statLabel}</span>
                     </div>
                   </div>
 
                   {/* Title */}
                   <h3 
-                    className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug mb-6"
+                    className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug mb-5 group-hover:text-pink-50 transition-colors"
                     style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                   >
                     {item.title}
                   </h3>
 
-                  {/* Minimal Typographic Contrast (Zero Box Clutter) */}
-                  <div className="space-y-4 mb-8">
-                    {/* Without Aiva */}
-                    <div className="flex items-start gap-3">
-                      <span className="w-1.5 h-1.5 rounded-full bg-red-400/80 mt-2 shrink-0" />
+                  {/* Structured Dual Contrast Cards (High Readability & Visual Clarity) */}
+                  <div className="space-y-3 mb-6">
+                    {/* The Friction / Without Aiva */}
+                    <div className="rounded-xl p-3.5 sm:p-4 bg-red-950/20 border border-red-500/15 flex items-start gap-3">
+                      <div className="w-5 h-5 rounded-md bg-red-500/15 border border-red-500/30 flex items-center justify-center shrink-0 mt-0.5 text-red-400 text-xs font-bold font-mono">
+                        ✕
+                      </div>
                       <div>
-                        <span className="text-[11px] font-mono uppercase tracking-widest text-red-400/80 block mb-1">
-                          Without Aiva
-                        </span>
-                        <p className="text-sm text-white/55 leading-relaxed font-light">
+                        <div className="text-[11px] font-mono uppercase tracking-wider text-red-400/90 font-semibold mb-1">
+                          The Friction · Without Aiva
+                        </div>
+                        <p className="text-sm text-white/70 leading-relaxed font-normal">
                           {item.description}
                         </p>
                       </div>
                     </div>
 
-                    {/* With Aiva */}
-                    <div className="flex items-start gap-3 pt-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] mt-2 shrink-0 shadow-[0_0_8px_#E65C8E]" />
+                    {/* The Aiva Fix */}
+                    <div className="rounded-xl p-3.5 sm:p-4 bg-[#E65C8E]/[0.08] border border-[#E65C8E]/25 flex items-start gap-3 shadow-sm shadow-[#E65C8E]/10">
+                      <div className="w-5 h-5 rounded-md bg-[#E65C8E]/20 border border-[#E65C8E]/40 flex items-center justify-center shrink-0 mt-0.5 text-[#ECA9B7] text-xs font-bold font-mono">
+                        ✓
+                      </div>
                       <div>
-                        <span className="text-[11px] font-mono uppercase tracking-widest text-[#ECA9B7] block mb-1">
-                          With Aiva
-                        </span>
-                        <p className="text-sm text-white/90 leading-relaxed font-normal">
+                        <div className="text-[11px] font-mono uppercase tracking-wider text-[#ECA9B7] font-semibold mb-1 flex items-center gap-2">
+                          <span>The Aiva Advantage</span>
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
+                        </div>
+                        <p className="text-sm text-white/95 leading-relaxed font-normal">
                           {item.solution}
                         </p>
                       </div>
@@ -161,13 +169,15 @@ export default function AivaProblemSection() {
                   </div>
                 </div>
 
-                {/* Footer Micro-Specs */}
-                <div className="pt-4 border-t border-white/[0.06] flex flex-wrap items-center gap-2 text-xs font-mono text-white/40">
-                  {item.tags.map((tag, idx) => (
-                    <React.Fragment key={tag}>
-                      {idx > 0 && <span className="text-white/20">·</span>}
-                      <span>{tag}</span>
-                    </React.Fragment>
+                {/* Footer Micro-Specs as Modern Badges */}
+                <div className="pt-4 border-t border-white/[0.06] flex flex-wrap items-center gap-2">
+                  {item.tags.map((tag) => (
+                    <span 
+                      key={tag}
+                      className="px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.07] text-[11px] font-mono text-white/60 tracking-tight hover:text-white/80 transition-colors"
+                    >
+                      {tag}
+                    </span>
                   ))}
                 </div>
               </div>
