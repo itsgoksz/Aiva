@@ -83,7 +83,7 @@ const PILLARS: PillarItem[] = [
 
 export default function AivaEnterpriseSecuritySection() {
   return (
-    <section className="pt-10 pb-16 sm:pt-14 sm:pb-20 relative overflow-hidden bg-transparent">
+    <section className="pt-10 pb-16 sm:pt-14 sm:pb-20 relative overflow-hidden bg-transparent" style={{ perspective: "1200px" }}>
       {/* Subtle static ambient glow (Zero flicker) */}
       <div 
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] sm:w-[750px] h-[350px] sm:h-[450px] rounded-full pointer-events-none opacity-30 sm:opacity-15"
@@ -120,7 +120,7 @@ export default function AivaEnterpriseSecuritySection() {
         />
 
         {/* 4 Apple-Style Enterprise Cards (Solid obsidian with Apple directional bloom) */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div id="card-module-07" className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {PILLARS.map((p, idx) => {
             const Icon = p.icon;
             const offset = SECURITY_OFFSETS[idx] || { x: 0, y: 30 };
@@ -128,14 +128,16 @@ export default function AivaEnterpriseSecuritySection() {
               <motion.div
                 key={p.title}
                 initial={{ 
-                  opacity: 0, 
-                  scale: 0.88, 
+                  opacity: 0.45, 
+                  scale: 0.90, 
+                  rotateX: -3,
                   x: offset.x, 
                   y: offset.y 
                 }}
                 whileInView={{ 
                   opacity: 1, 
                   scale: 1, 
+                  rotateX: 0,
                   x: 0, 
                   y: 0 
                 }}
@@ -157,9 +159,12 @@ export default function AivaEnterpriseSecuritySection() {
                       <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
                       AIVA APPARATUS // UNIT 07.{idx + 1}
                     </span>
-                    <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
-                      PILLAR {idx + 1}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="hidden sm:inline text-[9px] text-[#EC89B5]/80 font-mono">LINKED ➔ UNIT 06 & UNIT 01</span>
+                      <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
+                        PILLAR {idx + 1}
+                      </span>
+                    </div>
                   </div>
 
                   {/* Top Bar */}

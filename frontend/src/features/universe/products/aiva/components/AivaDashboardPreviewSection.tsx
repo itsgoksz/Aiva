@@ -80,7 +80,7 @@ export default function AivaDashboardPreviewSection() {
   const [activeTab, setActiveTab] = useState<"calls" | "schedule" | "crm">("calls");
 
   return (
-    <section id="dashboard-preview" className="pt-10 pb-16 sm:pt-14 sm:pb-20 relative overflow-hidden bg-transparent">
+    <section id="dashboard-preview" className="pt-10 pb-16 sm:pt-14 sm:pb-20 relative overflow-hidden bg-transparent" style={{ perspective: "1200px" }}>
       {/* Background ambient lighting — Smooth radial gradient (Zero GPU blur-box clipping) */}
       <div 
         className="absolute top-1/4 -left-[10%] w-[650px] h-[650px] pointer-events-none opacity-35"
@@ -181,7 +181,7 @@ export default function AivaDashboardPreviewSection() {
         />
 
         {/* Top Metric Cards (Cascade from Top Edge) */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8">
+        <div id="card-module-04" className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8">
           <motion.div 
             initial={{ opacity: 0, scale: 0.90, y: -24 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}

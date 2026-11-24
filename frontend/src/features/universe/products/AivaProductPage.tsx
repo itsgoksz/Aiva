@@ -21,6 +21,7 @@ import AivaEnterpriseSecuritySection from "./aiva/components/AivaEnterpriseSecur
 import AivaFinalCTASection from "./aiva/components/AivaFinalCTASection";
 import AivaDemoModal from "./aiva/components/AivaDemoModal";
 import AivaBookDemoModal from "./aiva/components/AivaBookDemoModal";
+import AivaSpatialDeckNav from "./aiva/components/AivaSpatialDeckNav";
 import AivaFooter from "./aiva/components/AivaFooter";
 import ProductAtmosphere from "./components/ProductAtmosphere";
 
@@ -282,6 +283,7 @@ export default function AivaProductPage() {
           />
         </main>
 
+        <AivaSpatialDeckNav />
         <AivaFooter />
         <AivaBookDemoModal isOpen={isBookDemoOpen} onClose={() => setIsBookDemoOpen(false)} />
         <AivaDemoModal isOpen={isTestCallOpen} onClose={() => setIsTestCallOpen(false)} />

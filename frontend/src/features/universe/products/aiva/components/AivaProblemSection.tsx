@@ -1,10 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
 import AivaCardMorphBridge from "./AivaCardMorphBridge";
-import { 
-  PhoneMissed, 
-  Clock, 
-  Users, 
+import {
+  PhoneMissed,
+  Clock,
+  Users,
   MessageSquareOff
 } from "lucide-react";
 
@@ -75,7 +75,7 @@ export default function AivaProblemSection() {
   return (
     <section className="pt-10 pb-16 sm:pt-14 sm:pb-20 relative overflow-hidden bg-transparent">
       {/* Subtle, non-blurry static ambient illumination */}
-      <div 
+      <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] sm:w-[700px] h-[350px] sm:h-[500px] rounded-full pointer-events-none blur-[80px] sm:blur-none opacity-40 sm:opacity-20"
         style={{
           background: "radial-gradient(ellipse at center, rgba(230, 92, 142, 0.35) 0%, rgba(166, 107, 142, 0.12) 50%, transparent 75%)"
@@ -89,7 +89,7 @@ export default function AivaProblemSection() {
             <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
             THE FRONT-DESK REALITY
           </div>
-          <h2 
+          <h2
             className="text-3xl sm:text-5xl font-black tracking-tight text-white mb-5 leading-[1.1]"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
@@ -99,7 +99,7 @@ export default function AivaProblemSection() {
             </span>
           </h2>
           <p className="text-base sm:text-lg text-white/60 max-w-2xl mx-auto font-normal leading-relaxed">
-            High-end clinics and luxury salons don't lose clients because their work isn't world-class. 
+            High-end clinics and luxury salons don't lose clients because their work isn't world-class.
             They lose them because the desk phone rang while everyone was busy.
           </p>
         </div>
@@ -111,30 +111,32 @@ export default function AivaProblemSection() {
         />
 
         {/* 4 Premium, Horizontally-Aligned Product Cards (Apple Morph Outward Bloom) */}
-        <div className="grid md:grid-cols-2 gap-6 mb-16">
+        <div id="card-module-02" className="grid md:grid-cols-2 gap-6 mb-16">
           {PROBLEMS.map((item, idx) => {
             const Icon = item.icon;
             const offset = QUADRANT_OFFSETS[idx] || { x: 0, y: 30 };
             return (
               <motion.div
                 key={item.title}
-                initial={{ 
-                  opacity: 0, 
-                  scale: 0.88, 
-                  x: offset.x, 
-                  y: offset.y 
+                initial={{
+                  opacity: 0.45,
+                  scale: 0.90,
+                  rotateX: -3,
+                  x: offset.x,
+                  y: offset.y
                 }}
-                whileInView={{ 
-                  opacity: 1, 
-                  scale: 1, 
-                  x: 0, 
-                  y: 0 
+                whileInView={{
+                  opacity: 1,
+                  scale: 1,
+                  rotateX: 0,
+                  x: 0,
+                  y: 0
                 }}
                 viewport={{ once: false, amount: 0.2 }}
-                transition={{ 
-                  duration: 0.85, 
-                  ease: [0.16, 1, 0.3, 1], 
-                  delay: idx * 0.08 
+                transition={{
+                  duration: 0.85,
+                  ease: [0.16, 1, 0.3, 1],
+                  delay: idx * 0.08
                 }}
                 className="group rounded-2xl sm:rounded-3xl border border-white/[0.08] bg-[#120810]/75 hover:bg-[#150A13]/90 hover:border-[#E65C8E]/30 p-6 sm:p-8 flex flex-col justify-between transition-colors duration-300 relative overflow-hidden backdrop-blur-xl shadow-2xl"
                 style={{
@@ -147,9 +149,12 @@ export default function AivaProblemSection() {
                     <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
                     AIVA APPARATUS // UNIT 02.{idx + 1}
                   </span>
-                  <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
-                    QUADRANT {idx + 1} GATE
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="hidden sm:inline text-[9px] text-[#EC89B5]/80 font-mono">LINKED ➔ UNIT 01 & UNIT 03</span>
+                    <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
+                      QUADRANT {idx + 1} GATE
+                    </span>
+                  </div>
                 </div>
 
                 {/* Subtle top edge gradient highlight on hover */}
@@ -175,7 +180,7 @@ export default function AivaProblemSection() {
 
                   {/* Title (Locked Minimum Height for Horizontal Parity) */}
                   <div className="min-h-[3.5rem] sm:min-h-[3.75rem] flex items-start mb-5">
-                    <h3 
+                    <h3
                       className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug group-hover:text-pink-50 transition-colors"
                       style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                     >
@@ -221,7 +226,7 @@ export default function AivaProblemSection() {
                 {/* Footer Micro-Specs as Modern Badges (Locked Minimum Height) */}
                 <div className="pt-4 border-t border-white/[0.06] flex items-center gap-2 min-h-[44px]">
                   {item.tags.map((tag) => (
-                    <span 
+                    <span
                       key={tag}
                       className="px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.07] text-[11px] font-mono text-white/60 tracking-tight whitespace-nowrap hover:text-white/80 transition-colors"
                     >
@@ -241,9 +246,10 @@ export default function AivaProblemSection() {
         />
 
         {/* Clean Minimalist Comparison Table (Morph Expansion from 4 Cards) */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.90, y: 40 }}
-          whileInView={{ opacity: 1, scale: 1, y: 0 }}
+        <motion.div
+          id="card-module-03"
+          initial={{ opacity: 0.45, scale: 0.90, rotateX: -3, y: 40 }}
+          whileInView={{ opacity: 1, scale: 1, rotateX: 0, y: 0 }}
           viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
           className="rounded-3xl border border-white/10 p-6 sm:p-9 overflow-x-auto shadow-2xl bg-[#120810]/80 backdrop-blur-xl"
@@ -254,9 +260,12 @@ export default function AivaProblemSection() {
               <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
               AIVA APPARATUS // UNIT 03
             </span>
-            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
-              UNIFIED CAPABILITY MATRIX
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="hidden sm:inline text-[9px] text-[#EC89B5]/80 font-mono">LINKED ➔ UNIT 02 & UNIT 04</span>
+              <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
+                UNIFIED CAPABILITY MATRIX
+              </span>
+            </div>
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-white/10 mb-6 gap-2">

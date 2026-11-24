@@ -100,7 +100,7 @@ const STAGES: StageItem[] = [
 
 export default function AivaAutonomousLoopSection() {
   return (
-    <section className="pt-10 pb-16 sm:pt-14 sm:pb-20 relative overflow-hidden bg-transparent">
+    <section className="pt-10 pb-16 sm:pt-14 sm:pb-20 relative overflow-hidden bg-transparent" style={{ perspective: "1200px" }}>
       {/* Static subtle background glow (Zero repaint jitter) */}
       <div 
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] sm:w-[850px] h-[400px] sm:h-[550px] rounded-full pointer-events-none opacity-35 sm:opacity-20"
@@ -137,7 +137,7 @@ export default function AivaAutonomousLoopSection() {
         />
 
         {/* 4 Apple-Style Process Cards (Solid obsidian with fluid bloom animation) */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div id="card-module-05" className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {STAGES.map((s, idx) => {
             const Icon = s.icon;
             const offset = FAN_OFFSETS[idx] || { x: 0, y: 30 };
@@ -145,14 +145,16 @@ export default function AivaAutonomousLoopSection() {
               <motion.div
                 key={s.step}
                 initial={{ 
-                  opacity: 0, 
-                  scale: 0.88, 
+                  opacity: 0.45, 
+                  scale: 0.90, 
+                  rotateX: -3,
                   x: offset.x, 
                   y: offset.y 
                 }}
                 whileInView={{ 
                   opacity: 1, 
                   scale: 1, 
+                  rotateX: 0,
                   x: 0, 
                   y: 0 
                 }}
@@ -174,9 +176,12 @@ export default function AivaAutonomousLoopSection() {
                       <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
                       AIVA APPARATUS // UNIT 05.{idx + 1}
                     </span>
-                    <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
-                      STEP {s.step}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="hidden sm:inline text-[9px] text-[#EC89B5]/80 font-mono">LINKED ➔ UNIT 04 & UNIT 06</span>
+                      <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
+                        STEP {s.step}
+                      </span>
+                    </div>
                   </div>
 
                   {/* Top: Step indicator & Icon */}

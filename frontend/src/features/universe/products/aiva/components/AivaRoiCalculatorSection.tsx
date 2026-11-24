@@ -13,7 +13,7 @@ export default function AivaRoiCalculatorSection() {
   const hoursSavedMonthly = Math.round((monthlyCalls * 2.5) / 60);
 
   return (
-    <section className="pt-10 pb-16 sm:pt-14 sm:pb-20 relative overflow-hidden bg-transparent">
+    <section className="pt-10 pb-16 sm:pt-14 sm:pb-20 relative overflow-hidden bg-transparent" style={{ perspective: "1200px" }}>
       <div 
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] sm:w-[700px] h-[400px] sm:h-[500px] rounded-full pointer-events-none opacity-30 sm:opacity-20"
         style={{ 
@@ -49,8 +49,9 @@ export default function AivaRoiCalculatorSection() {
 
         {/* The Calculator Box (Apple Morph Entry) */}
         <motion.div 
-          initial={{ opacity: 0, scale: 0.90, y: 40 }}
-          whileInView={{ opacity: 1, scale: 1, y: 0 }}
+          id="card-module-06"
+          initial={{ opacity: 0.45, scale: 0.90, rotateX: -3, y: 40 }}
+          whileInView={{ opacity: 1, scale: 1, rotateX: 0, y: 0 }}
           viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
           className="rounded-2xl sm:rounded-3xl border border-white/10 p-5 sm:p-8 lg:p-12 shadow-2xl max-w-4xl mx-auto"
@@ -65,9 +66,12 @@ export default function AivaRoiCalculatorSection() {
               <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
               AIVA APPARATUS // UNIT 06
             </span>
-            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
-              FINANCIAL RECOVERY ENGINE
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="hidden sm:inline text-[9px] text-[#EC89B5]/80 font-mono">LINKED ➔ UNIT 05 & UNIT 07</span>
+              <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
+                FINANCIAL RECOVERY ENGINE
+              </span>
+            </div>
           </div>
 
           <div className="grid lg:grid-cols-12 gap-8 items-center">

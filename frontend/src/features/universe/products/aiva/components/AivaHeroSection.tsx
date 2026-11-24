@@ -217,6 +217,7 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
           {/* Right Column: Interactive Live Receptionist Console */}
           <div className="w-full lg:w-1/2">
             <motion.div
+              id="card-module-01"
               initial={{ opacity: 0, scale: 0.94, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
@@ -235,9 +236,12 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
                     <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
                     AIVA APPARATUS // UNIT 01
                   </span>
-                  <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
-                    LIVE AUDIO INGESTION CORE
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="hidden sm:inline text-[9px] text-[#EC89B5]/80 font-mono">LINKED ➔ UNIT 02 & UNIT 04</span>
+                    <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
+                      LIVE AUDIO INGESTION CORE
+                    </span>
+                  </div>
                 </div>
 
                 {/* Header: Status & Scenario Switcher */}
