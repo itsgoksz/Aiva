@@ -286,27 +286,8 @@ function mapProgressToStage(latest: number, isMobile: boolean) {
       // interplanetary camera flights ([0..0.14] arriving, [0.78..1.0] departing)
       const isCardVisible = frac >= entryEnd && frac <= exitStart;
 
-      // Smooth pan from 0 -> 1 inside the docked reading plateau so taller cards
-      // (e.g. Section 2 & Section 6 on mobile with Safari bar expanded) never clip
-      const panStart = Math.max(entryEnd + 0.04, 0.16);
-      const panEnd = Math.min(exitStart - 0.06, 0.72);
-      let panProgress = 0;
-      if (frac > panStart && panEnd > panStart) {
-        panProgress = Math.max(0, Math.min(1, (frac - panStart) / (panEnd - panStart)));
-      }
-
-      let floatStage = i;
-      if (i > 0 && frac < entryEnd) {
-        const t = frac / entryEnd;
-        const eased = t * t * (3 - 2 * t);
-        floatStage = i - 0.5 + 0.5 * eased;
-      } else if (i < lastIdx && frac > exitStart) {
-        const t = (frac - exitStart) / (1 - exitStart);
-        const eased = t * t * (3 - 2 * t);
-        floatStage = i + 0.5 * eased;
-      }
-
-      return { stageIndex: i, isCardVisible, panProgress, floatStage };
+      // Never scroll cards internally: all 6 stages are sized to fit cleanly inside 100svh
+      return { stageIndex: i, isCardVisible, panProgress: 0, floatStage };
     }
   }
   return { stageIndex: 0, isCardVisible: true, panProgress: 0, floatStage: 0 };
@@ -500,11 +481,11 @@ export default function AivaCinematicCardStage(
         
         {/* Stage Header: Clean Apple-Style Centered Display Heading */}
         <div
-          className="max-w-3xl mx-auto w-full pt-[84px] sm:pt-[96px] pb-2 sm:pb-3 px-2 text-center select-none shrink-0 relative z-10 transition-opacity duration-300"
+          className="max-w-3xl mx-auto w-full pt-[66px] sm:pt-[96px] pb-1 sm:pb-3 px-2 text-center select-none shrink-0 relative z-10 transition-opacity duration-300"
           style={{ opacity: isCardVisible ? 1 : 0.25 }}
         >
           <h2 
-            className="text-[24px] sm:text-[34px] md:text-[40px] font-bold tracking-[-0.03em] leading-[1.15] text-balance text-white"
+            className="text-[21px] sm:text-[34px] md:text-[40px] font-bold tracking-[-0.03em] leading-[1.15] text-balance text-white"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
             {currentMeta.title}
@@ -550,7 +531,7 @@ export default function AivaCinematicCardStage(
                 className="w-full max-w-4xl mx-auto relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-6 bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-6 bg-[#0E070C]/[0.96]">
                   {/* Top Apparatus Bar */}
                   <div className="flex items-center justify-between gap-2 pb-2.5 mb-2.5 sm:mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
                     <span className="flex items-center gap-2 text-[#EC89B5] font-semibold">
@@ -645,39 +626,39 @@ export default function AivaCinematicCardStage(
                 className="w-full max-w-4xl mx-auto relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-5 bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
-                  <div className="flex items-center justify-between gap-2 pb-2.5 mb-2.5 sm:mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-2.5 sm:p-5 bg-[#0E070C]/[0.96]">
+                  <div className="flex items-center justify-between gap-2 pb-1.5 sm:pb-2.5 mb-1.5 sm:mb-4 border-b border-white/[0.08] text-[9.5px] sm:text-[10px] font-mono tracking-widest uppercase">
                     <span className="text-[#EC89B5] font-semibold">FRONT-DESK REALITY</span>
-                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-semibold whitespace-nowrap shrink-0">
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-semibold whitespace-nowrap shrink-0">
                       100% CALL CAPTURE
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3">
                     {PROBLEMS.map((p) => {
                       const Icon = p.icon;
                       return (
                         <div
                           key={p.title}
-                          className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/[0.025] border border-white/10 flex flex-col justify-between"
+                          className="p-2 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/[0.025] border border-white/10 flex flex-col justify-between"
                         >
                           <div>
-                            <div className="flex items-center justify-between gap-2 mb-1">
-                              <span className="flex items-center gap-1.5 text-[9.5px] font-mono text-[#EC89B5] font-semibold whitespace-nowrap">
-                                <Icon size={11} />
+                            <div className="flex items-center justify-between gap-2 mb-0.5 sm:mb-1">
+                              <span className="flex items-center gap-1 text-[9px] sm:text-[9.5px] font-mono text-[#EC89B5] font-semibold whitespace-nowrap">
+                                <Icon size={10} />
                                 {p.category}
                               </span>
-                              <span className="px-2 py-0.5 rounded-md bg-rose-500/10 border border-rose-500/25 text-[9.5px] font-mono text-rose-300 font-semibold whitespace-nowrap shrink-0">
+                              <span className="px-1.5 py-0.5 rounded-md bg-rose-500/10 border border-rose-500/25 text-[9px] sm:text-[9.5px] font-mono text-rose-300 font-semibold whitespace-nowrap shrink-0">
                                 {p.stat}
                               </span>
                             </div>
 
-                            <h4 className="text-xs sm:text-sm font-bold text-white leading-snug mb-1.5">
+                            <h4 className="text-[11.5px] sm:text-sm font-bold text-white leading-tight sm:leading-snug mb-1">
                               {p.title}
                             </h4>
                           </div>
 
-                          <div className="space-y-1 text-[10.5px] sm:text-[11.5px] leading-snug">
+                          <div className="space-y-0.5 sm:space-y-1 text-[10px] sm:text-[11.5px] leading-tight sm:leading-snug">
                             <p className="text-white/60">
                               <span className="text-rose-400 font-mono font-bold mr-1">✕</span>
                               {p.description}
@@ -707,7 +688,7 @@ export default function AivaCinematicCardStage(
                 className="w-full max-w-4xl mx-auto relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-6 bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-6 bg-[#0E070C]/[0.96]">
                   <div className="flex items-center justify-between gap-2 pb-2.5 mb-2.5 sm:mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
                     <span className="text-[#EC89B5] font-semibold">WHY CLINICS SWITCH</span>
                     <span className="text-white/50 whitespace-nowrap">100+ Active Businesses</span>
@@ -800,7 +781,7 @@ export default function AivaCinematicCardStage(
                 className="w-full max-w-4xl relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-5 bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-5 bg-[#0E070C]/[0.96]">
                   {/* Top 4 Metrics */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 mb-3 sm:mb-4">
                     <div className="p-2 sm:p-2.5 rounded-xl bg-white/[0.02] border border-white/10">
@@ -930,7 +911,7 @@ export default function AivaCinematicCardStage(
                 className="w-full max-w-4xl relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-4 sm:p-7 bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-4 sm:p-7 bg-[#0E070C]/[0.96]">
                   <div className="flex items-center justify-between pb-3 mb-4 sm:mb-5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
                     <span className="text-[#EC89B5] font-semibold">AIVA APPARATUS // UNIT 06</span>
                     <span className="text-white/40">VALUE SIMULATOR</span>
@@ -1002,36 +983,36 @@ export default function AivaCinematicCardStage(
                 className="w-full max-w-4xl mx-auto relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-6 bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
-                  <div className="flex items-center justify-between pb-2 mb-2.5 sm:mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-2.5 sm:p-6 bg-[#0E070C]/[0.96]">
+                  <div className="flex items-center justify-between pb-1.5 sm:pb-2 mb-1.5 sm:mb-4 border-b border-white/[0.08] text-[9.5px] sm:text-[10px] font-mono tracking-widest uppercase">
                     <span className="text-[#EC89B5] font-semibold">ENTERPRISE PROTOCOLS // ZERO-RISK</span>
-                    <span className="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-semibold">
+                    <span className="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-semibold whitespace-nowrap">
                       SOC2 & HIPAA READY
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3">
                     {GOVERNANCE_PILLARS.map((p) => {
                       const Icon = p.icon;
                       return (
                         <div
                           key={p.title}
-                          className="p-2.5 sm:p-3.5 rounded-xl bg-white/[0.025] border border-white/10 flex items-start gap-2.5 sm:gap-3"
+                          className="p-2 sm:p-3.5 rounded-xl bg-white/[0.025] border border-white/10 flex items-start gap-2 sm:gap-3"
                         >
                           <div
-                            className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center border border-white/10 shrink-0 mt-0.5"
+                            className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center border border-white/10 shrink-0 mt-0.5"
                             style={{ background: `${p.color}18`, color: p.color }}
                           >
-                            <Icon size={14} />
+                            <Icon size={13} />
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center justify-between gap-2 mb-0.5">
-                              <h4 className="text-xs sm:text-sm font-bold text-white leading-snug">{p.title}</h4>
+                              <h4 className="text-[11.5px] sm:text-sm font-bold text-white leading-tight sm:leading-snug">{p.title}</h4>
                             </div>
-                            <p className="text-[10.5px] sm:text-xs text-white/70 font-light leading-snug mb-1.5">
+                            <p className="text-[10px] sm:text-xs text-white/70 font-light leading-tight sm:leading-snug mb-1">
                               {p.desc}
                             </p>
-                            <span className="text-[9.5px] sm:text-[10px] font-mono text-emerald-400 font-semibold">
+                            <span className="text-[9px] sm:text-[10px] font-mono text-emerald-400 font-semibold">
                               ✓ {p.telemetry}
                             </span>
                           </div>
@@ -1049,7 +1030,7 @@ export default function AivaCinematicCardStage(
         </div>
 
         {/* Stage Controller (Active Theory Floating Capsule) */}
-        <div className="max-w-xl mx-auto w-full pb-2 sm:pb-3 flex items-center justify-center shrink-0 relative z-30">
+        <div className="max-w-xl mx-auto w-full pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:pb-3 flex items-center justify-center shrink-0 relative z-30">
           <div className="flex items-center gap-1 sm:gap-2 p-1.5 sm:p-2 rounded-full bg-[#0D050C]/95 border border-white/15 shadow-[0_12px_45px_rgba(0,0,0,0.85),0_0_20px_rgba(230,92,142,0.25)] backdrop-blur-2xl">
             
             {/* Play/Pause Auto Tour */}
