@@ -6,7 +6,7 @@
  * scheduling engine, and executive CRM console.
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, Calendar, LogIn, LayoutDashboard, PhoneCall } from "lucide-react";
@@ -23,6 +23,8 @@ import ProductAtmosphere from "./components/ProductAtmosphere";
 export default function AivaProductPage() {
   const [isBookDemoOpen, setIsBookDemoOpen] = useState(false);
   const [isTestCallOpen, setIsTestCallOpen] = useState(false);
+  const [isNavCompact, setIsNavCompact] = useState(false);
+  const lastScrollYRef = useRef(0);
   const location = useLocation();
   // Only trigger the enter world animation if arriving from Namma Universe navigation
   const [showEnterTransition, setShowEnterTransition] = useState(() => {
@@ -30,6 +32,23 @@ export default function AivaProductPage() {
   });
   const { isAuthenticated } = useAuth();
   const isSubdomain = isAivaSubdomain();
+
+  // Shrink navbar on downward scroll, restore on upward scroll
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (y <= 32) {
+        setIsNavCompact(false);
+      } else if (y > lastScrollYRef.current + 6) {
+        setIsNavCompact(true);
+      } else if (y < lastScrollYRef.current - 6) {
+        setIsNavCompact(false);
+      }
+      lastScrollYRef.current = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // Scroll to top on mount & enforce Aiva color tokens
   useEffect(() => {
@@ -99,19 +118,13 @@ export default function AivaProductPage() {
       <div style={{ position: "relative", zIndex: 10 }}>
         {/* Navigation Bar */}
         <nav
+          className={`fixed top-0 left-0 right-0 z-50 px-3 sm:px-[max(1rem,4vw)] flex items-center justify-between transition-all duration-300 ${
+            isNavCompact ? "py-2 sm:py-2.5" : "py-3.5 sm:py-4"
+          }`}
           style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            zIndex: 50,
-            padding: "1rem max(1rem, 4vw)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
             backdropFilter: "blur(18px)",
             WebkitBackdropFilter: "blur(18px)",
-            background: "rgba(10, 5, 8, 0.75)",
+            background: "rgba(10, 5, 8, 0.78)",
             borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
           }}
         >
@@ -182,8 +195,8 @@ export default function AivaProductPage() {
             </Link>
           )}
 
-          {/* Product Wordmark */}
-          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+          {/* Product Wordmark (centered on mobile, inline on desktop) */}
+          <div className="absolute left-1/2 -translate-x-1/2 sm:static sm:translate-x-0 flex items-center gap-2 transition-transform duration-300" style={{ transform: isNavCompact ? "scale(0.92)" : undefined }}>
             <div
               style={{
                 width: "26px",
@@ -249,13 +262,17 @@ export default function AivaProductPage() {
 
             <button
               onClick={() => setIsBookDemoOpen(true)}
-              className="inline-flex items-center gap-1.5 h-9 sm:h-9.5 px-3.5 sm:px-4.5 rounded-xl font-semibold text-xs sm:text-sm text-white transition-all duration-200 cursor-pointer hover:brightness-110 active:scale-[0.98] whitespace-nowrap"
+              className={`inline-flex items-center gap-1 sm:gap-1.5 rounded-xl font-semibold text-white transition-all duration-300 cursor-pointer hover:brightness-110 active:scale-[0.98] whitespace-nowrap ${
+                isNavCompact
+                  ? "h-7 px-2.5 text-[11px] sm:h-8 sm:px-4 sm:text-xs"
+                  : "h-7.5 px-2.5 text-[11px] sm:h-9.5 sm:px-4.5 sm:text-sm"
+              }`}
               style={{
                 background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
                 boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 14px rgba(230, 92, 142, 0.35)",
               }}
             >
-              <Calendar size={13} />
+              <Calendar size={12} className="sm:w-[13px] sm:h-[13px]" />
               <span>Book a Demo</span>
             </button>
           </div>

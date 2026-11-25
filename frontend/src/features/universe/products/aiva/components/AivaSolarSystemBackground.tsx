@@ -14,7 +14,7 @@
  *    - Pre-allocated Three.js scratch vectors, responsive particle/DPR budgets for mobile.
  */
 
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, memo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -22,29 +22,33 @@ interface AivaSolarSystemBackgroundProps {
   stageIndex: number;
   floatStageRef?: React.MutableRefObject<number>;
   className?: string;
+  /** Pause WebGL render loop when offscreen to save GPU & battery */
+  active?: boolean;
 }
 
 // ─── 7 Celestial Planets (One per Aiva Module, matching Namma Universe) ───
+// Ordered evenly around the Sun (60° per orbit, decreasing theta = traveling right / clockwise revolution)
+const ORBIT_STEP = (Math.PI * 2) / 6;
 export const SOLAR_PLANETS = [
-  { radius: 2.6, speed: 0.055, startAngle: 0.65, color: [0.95, 0.28, 0.52], baseSize: 15, name: "Aiva Core" },
-  { radius: 4.0, speed: 0.044, startAngle: 2.05, color: [0.65, 0.42, 0.96], baseSize: 14, name: "Logic Matrix" },
-  { radius: 5.5, speed: 0.035, startAngle: 3.65, color: [0.05, 0.88, 1.00], baseSize: 17, name: "Parity System" },
-  { radius: 7.0, speed: 0.028, startAngle: 5.15, color: [0.10, 0.90, 0.48], baseSize: 15, name: "Telemetry Deck" },
-  { radius: 8.5, speed: 0.022, startAngle: 1.35, color: [0.98, 0.44, 0.72], baseSize: 16, name: "28s Loop" },
-  { radius: 10.0, speed: 0.017, startAngle: 2.95, color: [1.00, 0.78, 0.24], baseSize: 19, name: "Value ROI" },
-  { radius: 11.6, speed: 0.012, startAngle: 4.55, color: [1.00, 0.36, 0.22], baseSize: 16, name: "Governance Shield" },
+  { radius: 2.6, speed: 0.014, startAngle: Math.PI / 2 - ORBIT_STEP * 0, color: [0.95, 0.28, 0.52], baseSize: 15, name: "Aiva Core" },
+  { radius: 4.0, speed: 0.014, startAngle: Math.PI / 2 - ORBIT_STEP * 1, color: [0.05, 0.88, 1.00], baseSize: 15, name: "Logic Matrix" },
+  { radius: 5.5, speed: 0.014, startAngle: Math.PI / 2 - ORBIT_STEP * 2, color: [0.65, 0.42, 0.96], baseSize: 17, name: "Parity System" },
+  { radius: 7.0, speed: 0.014, startAngle: Math.PI / 2 - ORBIT_STEP * 3, color: [0.10, 0.90, 0.48], baseSize: 15, name: "Telemetry Deck" },
+  { radius: 8.5, speed: 0.014, startAngle: Math.PI / 2 - ORBIT_STEP * 4, color: [0.98, 0.44, 0.72], baseSize: 16, name: "28s Loop" },
+  { radius: 10.0, speed: 0.014, startAngle: Math.PI / 2 - ORBIT_STEP * 5, color: [1.00, 0.78, 0.24], baseSize: 19, name: "Value ROI" },
+  { radius: 11.6, speed: 0.014, startAngle: Math.PI / 2 - ORBIT_STEP * 6, color: [1.00, 0.36, 0.22], baseSize: 16, name: "Governance Shield" },
 ];
 
 // Pre-allocated scratch vectors (Zero garbage collection in render loop)
-const _pos0 = new THREE.Vector3();
-const _pos1 = new THREE.Vector3();
 const _activePos = new THREE.Vector3();
+const _radialDir = new THREE.Vector3();
+const _tangentDir = new THREE.Vector3();
 const _camTargetPos = new THREE.Vector3();
 const _camTargetLook = new THREE.Vector3();
 const _color0 = new THREE.Color();
 const _color1 = new THREE.Color();
 const _blendedColor = new THREE.Color();
-const _groupEuler = new THREE.Euler(-0.12, 0.08, 0, "XYZ");
+const _groupEuler = new THREE.Euler(-0.20, 0.08, 0.06, "XYZ");
 
 function getPlanetOrbitPosition(
   planet: typeof SOLAR_PLANETS[number],
@@ -124,6 +128,7 @@ function CelestialBodies({
   smoothIndexRef: React.MutableRefObject<number>;
 }) {
   const geoRef = useRef<THREE.BufferGeometry>(null);
+  const lastActiveRef = useRef<number>(stageIndex);
   const { clock } = useThree();
   const totalBodies = SOLAR_PLANETS.length + 1;
 
@@ -178,16 +183,22 @@ function CelestialBodies({
     const posAttr = geoRef.current.attributes.position as THREE.BufferAttribute;
     const activeAttr = geoRef.current.attributes.aIsActive as THREE.BufferAttribute;
     const activeRounded = Math.round(smoothIndexRef.current);
+    const activeChanged = activeRounded !== lastActiveRef.current;
 
-    SOLAR_PLANETS.forEach((planet, idx) => {
+    for (let idx = 0; idx < SOLAR_PLANETS.length; idx++) {
       const i = idx + 1;
-      getPlanetOrbitPosition(planet, elapsed, _activePos);
+      getPlanetOrbitPosition(SOLAR_PLANETS[idx], elapsed, _activePos);
       posAttr.setXYZ(i, _activePos.x, _activePos.y, _activePos.z);
-      activeAttr.setX(i, idx === activeRounded ? 1.0 : 0.0);
-    });
+      if (activeChanged) {
+        activeAttr.setX(i, idx === activeRounded ? 1.0 : 0.0);
+      }
+    }
 
     posAttr.needsUpdate = true;
-    activeAttr.needsUpdate = true;
+    if (activeChanged) {
+      lastActiveRef.current = activeRounded;
+      activeAttr.needsUpdate = true;
+    }
   });
 
   const uniforms = useMemo(
@@ -226,6 +237,7 @@ function ActivePlanetSphere({
 }: {
   smoothIndexRef: React.MutableRefObject<number>;
 }) {
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const { clock } = useThree();
@@ -249,7 +261,9 @@ function ActivePlanetSphere({
     const idx1 = Math.min(idx0 + 1, SOLAR_PLANETS.length - 1);
     const rawT = idx - idx0;
 
-    // Snap target sphere position cleanly to the nearest planet during arrival
+    // Fade cleanly to 0 across mid-flight (rawT = 0.5) before switching sphere to next planet,
+    // eliminating any visible position pop/teleport on clockwise or anticlockwise transitions.
+    const flightEnvelope = Math.max(0, 1.0 - Math.sin(rawT * Math.PI) * 1.45);
     const nearestIdx = Math.round(idx);
     const pNearest = SOLAR_PLANETS[nearestIdx];
     getPlanetOrbitPosition(pNearest, elapsed, _activePos);
@@ -260,9 +274,7 @@ function ActivePlanetSphere({
     _color1.setRGB(...(SOLAR_PLANETS[idx1].color as [number, number, number]));
     _blendedColor.copy(_color0).lerp(_color1, rawT);
 
-    // Fade softly during mid-flight warp and swell upon planet arrival
-    const arrivalStrength = 1.0 - Math.sin(rawT * Math.PI) * 0.55;
-    const targetScale = 1.0 + (1.0 - Math.sin(rawT * Math.PI)) * 0.25;
+    const targetScale = 0.92 + flightEnvelope * 0.28;
     meshRef.current.scale.setScalar(targetScale);
 
     meshRef.current.rotation.y += dt * 0.14;
@@ -270,31 +282,11 @@ function ActivePlanetSphere({
 
     materialRef.current.uniforms.uColor.value.copy(_blendedColor);
     materialRef.current.uniforms.uTime.value = elapsed;
-    materialRef.current.uniforms.uOpacity.value = arrivalStrength;
+    materialRef.current.uniforms.uOpacity.value = flightEnvelope;
   });
 
-  return (
-    <mesh ref={meshRef}>
-      <sphereGeometry args={[0.42, 48, 48]} />
-      <shaderMaterial
-        ref={materialRef}
-        transparent
-        blending={THREE.AdditiveBlending}
-        depthWrite={false}
-        uniforms={uniforms}
-        vertexShader={`
-          varying vec3 vNormal;
-          varying vec3 vObjPos;
-          varying vec3 vViewPosition;
-          void main() {
-            vObjPos = position;
-            vNormal = normalize(normalMatrix * normal);
-            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-            vViewPosition = -mvPosition.xyz;
-            gl_Position = projectionMatrix * mvPosition;
-          }
-        `}
-        fragmentShader={`
+  const fragmentShaderSource = useMemo(
+    () => `
           uniform vec3 uColor;
           uniform float uTime;
           uniform float uOpacity;
@@ -348,7 +340,7 @@ function ActivePlanetSphere({
 
           float fbm(vec3 x) {
             float v = 0.0; float a = 0.5; vec3 shift = vec3(100);
-            for (int i = 0; i < 4; ++i) { v += a * snoise(x); x = x * 2.0 + shift; a *= 0.5; }
+            for (int i = 0; i < ${isMobile ? 2 : 4}; ++i) { v += a * snoise(x); x = x * 2.0 + shift; a *= 0.5; }
             return v;
           }
 
@@ -370,7 +362,32 @@ function ActivePlanetSphere({
 
             gl_FragColor = vec4(finalColor, alpha);
           }
+    `,
+    [isMobile]
+  );
+
+  return (
+    <mesh ref={meshRef}>
+      <sphereGeometry args={[0.42, isMobile ? 24 : 40, isMobile ? 24 : 40]} />
+      <shaderMaterial
+        ref={materialRef}
+        transparent
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+        uniforms={uniforms}
+        vertexShader={`
+          varying vec3 vNormal;
+          varying vec3 vObjPos;
+          varying vec3 vViewPosition;
+          void main() {
+            vObjPos = position;
+            vNormal = normalize(normalMatrix * normal);
+            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+            vViewPosition = -mvPosition.xyz;
+            gl_Position = projectionMatrix * mvPosition;
+          }
         `}
+        fragmentShader={fragmentShaderSource}
       />
     </mesh>
   );
@@ -378,9 +395,14 @@ function ActivePlanetSphere({
 
 // ─── 3. Delicate Concentric Orbital Rings ────────────────────
 
-function SolarSystemRings({ stageIndex }: { stageIndex: number }) {
+function SolarSystemRings({
+  smoothIndexRef,
+}: {
+  smoothIndexRef: React.MutableRefObject<number>;
+}) {
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-  const ringGeometries = useMemo(() => {
+  const matRefs = useRef<(THREE.LineBasicMaterial | null)[]>([]);
+  const ringData = useMemo(() => {
     const segments = isMobile ? 64 : 96;
     return SOLAR_PLANETS.map((planet) => {
       const points: THREE.Vector3[] = [];
@@ -394,27 +416,39 @@ function SolarSystemRings({ stageIndex }: { stageIndex: number }) {
           )
         );
       }
-      return new THREE.BufferGeometry().setFromPoints(points);
+      return {
+        geom: new THREE.BufferGeometry().setFromPoints(points),
+        color: new THREE.Color(planet.color[0], planet.color[1], planet.color[2]),
+      };
     });
   }, [isMobile]);
 
+  useFrame(() => {
+    const active = smoothIndexRef.current;
+    for (let idx = 0; idx < matRefs.current.length; idx++) {
+      const mat = matRefs.current[idx];
+      if (!mat) continue;
+      const proximity = Math.max(0, 1 - Math.abs(idx - active));
+      mat.opacity = 0.08 + proximity * 0.26;
+    }
+  });
+
   return (
     <group>
-      {ringGeometries.map((geom, idx) => {
-        const planet = SOLAR_PLANETS[idx];
-        const isCurrent = idx === stageIndex;
-        return (
-          <line key={`orbit-${idx}`} geometry={geom}>
-            <lineBasicMaterial
-              color={new THREE.Color(planet.color[0], planet.color[1], planet.color[2])}
-              transparent
-              opacity={isCurrent ? 0.36 : 0.13}
-              blending={THREE.AdditiveBlending}
-              depthWrite={false}
-            />
-          </line>
-        );
-      })}
+      {ringData.map(({ geom, color }, idx) => (
+        <line key={`orbit-${idx}`} geometry={geom}>
+          <lineBasicMaterial
+            ref={(el) => {
+              matRefs.current[idx] = el;
+            }}
+            color={color}
+            transparent
+            opacity={idx === 0 ? 0.34 : 0.08}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+          />
+        </line>
+      ))}
     </group>
   );
 }
@@ -426,7 +460,7 @@ function SolarSystemStarfield() {
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
   const { positions, colors, sizes } = useMemo(() => {
-    const count = isMobile ? 1400 : 2800;
+    const count = isMobile ? 700 : 2400;
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
     const siz = new Float32Array(count);
@@ -498,63 +532,83 @@ function CameraFlightController({
   const { camera, mouse, clock, size } = useThree();
   const smoothMouse = useRef({ x: 0, y: 0 });
   const isFirstFrame = useRef(true);
+  const initialStageRef = useRef(stageIndex);
 
   useFrame((_, delta) => {
-    const dt = Math.min(delta, 0.1);
+    const dt = Math.min(delta, 0.05);
     const elapsed = clock.elapsedTime;
     const isPortrait = size.width < size.height;
+    const isTouchDevice =
+      typeof window !== "undefined" &&
+      (window.matchMedia?.("(pointer: coarse)")?.matches || window.innerWidth < 768);
 
-    // 1. Track continuous float target (scroll) or discrete target (tour/clicks)
-    const rawTarget = floatStageRef ? floatStageRef.current : stageIndex;
-    const indexLerp = 1 - Math.exp(-5.5 * dt);
-    smoothIndexRef.current += (rawTarget - smoothIndexRef.current) * indexLerp;
+    // Single smooth orbital index filter: eliminates double-damped chord lag & reverse-scroll wobble
+    const rawTarget = floatStageRef ? floatStageRef.current : initialStageRef.current;
+    if (isFirstFrame.current) {
+      smoothIndexRef.current = rawTarget;
+    } else {
+      const indexLerp = 1 - Math.exp(-10.5 * dt);
+      smoothIndexRef.current += (rawTarget - smoothIndexRef.current) * indexLerp;
+    }
 
-    // 2. Smooth frame-rate independent mouse parallax
-    const mouseLerp = 1 - Math.exp(-3.5 * dt);
-    smoothMouse.current.x += (mouse.x - smoothMouse.current.x) * mouseLerp;
-    smoothMouse.current.y += (mouse.y - smoothMouse.current.y) * mouseLerp;
+    // Disable pointer parallax on touch screens so taps/swipes never jolt camera look/position
+    if (isTouchDevice) {
+      smoothMouse.current.x = 0;
+      smoothMouse.current.y = 0;
+    } else {
+      const mouseLerp = 1 - Math.exp(-3.5 * dt);
+      smoothMouse.current.x += (mouse.x - smoothMouse.current.x) * mouseLerp;
+      smoothMouse.current.y += (mouse.y - smoothMouse.current.y) * mouseLerp;
+    }
 
     const idx = Math.max(0, Math.min(SOLAR_PLANETS.length - 1, smoothIndexRef.current));
     const index0 = Math.floor(idx);
     const index1 = Math.min(index0 + 1, SOLAR_PLANETS.length - 1);
     const t = idx - index0;
 
-    // 3. Interpolate LookAt target smoothly between Planet i and Planet i+1
-    getPlanetOrbitPosition(SOLAR_PLANETS[index0], elapsed, _pos0);
-    getPlanetOrbitPosition(SOLAR_PLANETS[index1], elapsed, _pos1);
+    // Polar orbital interpolation moves clockwise (right) on scroll down, anticlockwise (left) on scroll up
+    const p0 = SOLAR_PLANETS[index0];
+    const p1 = SOLAR_PLANETS[index1];
+    const angle0 = p0.startAngle + elapsed * p0.speed;
+    const angle1 = p1.startAngle + elapsed * p1.speed;
+    const smoothAngle = angle0 + (angle1 - angle0) * t;
+    const smoothRadius = p0.radius + (p1.radius - p0.radius) * t;
 
-    // Apply solar system group rotation [-0.12, 0.08, 0] using pre-allocated Euler
-    _pos0.applyEuler(_groupEuler);
-    _pos1.applyEuler(_groupEuler);
+    _camTargetLook
+      .set(
+        Math.cos(smoothAngle) * smoothRadius,
+        Math.sin(smoothAngle) * smoothRadius * 0.15,
+        Math.sin(smoothAngle) * smoothRadius
+      )
+      .applyEuler(_groupEuler);
 
-    _camTargetLook.copy(_pos0).lerp(_pos1, t);
+    _radialDir
+      .set(Math.cos(smoothAngle), 0, Math.sin(smoothAngle))
+      .applyEuler(_groupEuler)
+      .normalize();
+    _tangentDir
+      .set(Math.sin(smoothAngle), 0, -Math.cos(smoothAngle))
+      .applyEuler(_groupEuler)
+      .normalize();
 
-    // 4. Cinematic Parabolic Arc during planet-to-planet flight:
-    // On portrait mobile screens, pull back slightly further so surrounding orbits remain visible
-    const baseDistZ = isPortrait ? 5.2 : 3.6;
+    const baseDistZ = isPortrait ? 5.6 : 3.6;
     const flightArcPullback = Math.sin(t * Math.PI) * (isPortrait ? 5.6 : 4.8);
-    const camDistZ = baseDistZ + flightArcPullback;
-    const camHeightY = (isPortrait ? 0.65 : 0.45) + Math.sin(t * Math.PI) * 1.4;
+    const camDist = baseDistZ + flightArcPullback;
+    const camHeightY = (isPortrait ? 1.85 : 0.55) + Math.sin(t * Math.PI) * 1.4;
 
-    _camTargetPos.set(
-      _camTargetLook.x + smoothMouse.current.x * 1.15,
-      _camTargetLook.y + camHeightY + smoothMouse.current.y * 0.85,
-      _camTargetLook.z + camDistZ
-    );
+    _camTargetPos
+      .copy(_camTargetLook)
+      .addScaledVector(_radialDir, camDist)
+      .addScaledVector(_tangentDir, smoothMouse.current.x * 1.15);
+    _camTargetPos.y += camHeightY + smoothMouse.current.y * 0.85;
 
-    // Subtle look offset for parallax depth
-    _camTargetLook.x += smoothMouse.current.x * 0.35;
+    _camTargetLook.addScaledVector(_tangentDir, smoothMouse.current.x * 0.35);
     _camTargetLook.y += smoothMouse.current.y * 0.25;
 
-    if (isFirstFrame.current) {
-      camera.position.copy(_camTargetPos);
-      camera.lookAt(_camTargetLook);
-      isFirstFrame.current = false;
-    } else {
-      const camLerp = 1 - Math.exp(-5.0 * dt);
-      camera.position.lerp(_camTargetPos, camLerp);
-      camera.lookAt(_camTargetLook);
-    }
+    // Exact camera tracking on the damped polar curve ensures position and lookAt stay locked together
+    camera.position.copy(_camTargetPos);
+    camera.lookAt(_camTargetLook);
+    isFirstFrame.current = false;
   });
 
   return null;
@@ -562,51 +616,66 @@ function CameraFlightController({
 
 // ─── Main Exported Component ─────────────────────────────────
 
-export default function AivaSolarSystemBackground({
-  stageIndex,
-  floatStageRef,
-  className = "",
-}: AivaSolarSystemBackgroundProps) {
-  const smoothIndexRef = useRef<number>(stageIndex);
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+const AivaSolarSystemBackground = memo(
+  function AivaSolarSystemBackground({
+    stageIndex,
+    floatStageRef,
+    className = "",
+    active = true,
+  }: AivaSolarSystemBackgroundProps) {
+    const smoothIndexRef = useRef<number>(stageIndex);
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
-  return (
-    <div className={`w-full h-full pointer-events-none select-none overflow-hidden ${className}`}>
-      {/* Soft deep-space vignette */}
-      <div
-        className="absolute inset-0 pointer-events-none z-[1]"
-        style={{
-          background:
-            "radial-gradient(ellipse 85% 75% at 50% 50%, transparent 32%, rgba(10, 5, 8, 0.78) 100%)",
-        }}
-      />
-
-      <Canvas
-        camera={{ position: [0, 3.2, 16], fov: 48, near: 0.1, far: 90 }}
-        dpr={
-          typeof window !== "undefined"
-            ? Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2)
-            : 1
-        }
-        gl={{
-          antialias: !isMobile,
-          alpha: true,
-          powerPreference: "high-performance",
-        }}
-        className="w-full h-full"
-      >
-        <CameraFlightController
-          stageIndex={stageIndex}
-          floatStageRef={floatStageRef}
-          smoothIndexRef={smoothIndexRef}
+    return (
+      <div className={`w-full h-full pointer-events-none select-none overflow-hidden ${className}`}>
+        {/* Soft deep-space vignette */}
+        <div
+          className="absolute inset-0 pointer-events-none z-[1]"
+          style={{
+            background:
+              "radial-gradient(ellipse 85% 75% at 50% 50%, transparent 32%, rgba(10, 5, 8, 0.78) 100%)",
+          }}
         />
-        <group rotation={[-0.12, 0.08, 0]}>
-          <CelestialBodies stageIndex={stageIndex} smoothIndexRef={smoothIndexRef} />
-          <ActivePlanetSphere smoothIndexRef={smoothIndexRef} />
-          <SolarSystemRings stageIndex={stageIndex} />
-        </group>
-        <SolarSystemStarfield />
-      </Canvas>
-    </div>
-  );
-}
+
+        <Canvas
+          frameloop={active ? "always" : "never"}
+          onCreated={({ gl, scene, camera }) => {
+            gl.compile(scene, camera);
+          }}
+          camera={{ position: [0, 3.2, 16], fov: 48, near: 0.1, far: 90 }}
+          dpr={
+            typeof window !== "undefined"
+              ? isMobile
+                ? 1
+                : Math.min(window.devicePixelRatio || 1, 2)
+              : 1
+          }
+          gl={{
+            antialias: !isMobile,
+            alpha: true,
+            powerPreference: "high-performance",
+          }}
+          className="w-full h-full"
+        >
+          <CameraFlightController
+            stageIndex={stageIndex}
+            floatStageRef={floatStageRef}
+            smoothIndexRef={smoothIndexRef}
+          />
+          <group rotation={[-0.20, 0.08, 0.06]}>
+            <CelestialBodies stageIndex={stageIndex} smoothIndexRef={smoothIndexRef} />
+            <ActivePlanetSphere smoothIndexRef={smoothIndexRef} />
+            <SolarSystemRings smoothIndexRef={smoothIndexRef} />
+          </group>
+          <SolarSystemStarfield />
+        </Canvas>
+      </div>
+    );
+  },
+  (prev, next) =>
+    prev.active === next.active &&
+    prev.floatStageRef === next.floatStageRef &&
+    prev.className === next.className
+);
+
+export default AivaSolarSystemBackground;

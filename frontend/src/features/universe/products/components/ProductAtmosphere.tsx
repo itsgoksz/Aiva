@@ -81,10 +81,10 @@ export default function ProductAtmosphere({
       const count = w < 768 ? Math.round(starCount * 0.65) : starCount;
       const arr: Star[] = [];
       for (let i = 0; i < count; i++) {
-        const radius = Math.random() < 0.85 
-          ? 0.6 + Math.random() * 0.85 
+        const radius = Math.random() < 0.85
+          ? 0.6 + Math.random() * 0.85
           : 1.4 + Math.random() * 0.8; // 15% are slightly larger glowing stars
-        
+
         const baseAlpha = 0.25 + Math.random() * 0.60;
         arr.push({
           x: Math.random() * w,
@@ -120,18 +120,18 @@ export default function ProductAtmosphere({
       width = newWidth;
       height = newStableHeight;
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 3);
+      const dpr = newWidth < 768 ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       ctx.scale(dpr, dpr);
-      
+
       stars = initStars(width, height);
     };
 
-    // Initial setup
-    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    // Initial setup (capped DPR avoids 9x GPU fill-rate waste on 3x Retina iPhones)
+    const dpr = width < 768 ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
     canvas.width = width * dpr;
     canvas.height = height * dpr;
     canvas.style.width = `${width}px`;
@@ -144,7 +144,12 @@ export default function ProductAtmosphere({
     let lastTime = performance.now();
 
     const render = (time: number) => {
-      const dt = (time - lastTime) / 1000;
+      animId = requestAnimationFrame(render);
+      if (document.hidden) return;
+      const elapsedMs = time - lastTime;
+      // Throttle ambient background star twinkle to ~30fps to save mobile GPU & battery
+      if (elapsedMs < 32) return;
+      const dt = Math.min(elapsedMs / 1000, 0.1);
       lastTime = time;
 
       ctx.clearRect(0, 0, width, height);
@@ -177,14 +182,12 @@ export default function ProductAtmosphere({
         if (s.radius > 1.3 && s.alpha > 0.4) {
           ctx.beginPath();
           ctx.arc(s.x, s.y, s.radius * 2.2, 0, Math.PI * 2);
-          ctx.fillStyle = s.isTinted 
+          ctx.fillStyle = s.isTinted
             ? `rgba(${rgbAccent[0]}, ${rgbAccent[1]}, ${rgbAccent[2]}, ${s.alpha * 0.15})`
             : `rgba(255, 255, 255, ${s.alpha * 0.15})`;
           ctx.fill();
         }
       }
-
-      animId = requestAnimationFrame(render);
     };
 
     animId = requestAnimationFrame(render);
@@ -196,9 +199,9 @@ export default function ProductAtmosphere({
   }, [starCount, secondary, rgbAccent, stableHeight]);
 
   return (
-    <div 
+    <div
       className="fixed inset-x-0 top-0 pointer-events-none overflow-hidden"
-      style={{ 
+      style={{
         position: 'fixed',
         top: 0,
         left: 0,
@@ -210,31 +213,31 @@ export default function ProductAtmosphere({
     >
       {/* ── 1. Themed Radial Atmospheric Nebula Glows (Responsive Mobile + Desktop) ── */}
       {/* Top Hero Glow — Fills mobile and desktop with product color aura */}
-      <div 
+      <div
         className="absolute top-0 left-1/2 -translate-x-1/2 w-[140vw] sm:w-[90vw] h-[520px] sm:h-[650px] pointer-events-none"
         style={{
           background: `radial-gradient(ellipse 70% 60% at 50% 15%, ${secondary}30 0%, ${accentColor}12 45%, transparent 75%)`,
         }}
       />
 
-      {/* Floating Ambient Orb (Left) */}
-      <div 
-        className="absolute top-[30%] -left-[20%] sm:-left-[10%] w-[80vw] sm:w-[45vw] h-[80vw] sm:h-[45vw] rounded-full blur-[100px] sm:blur-[160px] pointer-events-none opacity-40 sm:opacity-25"
+      {/* Floating Ambient Orb (Left - pure radial gradient without heavy CSS filter:blur) */}
+      <div
+        className="absolute top-[30%] -left-[20%] sm:-left-[10%] w-[80vw] sm:w-[45vw] h-[80vw] sm:h-[45vw] rounded-full pointer-events-none opacity-25 sm:opacity-20"
         style={{
-          background: `radial-gradient(circle, ${accentColor} 0%, transparent 70%)`,
+          background: `radial-gradient(circle, ${accentColor}55 0%, transparent 65%)`,
         }}
       />
 
-      {/* Floating Ambient Orb (Right) */}
-      <div 
-        className="absolute top-[60%] -right-[25%] sm:-right-[10%] w-[90vw] sm:w-[50vw] h-[90vw] sm:h-[50vw] rounded-full blur-[110px] sm:blur-[170px] pointer-events-none opacity-35 sm:opacity-25"
+      {/* Floating Ambient Orb (Right - pure radial gradient without heavy CSS filter:blur) */}
+      <div
+        className="absolute top-[60%] -right-[25%] sm:-right-[10%] w-[90vw] sm:w-[50vw] h-[90vw] sm:h-[50vw] rounded-full pointer-events-none opacity-20 sm:opacity-18"
         style={{
-          background: `radial-gradient(circle, ${secondary} 0%, transparent 70%)`,
+          background: `radial-gradient(circle, ${secondary}55 0%, transparent 65%)`,
         }}
       />
 
       {/* Bottom CTA Aura */}
-      <div 
+      <div
         className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[130vw] sm:w-[85vw] h-[350px] sm:h-[420px] pointer-events-none"
         style={{
           background: `radial-gradient(ellipse 80% 50% at 50% 100%, ${secondary}22 0%, transparent 70%)`,
@@ -242,14 +245,14 @@ export default function ProductAtmosphere({
       />
 
       {/* ── 2. Subtle Starfield Canvas ── */}
-      <canvas 
-        ref={canvasRef} 
+      <canvas
+        ref={canvasRef}
         className="absolute inset-0 z-[1] pointer-events-none"
         style={{ opacity: 1.0 }}
       />
 
       {/* ── 3. Fine Dot-Matrix Grid Texture ── */}
-      <div 
+      <div
         className="absolute inset-0 z-[2] opacity-[0.035] pointer-events-none"
         style={{
           backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px)',

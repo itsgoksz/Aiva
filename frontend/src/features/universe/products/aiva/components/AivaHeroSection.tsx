@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { 
-  PhoneCall, 
-  Calendar, 
-  RotateCcw, 
-  CheckCircle2, 
-  ChevronRight, 
-  User, 
+import {
+  PhoneCall,
+  Calendar,
+  RotateCcw,
+  CheckCircle2,
+  ChevronRight,
+  User,
   LayoutDashboard,
   Zap,
   Volume2
@@ -64,8 +64,8 @@ const CALL_SCENARIOS = [
 ];
 
 export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpenDemo }: AivaHeroSectionProps) {
-  const handleBookDemo = onOpenBookDemo || onOpenDemo || (() => {});
-  const handleTestCall = onOpenTestCall || onOpenDemo || (() => {});
+  const handleBookDemo = onOpenBookDemo || onOpenDemo || (() => { });
+  const handleTestCall = onOpenTestCall || onOpenDemo || (() => { });
   const [scenarioIndex, setScenarioIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [currentLine, setCurrentLine] = useState(0);
@@ -100,16 +100,15 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
 
   return (
     <section className="relative min-h-[640px] sm:min-h-screen flex items-center justify-center pt-24 sm:pt-28 pb-16 sm:pb-20 overflow-hidden bg-transparent">
-      {/* Velvet Rose & Indigo Ambient Glows (Mobile-centered + Desktop lateral) */}
+      {/* Velvet Rose & Indigo Ambient Glows (pure radial gradients — zero expensive CSS Gaussian blur) */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-        {/* Primary Hero Ambient Aura: centered on mobile, lateral on desktop */}
-        <div 
-          className="absolute -top-[12%] sm:top-[-10%] left-1/2 sm:left-[15%] -translate-x-1/2 sm:translate-x-0 w-[125vw] sm:w-[60vw] h-[95vw] sm:h-[60vw] max-w-[750px] rounded-full blur-[80px] sm:blur-[170px] opacity-45 sm:opacity-25"
-          style={{ background: "radial-gradient(circle, #E65C8E 0%, rgba(166, 107, 142, 0.25) 50%, transparent 80%)" }}
+        <div
+          className="absolute -top-[12%] sm:top-[-10%] left-1/2 sm:left-[15%] -translate-x-1/2 sm:translate-x-0 w-[125vw] sm:w-[60vw] h-[95vw] sm:h-[60vw] max-w-[750px] rounded-full opacity-35 sm:opacity-22"
+          style={{ background: "radial-gradient(circle, rgba(230, 92, 142, 0.55) 0%, rgba(166, 107, 142, 0.18) 45%, transparent 72%)" }}
         />
-        <div 
-          className="absolute bottom-[-15%] right-[10%] w-[50vw] h-[50vw] max-w-[650px] rounded-full blur-[160px] opacity-25"
-          style={{ background: "radial-gradient(circle, rgba(230, 92, 142, 0.35) 0%, rgba(230, 92, 142, 0.08) 60%, transparent 100%)" }}
+        <div
+          className="absolute bottom-[-15%] right-[10%] w-[50vw] h-[50vw] max-w-[650px] rounded-full opacity-20"
+          style={{ background: "radial-gradient(circle, rgba(230, 92, 142, 0.35) 0%, rgba(230, 92, 142, 0.08) 55%, transparent 75%)" }}
         />
       </div>
 
@@ -123,7 +122,7 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             >
               {/* Badge */}
-              <div 
+              <div
                 className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full mb-8 border border-[#E65C8E]/30 bg-[#E65C8E]/10"
               >
                 <span className="flex items-center gap-1 shrink-0">
@@ -137,12 +136,12 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
               </div>
 
               {/* Headline */}
-              <h1 
+              <h1
                 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.08] text-white"
                 style={{ fontFamily: "'Space Grotesk', 'Inter', sans-serif" }}
               >
                 Never let another phone call <br />
-                <span 
+                <span
                   className="bg-clip-text text-transparent bg-gradient-to-r from-white/90 via-[#FCE7F3] to-[#E65C8E]"
                 >
                   go to voicemail.
@@ -151,8 +150,8 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
 
               {/* Subtitle */}
               <p className="text-lg sm:text-xl mb-9 max-w-2xl mx-auto lg:mx-0 font-light text-white/70 leading-relaxed">
-                Aiva answers incoming calls in under a second, speaks in a friendly human voice, 
-                checks your team's real schedule, and books appointments straight into your calendar—day, 
+                Aiva answers incoming calls in under a second, speaks in a friendly human voice,
+                checks your team's real schedule, and books appointments straight into your calendar—day,
                 night, or during your busiest rush.
               </p>
 
@@ -223,7 +222,7 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
               className="relative w-full max-w-xl mx-auto"
             >
-              <div 
+              <div
                 className="rounded-2xl sm:rounded-3xl p-4 sm:p-7 relative overflow-hidden border border-white/10 shadow-2xl"
                 style={{
                   background: "linear-gradient(150deg, #170B14 0%, #0A0508 100%)",
@@ -262,11 +261,10 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
                       <button
                         key={sc.id}
                         onClick={() => handleSelectScenario(idx)}
-                        className={`whitespace-nowrap px-2.5 py-1 text-[10px] sm:text-[11px] font-medium rounded-lg transition-all cursor-pointer ${
-                          scenarioIndex === idx
-                            ? "bg-[#A66B8E] text-white font-semibold shadow-sm"
-                            : "text-white/40 hover:text-white"
-                        }`}
+                        className={`whitespace-nowrap px-2.5 py-1 text-[10px] sm:text-[11px] font-medium rounded-lg transition-all cursor-pointer ${scenarioIndex === idx
+                          ? "bg-[#A66B8E] text-white font-semibold shadow-sm"
+                          : "text-white/40 hover:text-white"
+                          }`}
                       >
                         {sc.title}
                       </button>
@@ -275,7 +273,7 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
                 </div>
 
                 {/* Call Status Card with Waveform */}
-                <div 
+                <div
                   className="p-4 rounded-2xl border border-white/[0.08] mb-6 relative overflow-hidden"
                   style={{ background: "rgba(255, 255, 255, 0.02)" }}
                 >
@@ -333,26 +331,23 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
                       initial={{ opacity: 0, y: 10, scale: 0.98 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       transition={{ duration: 0.3 }}
-                      className={`flex gap-3 items-start ${
-                        msg.speaker === "aiva" ? "flex-row" : "flex-row-reverse"
-                      }`}
-                    >
-                      <div 
-                        className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold ${
-                          msg.speaker === "aiva" 
-                            ? "bg-[#A66B8E] text-white" 
-                            : "bg-white/10 text-white/70"
+                      className={`flex gap-3 items-start ${msg.speaker === "aiva" ? "flex-row" : "flex-row-reverse"
                         }`}
+                    >
+                      <div
+                        className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold ${msg.speaker === "aiva"
+                          ? "bg-[#A66B8E] text-white"
+                          : "bg-white/10 text-white/70"
+                          }`}
                       >
                         {msg.speaker === "aiva" ? "A" : <User size={13} />}
                       </div>
 
-                      <div 
-                        className={`p-3.5 rounded-2xl text-xs sm:text-sm max-w-[85%] leading-relaxed ${
-                          msg.speaker === "aiva"
-                            ? "bg-[#A66B8E]/15 border border-[#A66B8E]/30 text-white rounded-tl-sm"
-                            : "bg-white/[0.05] border border-white/10 text-white/80 rounded-tr-sm"
-                        }`}
+                      <div
+                        className={`p-3.5 rounded-2xl text-xs sm:text-sm max-w-[85%] leading-relaxed ${msg.speaker === "aiva"
+                          ? "bg-[#A66B8E]/15 border border-[#A66B8E]/30 text-white rounded-tl-sm"
+                          : "bg-white/[0.05] border border-white/10 text-white/80 rounded-tr-sm"
+                          }`}
                       >
                         {msg.text}
                       </div>
