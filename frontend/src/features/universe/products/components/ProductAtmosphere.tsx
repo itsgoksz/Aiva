@@ -8,7 +8,7 @@
  * 4. Micro-dot subtle space grid for high-tech spatial alignment
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 
 interface ProductAtmosphereProps {
   accentColor: string;
@@ -27,6 +27,7 @@ interface Star {
   twinkleOffset: number;
   isTinted: boolean;
   driftSpeed: number;
+  rgbPrefix: string;
 }
 
 function hexToRgb(hex: string): [number, number, number] {
@@ -45,15 +46,15 @@ function hexToRgb(hex: string): [number, number, number] {
   ];
 }
 
-export default function ProductAtmosphere({
+const ProductAtmosphere = memo(function ProductAtmosphere({
   accentColor,
   secondaryAccent,
   bgBaseColor = '#0A0508',
-  starCount = 280,
+  starCount = 240,
 }: ProductAtmosphereProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const secondary = secondaryAccent || accentColor;
-  const rgbAccent = hexToRgb(accentColor);
+  const rgbAccent = useMemo(() => hexToRgb(accentColor), [accentColor]);
 
   // Stable viewport height that NEVER changes when mobile address bar expands/contracts
   const [stableHeight, setStableHeight] = useState<number>(() => {
@@ -80,12 +81,16 @@ export default function ProductAtmosphere({
       // Responsive star count: ~180 on mobile, ~280 on desktop
       const count = w < 768 ? Math.round(starCount * 0.65) : starCount;
       const arr: Star[] = [];
+      const tintedPrefix = `rgba(${rgbAccent[0]}, ${rgbAccent[1]}, ${rgbAccent[2]}, `;
+      const whitePrefix = 'rgba(255, 255, 255, ';
+
       for (let i = 0; i < count; i++) {
         const radius = Math.random() < 0.85
           ? 0.6 + Math.random() * 0.85
           : 1.4 + Math.random() * 0.8; // 15% are slightly larger glowing stars
 
         const baseAlpha = 0.25 + Math.random() * 0.60;
+        const isTinted = Math.random() < 0.30; // 30% are subtly tinted with the product's color
         arr.push({
           x: Math.random() * w,
           y: Math.random() * h,
@@ -94,8 +99,9 @@ export default function ProductAtmosphere({
           alpha: baseAlpha,
           twinkleSpeed: 0.8 + Math.random() * 2.2,
           twinkleOffset: Math.random() * Math.PI * 2,
-          isTinted: Math.random() < 0.30, // 30% are subtly tinted with the product's color
+          isTinted,
           driftSpeed: 0.04 + Math.random() * 0.08,
+          rgbPrefix: isTinted ? tintedPrefix : whitePrefix,
         });
       }
       return arr;
@@ -170,21 +176,14 @@ export default function ProductAtmosphere({
         // Draw star
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
-
-        if (s.isTinted) {
-          ctx.fillStyle = `rgba(${rgbAccent[0]}, ${rgbAccent[1]}, ${rgbAccent[2]}, ${s.alpha * 0.85})`;
-        } else {
-          ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
-        }
+        ctx.fillStyle = `${s.rgbPrefix}${(s.isTinted ? s.alpha * 0.85 : s.alpha).toFixed(3)})`;
         ctx.fill();
 
         // Extra soft halo for larger stars
         if (s.radius > 1.3 && s.alpha > 0.4) {
           ctx.beginPath();
           ctx.arc(s.x, s.y, s.radius * 2.2, 0, Math.PI * 2);
-          ctx.fillStyle = s.isTinted
-            ? `rgba(${rgbAccent[0]}, ${rgbAccent[1]}, ${rgbAccent[2]}, ${s.alpha * 0.15})`
-            : `rgba(255, 255, 255, ${s.alpha * 0.15})`;
+          ctx.fillStyle = `${s.rgbPrefix}${(s.alpha * 0.15).toFixed(3)})`;
           ctx.fill();
         }
       }
@@ -196,7 +195,7 @@ export default function ProductAtmosphere({
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', handleResize);
     };
-  }, [starCount, secondary, rgbAccent, stableHeight]);
+  }, [starCount, rgbAccent, stableHeight]);
 
   return (
     <div
@@ -261,4 +260,6 @@ export default function ProductAtmosphere({
       />
     </div>
   );
-}
+});
+
+export default ProductAtmosphere;

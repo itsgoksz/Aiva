@@ -641,13 +641,14 @@ const AivaSolarSystemBackground = memo(
           frameloop={active ? "always" : "never"}
           onCreated={({ gl, scene, camera }) => {
             gl.compile(scene, camera);
+            gl.render(scene, camera);
           }}
           camera={{ position: [0, 3.2, 16], fov: 48, near: 0.1, far: 90 }}
           dpr={
             typeof window !== "undefined"
               ? isMobile
                 ? 1
-                : Math.min(window.devicePixelRatio || 1, 2)
+                : Math.min(window.devicePixelRatio || 1, 1.5)
               : 1
           }
           gl={{

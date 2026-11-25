@@ -411,7 +411,7 @@ export default function AivaCinematicCardStage(
     if (!el) return;
     const io = new IntersectionObserver(
       ([entry]) => setIsSolarActive(entry.isIntersecting),
-      { rootMargin: "900px 0px 900px 0px", threshold: 0 }
+      { rootMargin: "-4% 0px -12% 0px", threshold: 0 }
     );
     io.observe(el);
 
@@ -423,8 +423,8 @@ export default function AivaCinematicCardStage(
       const rect = el.getBoundingClientRect();
       const vh = window.innerHeight || 800;
       const navBottom = 88;
-      // Only begin cross-fading solar theater after Hero has mostly scrolled past (eliminates Hero initial-scroll starfield flash)
-      const enterProgress = Math.max(0, Math.min(1, (vh * 0.52 - rect.top) / (vh * 0.48)));
+      // Wide, silky cross-fade starting cleanly after Hero scrolls up (~vh*0.78 -> vh*0.08)
+      const enterProgress = Math.max(0, Math.min(1, (vh * 0.78 - rect.top) / (vh * 0.70)));
       const exitProgress = Math.max(0, Math.min(1, (rect.bottom - navBottom) / (vh * 0.42)));
       const opacity = Math.min(enterProgress, exitProgress);
       layer.style.opacity = opacity.toFixed(3);

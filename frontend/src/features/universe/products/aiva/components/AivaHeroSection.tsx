@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import { motion } from "framer-motion";
 import {
   PhoneCall,
@@ -63,9 +63,11 @@ const CALL_SCENARIOS = [
   }
 ];
 
-export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpenDemo }: AivaHeroSectionProps) {
+export default memo(function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpenDemo }: AivaHeroSectionProps) {
   const handleBookDemo = onOpenBookDemo || onOpenDemo || (() => { });
   const handleTestCall = onOpenTestCall || onOpenDemo || (() => { });
+  const sectionRef = useRef<HTMLElement>(null);
+  const [isInView, setIsInView] = useState(true);
   const [scenarioIndex, setScenarioIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [currentLine, setCurrentLine] = useState(0);
@@ -73,7 +75,18 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
   const scenario = CALL_SCENARIOS[scenarioIndex];
 
   useEffect(() => {
-    if (!isPlaying) return;
+    const el = sectionRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.05 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isPlaying || !isInView) return;
     const timer = setInterval(() => {
       setCurrentLine((prev) => {
         if (prev < scenario.dialogue.length - 1) {
@@ -85,7 +98,7 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
     }, 2400);
 
     return () => clearInterval(timer);
-  }, [isPlaying, scenario]);
+  }, [isPlaying, isInView, scenario]);
 
   const handleSelectScenario = (idx: number) => {
     setScenarioIndex(idx);
@@ -99,7 +112,7 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
   };
 
   return (
-    <section className="relative min-h-[640px] sm:min-h-screen flex items-center justify-center pt-24 sm:pt-28 pb-16 sm:pb-20 overflow-hidden bg-transparent">
+    <section ref={sectionRef} className="relative min-h-[640px] sm:min-h-screen flex items-center justify-center pt-24 sm:pt-28 pb-16 sm:pb-20 overflow-hidden bg-transparent">
       {/* Velvet Rose & Indigo Ambient Glows (pure radial gradients — zero expensive CSS Gaussian blur) */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
         <div
@@ -304,16 +317,16 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
                     </button>
                   </div>
 
-                  {/* Audio Waveform */}
-                  <div className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-black/40 border border-white/5">
+                  {/* Audio Waveform (pure GPU scaleY transforms avoid layout reflow during scroll) */}
+                  <div className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-black/40 border border-white/5 h-10">
                     <Volume2 size={14} className="text-[#EC89B5] mr-2 shrink-0" />
                     {[40, 65, 85, 45, 95, 75, 55, 80, 100, 70, 50, 85, 60, 90, 75, 45, 65, 50].map((h, i) => (
                       <div
                         key={i}
-                        className="w-1 rounded-full bg-gradient-to-t from-[#A66B8E] to-[#EC89B5] transition-all duration-150"
+                        className="w-1 h-6 rounded-full bg-gradient-to-t from-[#A66B8E] to-[#EC89B5] transition-transform duration-200 will-change-transform"
                         style={{
-                          height: `${Math.max(6, (h * (currentLine % 2 === 1 ? 0.9 : 0.4)))}px`,
-                          animation: `pulse ${0.6 + (i % 5) * 0.1}s ease-in-out infinite alternate`,
+                          transform: `scaleY(${((h / 100) * (currentLine % 2 === 1 ? 0.95 : 0.42)).toFixed(2)})`,
+                          opacity: currentLine % 2 === 1 ? 0.95 : 0.55,
                         }}
                       />
                     ))}
@@ -400,4 +413,4 @@ export default function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, onOpen
       </div>
     </section>
   );
-}
+});
