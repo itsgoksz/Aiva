@@ -3,31 +3,31 @@
  * Routes, auth guards, and app shell.
  */
 
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider, useAuth } from './features/auth/AuthProvider';
 import { isAivaSubdomain } from './lib/subdomain';
-import DashboardLayout from './components/layout/DashboardLayout';
-import LoginPage from './features/auth/LoginPage';
-import RegisterPage from './features/auth/RegisterPage';
-import DashboardPage from './features/dashboard/DashboardPage';
-import AppointmentsPage from './features/appointments/AppointmentsPage';
-import CustomersPage from './features/customers/CustomersPage';
-import CallsPage from './features/calls/CallsPage';
-import ServicesPage from './features/services/ServicesPage';
-import StaffPage from './features/staff/StaffPage';
-import AnalyticsPage from './features/analytics/AnalyticsPage';
-import SettingsPage from './features/settings/SettingsPage';
-import AivaMarketingPage from './features/marketing/AivaMarketingPage';
 import NammaUniversePage from './features/universe/NammaUniversePage';
 import AivaProductPage from './features/universe/products/AivaProductPage';
-import CasaMotoProductPage from './features/universe/products/CasaMotoProductPage';
-import EchoProductPage from './features/universe/products/EchoProductPage';
-import EvCopilotProductPage from './features/universe/products/EvCopilotProductPage';
-import WelloraProductPage from './features/universe/products/WelloraProductPage';
-import HomieProductPage from './features/universe/products/HomieProductPage';
-import AirportDigitalTwinProductPage from './features/universe/products/AirportDigitalTwinProductPage';
-import NammaHoodProductPage from './features/universe/products/NammaHoodProductPage';
+
+const DashboardLayout = lazy(() => import('./components/layout/DashboardLayout'));
+const LoginPage = lazy(() => import('./features/auth/LoginPage'));
+const RegisterPage = lazy(() => import('./features/auth/RegisterPage'));
+const DashboardPage = lazy(() => import('./features/dashboard/DashboardPage'));
+const AppointmentsPage = lazy(() => import('./features/appointments/AppointmentsPage'));
+const CustomersPage = lazy(() => import('./features/customers/CustomersPage'));
+const CallsPage = lazy(() => import('./features/calls/CallsPage'));
+const ServicesPage = lazy(() => import('./features/services/ServicesPage'));
+const StaffPage = lazy(() => import('./features/staff/StaffPage'));
+const AnalyticsPage = lazy(() => import('./features/analytics/AnalyticsPage'));
+const SettingsPage = lazy(() => import('./features/settings/SettingsPage'));
+const AivaMarketingPage = lazy(() => import('./features/marketing/AivaMarketingPage'));
+const CasaMotoProductPage = lazy(() => import('./features/universe/products/CasaMotoProductPage'));
+const EvCopilotProductPage = lazy(() => import('./features/universe/products/EvCopilotProductPage'));
+const WelloraProductPage = lazy(() => import('./features/universe/products/WelloraProductPage'));
+const AirportDigitalTwinProductPage = lazy(() => import('./features/universe/products/AirportDigitalTwinProductPage'));
+const NammaHoodProductPage = lazy(() => import('./features/universe/products/NammaHoodProductPage'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -143,7 +143,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AppRoutes />
+        <Suspense fallback={<div className="min-h-screen bg-[#0A0508]" />}>
+          <AppRoutes />
+        </Suspense>
         <Analytics />
       </AuthProvider>
     </BrowserRouter>

@@ -8,7 +8,6 @@
  *   camera arcs across the solar system, and the next section emerges out of the next planet
  * - Scroll-driven vertical pan for multi-card grids on mobile (no nested scroll traps or clipping)
  * - Glitch-free bottom capsule dock styled in the product's accent color
- * lets go
  */
 
 import { useState, useEffect, useRef, useMemo } from "react";

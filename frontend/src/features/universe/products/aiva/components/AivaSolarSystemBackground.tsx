@@ -26,6 +26,13 @@ interface AivaSolarSystemBackgroundProps {
   active?: boolean;
 }
 
+// Shared Retina DPR helper so Canvas & point shaders stay in exact pixel sync
+function getTargetDpr(): number {
+  if (typeof window === "undefined") return 1;
+  const isMobile = window.innerWidth < 768;
+  return Math.min(window.devicePixelRatio || 1, isMobile ? 2 : 1.75);
+}
+
 // ─── 7 Celestial Planets (One per Aiva Module, matching Namma Universe) ───
 // Ordered evenly around the Sun (60° per orbit, decreasing theta = traveling right / clockwise revolution)
 const ORBIT_STEP = (Math.PI * 2) / 6;
@@ -204,10 +211,7 @@ function CelestialBodies({
   const uniforms = useMemo(
     () => ({
       uPixelRatio: {
-        value:
-          typeof window !== "undefined"
-            ? Math.min(window.devicePixelRatio || 1, window.innerWidth < 768 ? 1.5 : 2)
-            : 1,
+        value: getTargetDpr(),
       },
     }),
     []
@@ -340,7 +344,7 @@ function ActivePlanetSphere({
 
           float fbm(vec3 x) {
             float v = 0.0; float a = 0.5; vec3 shift = vec3(100);
-            for (int i = 0; i < ${isMobile ? 2 : 4}; ++i) { v += a * snoise(x); x = x * 2.0 + shift; a *= 0.5; }
+            for (int i = 0; i < 3; ++i) { v += a * snoise(x); x = x * 2.0 + shift; a *= 0.5; }
             return v;
           }
 
@@ -363,12 +367,12 @@ function ActivePlanetSphere({
             gl_FragColor = vec4(finalColor, alpha);
           }
     `,
-    [isMobile]
+    []
   );
 
   return (
     <mesh ref={meshRef}>
-      <sphereGeometry args={[0.42, isMobile ? 24 : 40, isMobile ? 24 : 40]} />
+      <sphereGeometry args={[0.42, isMobile ? 36 : 44, isMobile ? 36 : 44]} />
       <shaderMaterial
         ref={materialRef}
         transparent
@@ -403,7 +407,7 @@ function SolarSystemRings({
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   const matRefs = useRef<(THREE.LineBasicMaterial | null)[]>([]);
   const ringData = useMemo(() => {
-    const segments = isMobile ? 64 : 96;
+    const segments = isMobile ? 96 : 112;
     return SOLAR_PLANETS.map((planet) => {
       const points: THREE.Vector3[] = [];
       for (let i = 0; i <= segments; i++) {
@@ -453,45 +457,127 @@ function SolarSystemRings({
   );
 }
 
-// ─── 4. Twinkling Diamond Starfield ──────────────────────────
+// ─── 4. Full-Sphere + Lower-Hemisphere Twinkling Starfield ───
+
+const starVertexShader = /* glsl */ `
+  attribute float aSize;
+  attribute vec3 aColor;
+  attribute float aAlpha;
+
+  varying vec3 vColor;
+  varying float vAlpha;
+
+  uniform float uPixelRatio;
+
+  void main() {
+    vColor = aColor;
+    vAlpha = aAlpha;
+
+    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix * mvPosition;
+
+    float dist = max(-mvPosition.z, 1.5);
+    gl_PointSize = clamp(aSize * (52.0 / dist) * uPixelRatio, 1.1 * uPixelRatio, 11.0 * uPixelRatio);
+  }
+`;
+
+const starFragmentShader = /* glsl */ `
+  varying vec3 vColor;
+  varying float vAlpha;
+
+  void main() {
+    float dist = length(gl_PointCoord - vec2(0.5));
+    if (dist > 0.5) discard;
+
+    float core = 1.0 - smoothstep(0.0, 0.24, dist);
+    float halo = pow(1.0 - smoothstep(0.0, 0.5, dist), 2.4);
+    float alpha = (core * 0.92 + halo * 0.38) * vAlpha;
+
+    gl_FragColor = vec4(mix(vColor, vec3(1.0), core * 0.45), alpha);
+  }
+`;
 
 function SolarSystemStarfield() {
   const pointsRef = useRef<THREE.Points>(null);
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
-  const { positions, colors, sizes } = useMemo(() => {
-    const count = isMobile ? 700 : 2400;
+  const { positions, colors, sizes, alphas } = useMemo(() => {
+    const count = isMobile ? 1800 : 2400;
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
     const siz = new Float32Array(count);
+    const alp = new Float32Array(count);
 
     const white = new THREE.Color("#FFFFFF");
-    const warmGold = new THREE.Color("#FBBF24");
-    const cyan = new THREE.Color("#38BDF8");
-    const violet = new THREE.Color("#A66B8E");
+    const warmGold = new THREE.Color("#FDE68A");
+    const cyan = new THREE.Color("#7DD3FC");
+    const rose = new THREE.Color("#EC89B5");
+    const violet = new THREE.Color("#C084FC");
 
     for (let i = 0; i < count; i++) {
-      const radius = 3.5 + Math.sqrt(Math.random()) * 34.0;
-      const theta = Math.random() * Math.PI * 2;
-      const height = (Math.random() - 0.5) * (radius * 0.45 + 3.0);
+      const zone = i / count;
+      let x = 0;
+      let y = 0;
+      let z = 0;
 
-      pos[i * 3] = Math.cos(theta) * radius;
-      pos[i * 3 + 1] = height;
-      pos[i * 3 + 2] = Math.sin(theta) * radius;
+      if (zone < 0.38) {
+        // Galactic plane band framing the solar rings
+        const radius = 5.0 + Math.sqrt(Math.random()) * 34.0;
+        const theta = Math.random() * Math.PI * 2;
+        x = Math.cos(theta) * radius;
+        y = (Math.random() - 0.5) * (radius * 0.55 + 5.0);
+        z = Math.sin(theta) * radius;
+      } else if (zone < 0.80) {
+        // Full 3D spherical surrounding shell (top, sides, and bottom hemisphere)
+        const r = 13.0 + Math.random() * 29.0;
+        const u = Math.random() * 2 - 1;
+        const theta = Math.random() * Math.PI * 2;
+        const s = Math.sqrt(Math.max(0, 1 - u * u));
+        x = r * s * Math.cos(theta);
+        y = r * u;
+        z = r * s * Math.sin(theta);
+      } else {
+        // Extra deep lower-hemisphere stars so bottom of portrait & desktop screens stays rich
+        const radius = 3.0 + Math.sqrt(Math.random()) * 28.0;
+        const theta = Math.random() * Math.PI * 2;
+        x = Math.cos(theta) * radius;
+        y = -(3.5 + Math.random() * 22.0);
+        z = Math.sin(theta) * radius;
+      }
+
+      pos[i * 3] = x;
+      pos[i * 3 + 1] = y;
+      pos[i * 3 + 2] = z;
 
       const rand = Math.random();
       const chosenColor =
-        rand < 0.65 ? white : rand < 0.82 ? warmGold : rand < 0.92 ? cyan : violet;
+        rand < 0.58
+          ? white
+          : rand < 0.75
+            ? warmGold
+            : rand < 0.86
+              ? rose
+              : rand < 0.94
+                ? cyan
+                : violet;
 
       col[i * 3] = chosenColor.r;
       col[i * 3 + 1] = chosenColor.g;
       col[i * 3 + 2] = chosenColor.b;
 
-      siz[i] = rand < 0.9 ? 0.035 + Math.random() * 0.03 : 0.075 + Math.random() * 0.05;
+      siz[i] = rand < 0.82 ? 0.55 + Math.random() * 0.55 : 1.15 + Math.random() * 0.75;
+      alp[i] = 0.42 + Math.random() * 0.56;
     }
 
-    return { positions: pos, colors: col, sizes: siz };
+    return { positions: pos, colors: col, sizes: siz, alphas: alp };
   }, [isMobile]);
+
+  const uniforms = useMemo(
+    () => ({
+      uPixelRatio: { value: getTargetDpr() },
+    }),
+    []
+  );
 
   useFrame((_, delta) => {
     if (pointsRef.current) {
@@ -503,14 +589,15 @@ function SolarSystemStarfield() {
     <points ref={pointsRef}>
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-        <bufferAttribute attach="attributes-color" args={[colors, 3]} />
-        <bufferAttribute attach="attributes-size" args={[sizes, 1]} />
+        <bufferAttribute attach="attributes-aColor" args={[colors, 3]} />
+        <bufferAttribute attach="attributes-aSize" args={[sizes, 1]} />
+        <bufferAttribute attach="attributes-aAlpha" args={[alphas, 1]} />
       </bufferGeometry>
-      <pointsMaterial
-        size={0.055}
-        vertexColors
+      <shaderMaterial
+        vertexShader={starVertexShader}
+        fragmentShader={starFragmentShader}
+        uniforms={uniforms}
         transparent
-        opacity={0.78}
         blending={THREE.AdditiveBlending}
         depthWrite={false}
       />
@@ -624,40 +711,27 @@ const AivaSolarSystemBackground = memo(
     active = true,
   }: AivaSolarSystemBackgroundProps) {
     const smoothIndexRef = useRef<number>(stageIndex);
-    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
     return (
       <div className={`w-full h-full pointer-events-none select-none overflow-hidden ${className}`}>
-        {/* Soft deep-space vignette */}
-        <div
-          className="absolute inset-0 pointer-events-none z-[1]"
-          style={{
-            background:
-              "radial-gradient(ellipse 85% 75% at 50% 50%, transparent 32%, rgba(10, 5, 8, 0.78) 100%)",
-          }}
-        />
-
         <Canvas
           frameloop={active ? "always" : "never"}
           onCreated={({ gl, scene, camera }) => {
-            gl.compile(scene, camera);
-            gl.render(scene, camera);
+            requestAnimationFrame(() => {
+              gl.compile(scene, camera);
+              gl.render(scene, camera);
+            });
           }}
           camera={{ position: [0, 3.2, 16], fov: 48, near: 0.1, far: 90 }}
-          dpr={
-            typeof window !== "undefined"
-              ? isMobile
-                ? 1
-                : Math.min(window.devicePixelRatio || 1, 1.5)
-              : 1
-          }
+          dpr={getTargetDpr()}
           gl={{
-            antialias: !isMobile,
-            alpha: true,
+            antialias: true,
+            alpha: false,
             powerPreference: "high-performance",
           }}
           className="w-full h-full"
         >
+          <color attach="background" args={["#0A0508"]} />
           <CameraFlightController
             stageIndex={stageIndex}
             floatStageRef={floatStageRef}

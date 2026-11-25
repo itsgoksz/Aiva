@@ -17,19 +17,6 @@ interface ProductAtmosphereProps {
   starCount?: number;
 }
 
-interface Star {
-  x: number;
-  y: number;
-  radius: number;
-  baseAlpha: number;
-  alpha: number;
-  twinkleSpeed: number;
-  twinkleOffset: number;
-  isTinted: boolean;
-  driftSpeed: number;
-  rgbPrefix: string;
-}
-
 function hexToRgb(hex: string): [number, number, number] {
   const clean = hex.replace('#', '');
   if (clean.length === 3) {
@@ -50,17 +37,18 @@ const ProductAtmosphere = memo(function ProductAtmosphere({
   accentColor,
   secondaryAccent,
   bgBaseColor = '#0A0508',
-  starCount = 240,
+  starCount = 160,
 }: ProductAtmosphereProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const secondary = secondaryAccent || accentColor;
   const rgbAccent = useMemo(() => hexToRgb(accentColor), [accentColor]);
 
-  // Stable viewport height that NEVER changes when mobile address bar expands/contracts
+  // Desktop uses exact innerHeight; mobile locks screen height to stay immune to Safari toolbar collapse
   const [stableHeight, setStableHeight] = useState<number>(() => {
     if (typeof window === 'undefined') return 900;
+    if (window.innerWidth >= 768) return window.innerHeight;
     const screenH = (window.screen && window.screen.height) ? window.screen.height : window.innerHeight;
-    return Math.max(window.innerHeight, screenH) + 120;
+    return Math.max(window.innerHeight, screenH) + 80;
   });
 
   const lastWidthRef = useRef<number>(typeof window !== 'undefined' ? window.innerWidth : 1000);
@@ -72,129 +60,66 @@ const ProductAtmosphere = memo(function ProductAtmosphere({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let animId: number;
-    let stars: Star[] = [];
-    let width = window.innerWidth;
-    let height = stableHeight;
+    const drawStaticStars = (w: number, h: number) => {
+      const dpr = w < 768 ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
 
-    const initStars = (w: number, h: number) => {
-      // Responsive star count: ~180 on mobile, ~280 on desktop
       const count = w < 768 ? Math.round(starCount * 0.65) : starCount;
-      const arr: Star[] = [];
       const tintedPrefix = `rgba(${rgbAccent[0]}, ${rgbAccent[1]}, ${rgbAccent[2]}, `;
       const whitePrefix = 'rgba(255, 255, 255, ';
 
       for (let i = 0; i < count; i++) {
-        const radius = Math.random() < 0.85
-          ? 0.6 + Math.random() * 0.85
-          : 1.4 + Math.random() * 0.8; // 15% are slightly larger glowing stars
+        const x = Math.random() * w;
+        const y = Math.random() * h;
+        const radius = Math.random() < 0.85 ? 0.6 + Math.random() * 0.85 : 1.4 + Math.random() * 0.8;
+        const alpha = 0.25 + Math.random() * 0.65;
+        const isTinted = Math.random() < 0.30;
+        const prefix = isTinted ? tintedPrefix : whitePrefix;
 
-        const baseAlpha = 0.25 + Math.random() * 0.60;
-        const isTinted = Math.random() < 0.30; // 30% are subtly tinted with the product's color
-        arr.push({
-          x: Math.random() * w,
-          y: Math.random() * h,
-          radius,
-          baseAlpha,
-          alpha: baseAlpha,
-          twinkleSpeed: 0.8 + Math.random() * 2.2,
-          twinkleOffset: Math.random() * Math.PI * 2,
-          isTinted,
-          driftSpeed: 0.04 + Math.random() * 0.08,
-          rgbPrefix: isTinted ? tintedPrefix : whitePrefix,
-        });
+        ctx.fillStyle = `${prefix}${(isTinted ? alpha * 0.85 : alpha).toFixed(3)})`;
+        if (radius <= 1.2) {
+          const d = radius * 2;
+          ctx.fillRect(x - radius, y - radius, d, d);
+        } else {
+          ctx.beginPath();
+          ctx.arc(x, y, radius, 0, Math.PI * 2);
+          ctx.fill();
+          if (alpha > 0.45) {
+            ctx.beginPath();
+            ctx.arc(x, y, radius * 2.2, 0, Math.PI * 2);
+            ctx.fillStyle = `${prefix}${(alpha * 0.14).toFixed(3)})`;
+            ctx.fill();
+          }
+        }
       }
-      return arr;
     };
 
     const handleResize = () => {
       const newWidth = window.innerWidth;
       const newHeight = window.innerHeight;
-
-      // On iOS Safari / Android Chrome, address bar expand/collapse changes height by ~50-90px.
-      // If width hasn't changed significantly (< 40px), ignore it completely!
-      // This prevents canvas re-seeding and background jitter when scrolling up/down.
-      if (Math.abs(newWidth - lastWidthRef.current) < 40) {
+      if (newWidth >= 768) {
+        lastWidthRef.current = newWidth;
+        setStableHeight(newHeight);
+        drawStaticStars(newWidth, newHeight);
         return;
       }
+      if (Math.abs(newWidth - lastWidthRef.current) < 40) return;
 
       lastWidthRef.current = newWidth;
       const screenH = (window.screen && window.screen.height) ? window.screen.height : newHeight;
-      const newStableHeight = Math.max(newHeight, screenH) + 120;
+      const newStableHeight = Math.max(newHeight, screenH) + 80;
       setStableHeight(newStableHeight);
-
-      width = newWidth;
-      height = newStableHeight;
-
-      const dpr = newWidth < 768 ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-      ctx.scale(dpr, dpr);
-
-      stars = initStars(width, height);
+      drawStaticStars(newWidth, newStableHeight);
     };
 
-    // Initial setup (capped DPR avoids 9x GPU fill-rate waste on 3x Retina iPhones)
-    const dpr = width < 768 ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
-    ctx.scale(dpr, dpr);
-    stars = initStars(width, height);
-
+    drawStaticStars(window.innerWidth, stableHeight);
     window.addEventListener('resize', handleResize, { passive: true });
-
-    let lastTime = performance.now();
-
-    const render = (time: number) => {
-      animId = requestAnimationFrame(render);
-      if (document.hidden) return;
-      const elapsedMs = time - lastTime;
-      // Throttle ambient background star twinkle to ~30fps to save mobile GPU & battery
-      if (elapsedMs < 32) return;
-      const dt = Math.min(elapsedMs / 1000, 0.1);
-      lastTime = time;
-
-      ctx.clearRect(0, 0, width, height);
-
-      const sec = time / 1000;
-
-      for (let i = 0; i < stars.length; i++) {
-        const s = stars[i];
-
-        // Gentle sinusoidal twinkle
-        const twinkle = Math.sin(sec * s.twinkleSpeed + s.twinkleOffset) * 0.3;
-        s.alpha = Math.max(0.08, Math.min(1.0, s.baseAlpha + twinkle));
-
-        // Very slow ambient upward drift
-        s.y -= s.driftSpeed * (dt * 60);
-        if (s.y < -5) s.y = height + 5;
-
-        // Draw star
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `${s.rgbPrefix}${(s.isTinted ? s.alpha * 0.85 : s.alpha).toFixed(3)})`;
-        ctx.fill();
-
-        // Extra soft halo for larger stars
-        if (s.radius > 1.3 && s.alpha > 0.4) {
-          ctx.beginPath();
-          ctx.arc(s.x, s.y, s.radius * 2.2, 0, Math.PI * 2);
-          ctx.fillStyle = `${s.rgbPrefix}${(s.alpha * 0.15).toFixed(3)})`;
-          ctx.fill();
-        }
-      }
-    };
-
-    animId = requestAnimationFrame(render);
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener('resize', handleResize);
-    };
+    return () => window.removeEventListener('resize', handleResize);
   }, [starCount, rgbAccent, stableHeight]);
 
   return (
@@ -207,56 +132,21 @@ const ProductAtmosphere = memo(function ProductAtmosphere({
         width: '100%',
         height: `${stableHeight}px`,
         zIndex: 0,
+        contain: 'strict',
+        transform: 'translateZ(0)',
         backgroundColor: bgBaseColor,
+        backgroundImage: [
+          `radial-gradient(ellipse 70% 45% at 50% 8%, ${secondary}28 0%, ${accentColor}12 42%, transparent 72%)`,
+          `radial-gradient(circle 34vw at 6% 42%, ${accentColor}22 0%, transparent 65%)`,
+          `radial-gradient(circle 36vw at 94% 72%, ${secondary}1E 0%, transparent 65%)`,
+          `radial-gradient(ellipse 75% 35% at 50% 98%, ${secondary}1C 0%, transparent 70%)`,
+        ].join(', '),
       }}
     >
-      {/* ── 1. Themed Radial Atmospheric Nebula Glows (Responsive Mobile + Desktop) ── */}
-      {/* Top Hero Glow — Fills mobile and desktop with product color aura */}
-      <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[140vw] sm:w-[90vw] h-[520px] sm:h-[650px] pointer-events-none"
-        style={{
-          background: `radial-gradient(ellipse 70% 60% at 50% 15%, ${secondary}30 0%, ${accentColor}12 45%, transparent 75%)`,
-        }}
-      />
-
-      {/* Floating Ambient Orb (Left - pure radial gradient without heavy CSS filter:blur) */}
-      <div
-        className="absolute top-[30%] -left-[20%] sm:-left-[10%] w-[80vw] sm:w-[45vw] h-[80vw] sm:h-[45vw] rounded-full pointer-events-none opacity-25 sm:opacity-20"
-        style={{
-          background: `radial-gradient(circle, ${accentColor}55 0%, transparent 65%)`,
-        }}
-      />
-
-      {/* Floating Ambient Orb (Right - pure radial gradient without heavy CSS filter:blur) */}
-      <div
-        className="absolute top-[60%] -right-[25%] sm:-right-[10%] w-[90vw] sm:w-[50vw] h-[90vw] sm:h-[50vw] rounded-full pointer-events-none opacity-20 sm:opacity-18"
-        style={{
-          background: `radial-gradient(circle, ${secondary}55 0%, transparent 65%)`,
-        }}
-      />
-
-      {/* Bottom CTA Aura */}
-      <div
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[130vw] sm:w-[85vw] h-[350px] sm:h-[420px] pointer-events-none"
-        style={{
-          background: `radial-gradient(ellipse 80% 50% at 50% 100%, ${secondary}22 0%, transparent 70%)`,
-        }}
-      />
-
-      {/* ── 2. Subtle Starfield Canvas ── */}
+      {/* ── Single-Paint Static Starfield Canvas (zero per-frame invalidation behind Hero) ── */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 z-[1] pointer-events-none"
-        style={{ opacity: 1.0 }}
-      />
-
-      {/* ── 3. Fine Dot-Matrix Grid Texture ── */}
-      <div
-        className="absolute inset-0 z-[2] opacity-[0.035] pointer-events-none"
-        style={{
-          backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px)',
-          backgroundSize: '36px 36px',
-        }}
       />
     </div>
   );

@@ -5,10 +5,8 @@ import {
   Calendar,
   RotateCcw,
   CheckCircle2,
-  ChevronRight,
   User,
   LayoutDashboard,
-  Zap,
   Volume2
 } from "lucide-react";
 
@@ -67,7 +65,7 @@ export default memo(function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, o
   const handleBookDemo = onOpenBookDemo || onOpenDemo || (() => { });
   const handleTestCall = onOpenTestCall || onOpenDemo || (() => { });
   const sectionRef = useRef<HTMLElement>(null);
-  const [isInView, setIsInView] = useState(true);
+  const isInViewRef = useRef(true);
   const [scenarioIndex, setScenarioIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [currentLine, setCurrentLine] = useState(0);
@@ -78,7 +76,9 @@ export default memo(function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, o
     const el = sectionRef.current;
     if (!el) return;
     const io = new IntersectionObserver(
-      ([entry]) => setIsInView(entry.isIntersecting),
+      ([entry]) => {
+        isInViewRef.current = entry.isIntersecting;
+      },
       { threshold: 0.05 }
     );
     io.observe(el);
@@ -86,8 +86,9 @@ export default memo(function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, o
   }, []);
 
   useEffect(() => {
-    if (!isPlaying || !isInView) return;
+    if (!isPlaying) return;
     const timer = setInterval(() => {
+      if (!isInViewRef.current) return;
       setCurrentLine((prev) => {
         if (prev < scenario.dialogue.length - 1) {
           return prev + 1;
@@ -98,7 +99,7 @@ export default memo(function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, o
     }, 2400);
 
     return () => clearInterval(timer);
-  }, [isPlaying, isInView, scenario]);
+  }, [isPlaying, scenario]);
 
   const handleSelectScenario = (idx: number) => {
     setScenarioIndex(idx);
@@ -112,115 +113,88 @@ export default memo(function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, o
   };
 
   return (
-    <section ref={sectionRef} className="relative min-h-[640px] sm:min-h-screen flex items-center justify-center pt-24 sm:pt-28 pb-16 sm:pb-20 overflow-hidden bg-transparent">
-      {/* Velvet Rose & Indigo Ambient Glows (pure radial gradients — zero expensive CSS Gaussian blur) */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-        <div
-          className="absolute -top-[12%] sm:top-[-10%] left-1/2 sm:left-[15%] -translate-x-1/2 sm:translate-x-0 w-[125vw] sm:w-[60vw] h-[95vw] sm:h-[60vw] max-w-[750px] rounded-full opacity-35 sm:opacity-22"
-          style={{ background: "radial-gradient(circle, rgba(230, 92, 142, 0.55) 0%, rgba(166, 107, 142, 0.18) 45%, transparent 72%)" }}
-        />
-        <div
-          className="absolute bottom-[-15%] right-[10%] w-[50vw] h-[50vw] max-w-[650px] rounded-full opacity-20"
-          style={{ background: "radial-gradient(circle, rgba(230, 92, 142, 0.35) 0%, rgba(230, 92, 142, 0.08) 55%, transparent 75%)" }}
-        />
-      </div>
-
+    <section ref={sectionRef} className="relative min-h-[640px] sm:min-h-screen flex items-center justify-center pt-24 sm:pt-28 pb-16 sm:pb-20 overflow-x-clip bg-transparent">
       <div className="container mx-auto px-6 relative z-10 max-w-7xl">
         <div className="flex flex-col lg:flex-row items-center gap-14 lg:gap-16">
           {/* Left Column: Product Positioning */}
           <div className="w-full lg:w-1/2 text-center lg:text-left">
             <motion.div
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             >
               {/* Badge */}
               <div
-                className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full mb-8 border border-[#E65C8E]/30 bg-[#E65C8E]/10"
+                className="inline-flex items-center gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full mb-6 sm:mb-8 border border-[#E65C8E]/30 bg-[#E65C8E]/10"
               >
-                <span className="flex items-center gap-1 shrink-0">
-                  <span className="w-1 h-3 bg-[#E65C8E] rounded-full animate-pulse" />
-                  <span className="w-1 h-4 bg-[#E65C8E] rounded-full" />
-                  <span className="w-1 h-2.5 bg-[#E65C8E] rounded-full" />
+                <span className="flex items-center gap-0.5 sm:gap-1 shrink-0">
+                  <span className="w-0.5 sm:w-1 h-2.5 sm:h-3 bg-[#E65C8E] rounded-full" />
+                  <span className="w-0.5 sm:w-1 h-3.5 sm:h-4 bg-[#E65C8E] rounded-full" />
+                  <span className="w-0.5 sm:w-1 h-2 sm:h-2.5 bg-[#E65C8E] rounded-full" />
                 </span>
-                <span className="text-[11px] font-mono tracking-widest uppercase text-[#ECA9B7] font-semibold">
-                  Aiva • 24/7 Autonomous Voice Receptionist
+                <span className="text-[10px] sm:text-[11px] font-mono tracking-wider sm:tracking-widest uppercase text-[#ECA9B7] font-semibold whitespace-nowrap">
+                  Aiva • 24/7 Assistant
                 </span>
               </div>
 
               {/* Headline */}
               <h1
-                className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.08] text-white"
-                style={{ fontFamily: "'Space Grotesk', 'Inter', sans-serif" }}
+                className="text-[36px] sm:text-6xl lg:text-[68px] font-bold tracking-[-0.035em] mb-4 sm:mb-6 leading-[1.06] text-white"
+                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
               >
-                Never let another phone call <br />
+                Never let another <br className="sm:hidden" />
+                phone call{" "}
                 <span
-                  className="bg-clip-text text-transparent bg-gradient-to-r from-white/90 via-[#FCE7F3] to-[#E65C8E]"
+                  className="bg-clip-text text-transparent bg-gradient-to-r from-[#FFF5FA] via-[#F9A8D4] to-[#E65C8E]"
                 >
                   go to voicemail.
                 </span>
               </h1>
 
               {/* Subtitle */}
-              <p className="text-lg sm:text-xl mb-9 max-w-2xl mx-auto lg:mx-0 font-light text-white/70 leading-relaxed">
-                Aiva answers incoming calls in under a second, speaks in a friendly human voice,
-                checks your team's real schedule, and books appointments straight into your calendar—day,
-                night, or during your busiest rush.
+              <p
+                className="text-[15.5px] sm:text-[18.5px] mb-7 sm:mb-9 max-w-[34ch] sm:max-w-[52ch] mx-auto lg:mx-0 font-normal text-white/[0.72] leading-[1.62] tracking-[-0.01em]"
+                style={{ fontFamily: "'Plus Jakarta Sans', 'Inter', sans-serif" }}
+              >
+                Aiva answers incoming calls in{" "}
+                <span className="text-white/95 font-medium">under a second</span>, speaks in a warm human voice, checks your team&apos;s real schedule, and{" "}
+                <span className="text-white/95 font-medium">books visits straight to your calendar</span>—day, night, or peak rush.
               </p>
 
               {/* CTAs */}
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-3.5 mb-10 w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-2.5 sm:gap-3 mb-4 sm:mb-2 w-full max-w-[340px] sm:max-w-none mx-auto lg:mx-0">
                 <button
                   onClick={handleBookDemo}
-                  className="w-full sm:w-auto h-12 sm:h-12.5 px-6 sm:px-7 rounded-xl font-semibold text-sm sm:text-base text-white inline-flex items-center justify-center gap-2.5 transition-all duration-200 cursor-pointer hover:brightness-110 active:scale-[0.98] whitespace-nowrap"
+                  className="w-full sm:w-auto h-11 sm:h-12 px-6 sm:px-7 rounded-full font-semibold text-[14px] sm:text-[15px] text-white inline-flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer hover:brightness-110 active:scale-[0.98] whitespace-nowrap"
                   style={{
-                    background: "linear-gradient(180deg, #E65C8E 0%, #C44574 100%)",
-                    boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 8px 24px -4px rgba(230, 92, 142, 0.45)",
+                    fontFamily: "'Plus Jakarta Sans', 'Inter', sans-serif",
+                    background: "linear-gradient(180deg, #EC6B9A 0%, #C84374 100%)",
+                    boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 8px 24px -4px rgba(230, 92, 142, 0.48)",
                   }}
                 >
-                  <Calendar size={17} className="shrink-0" />
+                  <Calendar size={16} className="shrink-0" />
                   <span>Book a Demo</span>
                 </button>
 
-                <button
-                  onClick={handleTestCall}
-                  className="w-full sm:w-auto h-12 sm:h-12.5 px-5 sm:px-6 rounded-xl font-medium text-sm sm:text-base text-white/90 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] active:scale-[0.98] transition-all duration-200 inline-flex items-center justify-center gap-2.5 cursor-pointer border border-white/15 hover:border-[#E65C8E]/40 whitespace-nowrap shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
-                >
-                  <PhoneCall size={16} className="text-[#EC89B5] shrink-0" />
-                  <span>Hear a Live Test Call</span>
-                </button>
+                <div className="grid grid-cols-2 sm:flex items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
+                  <button
+                    onClick={handleTestCall}
+                    className="h-10 sm:h-12 px-3.5 sm:px-5 rounded-full font-medium text-[13px] sm:text-[14.5px] text-white/90 hover:text-white bg-white/[0.05] hover:bg-white/[0.09] active:scale-[0.98] transition-all duration-200 inline-flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer border border-white/[0.12] hover:border-[#E65C8E]/45 whitespace-nowrap shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+                    style={{ fontFamily: "'Plus Jakarta Sans', 'Inter', sans-serif" }}
+                  >
+                    <PhoneCall size={14} className="text-[#EC89B5] shrink-0 sm:w-[15px] sm:h-[15px]" />
+                    <span className="sm:hidden">Live Test Call</span>
+                    <span className="hidden sm:inline">Hear a Live Test Call</span>
+                  </button>
 
-                <a
-                  href="#dashboard-preview"
-                  className="w-full sm:w-auto h-12 sm:h-12.5 px-5 sm:px-6 rounded-xl font-medium text-sm sm:text-base text-white/70 hover:text-white bg-white/[0.02] hover:bg-white/[0.06] active:scale-[0.98] transition-all duration-200 inline-flex items-center justify-center gap-2 cursor-pointer border border-white/10 hover:border-white/20 whitespace-nowrap"
-                >
-                  <LayoutDashboard size={16} className="text-[#ECA9B7] shrink-0" />
-                  <span>Dashboard</span>
-                </a>
-              </div>
-
-              {/* Micro-Metrics Bar */}
-              <div className="grid grid-cols-3 gap-4 pt-6 border-t border-white/[0.08] max-w-lg mx-auto lg:mx-0 text-left">
-                <div>
-                  <div className="text-xs uppercase tracking-wider text-white/40 mb-1 font-mono">Pickup Speed</div>
-                  <div className="text-sm font-semibold text-white flex items-center gap-1.5">
-                    <Zap size={14} className="text-[#EC89B5]" />
-                    <span>Under 1 Second</span>
-                  </div>
-                </div>
-                <div>
-                  <div className="text-xs uppercase tracking-wider text-white/40 mb-1 font-mono">Missed Calls</div>
-                  <div className="text-sm font-semibold text-emerald-400 flex items-center gap-1.5">
-                    <CheckCircle2 size={14} />
-                    <span>Zero (Handles 20+ at once)</span>
-                  </div>
-                </div>
-                <div>
-                  <div className="text-xs uppercase tracking-wider text-white/40 mb-1 font-mono">Calendar Sync</div>
-                  <div className="text-sm font-semibold text-white flex items-center gap-1.5">
-                    <Calendar size={14} className="text-indigo-400" />
-                    <span>Live 2-Way Sync</span>
-                  </div>
+                  <a
+                    href="#dashboard-preview"
+                    className="h-10 sm:h-12 px-3.5 sm:px-5 rounded-full font-medium text-[13px] sm:text-[14.5px] text-white/75 hover:text-white bg-white/[0.025] hover:bg-white/[0.07] active:scale-[0.98] transition-all duration-200 inline-flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer border border-white/[0.09] hover:border-white/25 whitespace-nowrap shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+                    style={{ fontFamily: "'Plus Jakarta Sans', 'Inter', sans-serif" }}
+                  >
+                    <LayoutDashboard size={14} className="text-[#ECA9B7] shrink-0 sm:w-[15px] sm:h-[15px]" />
+                    <span>Dashboard</span>
+                  </a>
                 </div>
               </div>
             </motion.div>
@@ -230,22 +204,22 @@ export default memo(function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, o
           <div className="w-full lg:w-1/2">
             <motion.div
               id="card-module-01"
-              initial={{ opacity: 0, scale: 0.94, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
               className="relative w-full max-w-xl mx-auto"
             >
               <div
-                className="rounded-2xl sm:rounded-3xl p-4 sm:p-7 relative overflow-hidden border border-white/10 shadow-2xl"
+                className="rounded-2xl sm:rounded-3xl p-4 sm:p-7 relative overflow-hidden border border-white/10"
                 style={{
                   background: "linear-gradient(150deg, #170B14 0%, #0A0508 100%)",
-                  boxShadow: "0 30px 100px -20px rgba(0, 0, 0, 0.85), 0 0 50px -10px rgba(166, 107, 142, 0.2)",
+                  boxShadow: "0 18px 48px -12px rgba(0, 0, 0, 0.78), 0 0 36px -12px rgba(166, 107, 142, 0.18)",
                 }}
               >
                 {/* Unified Architecture Chassis Ribbon */}
                 <div className="flex items-center justify-between pb-3.5 mb-5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
                   <span className="flex items-center gap-2 text-[#EC89B5] font-semibold">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E] animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#E65C8E]" />
                     AIVA APPARATUS // UNIT 01
                   </span>
                   <div className="flex items-center gap-2">
@@ -259,10 +233,7 @@ export default memo(function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, o
                 {/* Header: Status & Scenario Switcher */}
                 <div className="flex flex-wrap items-center justify-between gap-2.5 mb-5 pb-4 border-b border-white/[0.08]">
                   <div className="flex items-center gap-2">
-                    <span className="relative flex h-2.5 w-2.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#EC89B5] opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#A66B8E]"></span>
-                    </span>
+                    <span className="inline-flex rounded-full h-2.5 w-2.5 bg-[#E65C8E] shadow-[0_0_8px_rgba(230,92,142,0.7)]" />
                     <span className="font-mono text-[11px] sm:text-xs uppercase tracking-widest text-[#EC89B5] font-bold">
                       AIVA LIVE CALL DEMO
                     </span>
@@ -293,7 +264,7 @@ export default memo(function AivaHeroSection({ onOpenBookDemo, onOpenTestCall, o
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-[#A66B8E]/15 border border-[#A66B8E]/30 flex items-center justify-center text-[#EC89B5] shrink-0">
-                        <PhoneCall size={18} className="animate-pulse" />
+                        <PhoneCall size={18} />
                       </div>
                       <div>
                         <div className="text-sm font-bold text-white flex items-center gap-2">
