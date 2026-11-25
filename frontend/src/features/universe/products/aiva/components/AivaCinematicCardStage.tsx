@@ -286,6 +286,15 @@ function mapProgressToStage(latest: number, isMobile: boolean) {
       // interplanetary camera flights ([0..0.14] arriving, [0.78..1.0] departing)
       const isCardVisible = frac >= entryEnd && frac <= exitStart;
 
+      // Smooth pan from 0 -> 1 inside the docked reading plateau so taller cards
+      // (e.g. Section 2 & Section 6 on mobile with Safari bar expanded) never clip
+      const panStart = Math.max(entryEnd + 0.04, 0.16);
+      const panEnd = Math.min(exitStart - 0.06, 0.72);
+      let panProgress = 0;
+      if (frac > panStart && panEnd > panStart) {
+        panProgress = Math.max(0, Math.min(1, (frac - panStart) / (panEnd - panStart)));
+      }
+
       let floatStage = i;
       if (i > 0 && frac < entryEnd) {
         const t = frac / entryEnd;
@@ -297,7 +306,7 @@ function mapProgressToStage(latest: number, isMobile: boolean) {
         floatStage = i + 0.5 * eased;
       }
 
-      return { stageIndex: i, isCardVisible, panProgress: 0, floatStage };
+      return { stageIndex: i, isCardVisible, panProgress, floatStage };
     }
   }
   return { stageIndex: 0, isCardVisible: true, panProgress: 0, floatStage: 0 };
@@ -478,9 +487,9 @@ export default function AivaCinematicCardStage(
       ref={containerRef}
       className="relative min-h-[680vh] md:min-h-[700vh] bg-transparent"
     >
-      {/* Sticky Cinematic Theater (Full-screen top-0 h-[100dvh] prevents navbar seam gaps) */}
+      {/* Sticky Cinematic Theater (Full-screen top-0 h-[100svh] prevents iOS Safari toolbar resize jitter & navbar seam gaps) */}
       <div 
-        className="sticky top-0 h-[100dvh] flex flex-col justify-between overflow-x-hidden overflow-y-hidden px-3 sm:px-6 z-20 relative"
+        className="sticky top-0 h-[100svh] flex flex-col justify-between overflow-x-hidden overflow-y-hidden px-3 sm:px-6 z-20 relative"
       >
         {/* Realistic Namma Universe 3D Solar System & Planet-Flight Canvas */}
         <AivaSolarSystemBackground
@@ -527,7 +536,7 @@ export default function AivaCinematicCardStage(
               ref={stageInnerRef}
               className="w-full my-auto py-2 sm:py-3 px-0.5 will-change-transform"
             >
-              <AnimatePresence mode="wait" custom={direction}>
+              <AnimatePresence mode="wait" custom={direction} initial={false}>
             
             {/* === STAGE 01: UNIFIED 28-SECOND BOOKING PIPELINE (FULL TEXT, CARD 4 FOOTPRINT) === */}
             {isCardVisible && stageIndex === 0 && (
@@ -541,7 +550,7 @@ export default function AivaCinematicCardStage(
                 className="w-full max-w-4xl mx-auto relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-6 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-6 bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
                   {/* Top Apparatus Bar */}
                   <div className="flex items-center justify-between gap-2 pb-2.5 mb-2.5 sm:mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
                     <span className="flex items-center gap-2 text-[#EC89B5] font-semibold">
@@ -636,7 +645,7 @@ export default function AivaCinematicCardStage(
                 className="w-full max-w-4xl mx-auto relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-5 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-5 bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
                   <div className="flex items-center justify-between gap-2 pb-2.5 mb-2.5 sm:mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
                     <span className="text-[#EC89B5] font-semibold">FRONT-DESK REALITY</span>
                     <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-semibold whitespace-nowrap shrink-0">
@@ -698,7 +707,7 @@ export default function AivaCinematicCardStage(
                 className="w-full max-w-4xl mx-auto relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-6 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-6 bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
                   <div className="flex items-center justify-between gap-2 pb-2.5 mb-2.5 sm:mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
                     <span className="text-[#EC89B5] font-semibold">WHY CLINICS SWITCH</span>
                     <span className="text-white/50 whitespace-nowrap">100+ Active Businesses</span>
@@ -791,7 +800,7 @@ export default function AivaCinematicCardStage(
                 className="w-full max-w-4xl relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-5 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-5 bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
                   {/* Top 4 Metrics */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 mb-3 sm:mb-4">
                     <div className="p-2 sm:p-2.5 rounded-xl bg-white/[0.02] border border-white/10">
@@ -921,7 +930,7 @@ export default function AivaCinematicCardStage(
                 className="w-full max-w-4xl relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-4 sm:p-7 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-4 sm:p-7 bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
                   <div className="flex items-center justify-between pb-3 mb-4 sm:mb-5 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
                     <span className="text-[#EC89B5] font-semibold">AIVA APPARATUS // UNIT 06</span>
                     <span className="text-white/40">VALUE SIMULATOR</span>
@@ -993,7 +1002,7 @@ export default function AivaCinematicCardStage(
                 className="w-full max-w-4xl mx-auto relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-6 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_60px_rgba(230,92,142,0.18)] bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
+                <TiltCard className="rounded-2xl sm:rounded-3xl border border-white/15 p-3.5 sm:p-6 bg-[#0E070C]/98 sm:bg-[#0E070C]/97 backdrop-blur-3xl">
                   <div className="flex items-center justify-between pb-2 mb-2.5 sm:mb-4 border-b border-white/[0.08] text-[10px] font-mono tracking-widest uppercase">
                     <span className="text-[#EC89B5] font-semibold">ENTERPRISE PROTOCOLS // ZERO-RISK</span>
                     <span className="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-semibold">

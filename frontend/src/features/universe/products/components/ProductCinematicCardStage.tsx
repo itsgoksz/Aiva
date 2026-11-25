@@ -291,8 +291,8 @@ export default function ProductCinematicCardStage({
         }
       `}</style>
 
-      {/* Sticky Cinematic Theater (top-0 h-[100dvh] spans behind navbar with zero horizontal seams) */}
-      <div className="sticky top-0 h-[100dvh] flex flex-col justify-between overflow-hidden px-3 sm:px-6 z-20 relative">
+      {/* Sticky Cinematic Theater (top-0 h-[100svh] prevents iOS Safari toolbar resize jitter & navbar seams) */}
+      <div className="sticky top-0 h-[100svh] flex flex-col justify-between overflow-hidden px-3 sm:px-6 z-20 relative">
         <AivaSolarSystemBackground
           stageIndex={stageIndex + safeOffset}
           floatStageRef={floatStageRef}
@@ -330,7 +330,7 @@ export default function ProductCinematicCardStage({
               ref={stageInnerRef}
               className="w-full my-auto py-1 sm:py-2 px-0.5 will-change-transform"
             >
-              <AnimatePresence mode="wait" custom={direction}>
+              <AnimatePresence mode="wait" custom={direction} initial={false}>
                 {isCardVisible && activeStage && (
                   <motion.div
                     key={activeStage.id}
