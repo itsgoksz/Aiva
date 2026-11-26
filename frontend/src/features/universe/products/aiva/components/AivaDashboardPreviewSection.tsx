@@ -11,7 +11,7 @@ import {
 
 const CALL_RECORDS = [
   {
-    caller: "Pooja Hegde",
+    caller: "Rohan Govind",
     phone: "+91 98450 23489",
     service: "HydraFacial & Skin Rejuvenation",
     staff: "Dr. Anjali Rao",

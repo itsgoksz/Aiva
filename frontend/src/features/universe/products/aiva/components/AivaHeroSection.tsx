@@ -19,7 +19,7 @@ interface AivaHeroSectionProps {
 const CALL_SCENARIOS = [
   {
     id: "salon",
-    title: "Boutique Salon (Indiranagar)",
+    title: "Boutique Salon",
     caller: "Pooja Menon",
     service: "HydraFacial & Styling with Divya",
     time: "Thursday at 2:30 PM",
